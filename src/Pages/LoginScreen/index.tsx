@@ -6,16 +6,12 @@ import { useNavigate } from 'react-router-dom';
 require('./style.css');
 
 const LoginScreen: React.FC = () => {
-  //  const [loading, setLoading] = useState(false)
   const navigate = useNavigate();
 
   const onFinish = (values: any) => {
     console.log('Success:', values);
-    /*    setLoading(true);
-    setTimeout(() => {
-      setLoading(false)
-    }, 2000);*/
-    navigate('/home', { replace: true });
+
+    navigate('/criar-senha', { replace: true });
   };
 
   const onFinishFailed = (errorInfo: any) => {
@@ -102,11 +98,6 @@ const LoginScreen: React.FC = () => {
         </Form.Item>
 
         <Form.Item wrapperCol={{ offset: 17 }}>
-          {/*        <Button className="my-button" type="primary" loading={loading} href='/home' htmlType="submit" >   */}
-          {/*        <Button className="my-button" type="primary" href='/home' htmlType="submit" >   */}
-          {/* <Button className="my-button" type="primary" htmlType="submit">
-            <Link to={'/dashboard'}>{<PoweroffOutlined />} Entrar</Link>
-          </Button> */}
           <Button className="my-button" type="primary" htmlType="submit">
             <PoweroffOutlined />
             Entrar
