@@ -1,12 +1,21 @@
 import { Button, Checkbox, Form, Input, Layout, Space, Typography } from 'antd';
 import { LockOutlined } from '@ant-design/icons';
 import { PoweroffOutlined, UserOutlined } from '@ant-design/icons';
-import React from 'react';
+import React, { ChangeEvent, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 require('./style.css');
 
 const LoginScreen: React.FC = () => {
   const navigate = useNavigate();
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
+
+  const handleEmailInput = (event: ChangeEvent<HTMLInputElement>) => {
+    setEmail(event.target.value);
+  };
+  const handlePasswordInput = (event: ChangeEvent<HTMLInputElement>) => {
+    setPassword(event.target.value);
+  };
 
   const onFinish = (values: any) => {
     console.log('Success:', values);
@@ -51,6 +60,8 @@ const LoginScreen: React.FC = () => {
             allowClear
             maxLength={60}
             placeholder="Informe o email do usuário"
+            value={email}
+            onChange={handleEmailInput}
           />
         </Form.Item>
 
@@ -77,6 +88,8 @@ const LoginScreen: React.FC = () => {
           <Input.Password
             prefix={<LockOutlined className="site-form-item-icon" />}
             type="password"
+            value={password}
+            onChange={handlePasswordInput}
             placeholder="Informe sua senha"
           />
         </Form.Item>

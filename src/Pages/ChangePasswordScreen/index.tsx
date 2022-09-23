@@ -1,13 +1,8 @@
 import { Button, Form, Input, Layout, Typography } from 'antd';
 import { useState } from 'react';
 import { Link } from 'react-router-dom';
-import { AuthContext } from '../../contexts/auth/AuthContext';
-import { useProfileUser } from '../../contexts/auth/AuthProvider';
-require('./style.css');
 
-const [password, setPassword] = useState();
-const [confirmPassword, setConfirmPassword] = useState();
-// const { handleChangePassword } = useProfileUser();
+require('./style.css');
 
 const ChangePasswordScreen: React.FC = () => {
   const onFinish = (values: any) => {
