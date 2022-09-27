@@ -1,6 +1,7 @@
 import {
   createContext,
   useCallback,
+  useContext,
   useEffect,
   useMemo,
   useState,
@@ -11,6 +12,7 @@ interface IAuthContextData {
   logout: () => void;
   isAuthenticated: boolean;
   login: (email: string, password: string) => Promise<string | void>;
+  //acessToken: string | undefined;
 }
 
 const AuthContext = createContext({} as IAuthContextData);
@@ -22,6 +24,7 @@ interface IAuthProviderProps {
 }
 export const AuthProvider: React.FC<IAuthProviderProps> = ({ children }) => {
   const [acessToken, setAcessToken] = useState<string>();
+
   useEffect(() => {
     const acessToken = localStorage.getItem(LOCAL_STORAGE_KEY__ACESS_TOKEN);
     if (acessToken) {
@@ -30,6 +33,7 @@ export const AuthProvider: React.FC<IAuthProviderProps> = ({ children }) => {
       setAcessToken(undefined);
     }
   }, []);
+
   //
   const handleLogin = useCallback(async (email: string, password: string) => {
     const result = await AuthService.auth(email, password);
@@ -54,9 +58,20 @@ export const AuthProvider: React.FC<IAuthProviderProps> = ({ children }) => {
 
   return (
     <AuthContext.Provider
-      value={{ isAuthenticated, login: handleLogin, logout: handleLogout }}
+      value={{
+        isAuthenticated,
+        login: handleLogin,
+        logout: handleLogout,
+      }}
     >
       {children}
     </AuthContext.Provider>
   );
 };
+
+export const useAuthContext = () => useContext(AuthContext);
+
+// export function useProfileUser() {
+//   const Context = useContext(AuthContext);
+//   return { ...Context };
+// }

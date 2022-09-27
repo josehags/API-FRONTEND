@@ -3,10 +3,16 @@ import { LockOutlined } from '@ant-design/icons';
 import { PoweroffOutlined, UserOutlined } from '@ant-design/icons';
 import React, { ChangeEvent, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { useAuthContext } from '../../contexts';
 require('./style.css');
 
-const LoginScreen: React.FC = () => {
+interface ILoginProps {
+  children: React.ReactNode;
+}
+const LoginScreen: React.FC<ILoginProps> = ({ children }) => {
   const navigate = useNavigate();
+  const { isAuthenticated } = useAuthContext();
+
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
 
@@ -27,7 +33,7 @@ const LoginScreen: React.FC = () => {
     console.log('Failed:', errorInfo);
     navigate('/criar-senha', { replace: true });
   };
-
+  if (isAuthenticated) return <>{children}</>;
   return (
     <Layout className="containerLogin">
       <Form

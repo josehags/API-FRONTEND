@@ -36,7 +36,7 @@ const OtherRoutes = () => {
     <>
       <Routes>
         <Route path="/" element={<ProfessionalHomepage />} />
-        <Route path="/login" element={<LoginScreen />} />
+        <Route path="/login" element={<LoginScreen children={undefined} />} />
         <Route path="/recuperar-senha" element={<RecoverPasswordScreen />} />
         <Route path="*" element={<Navigate to="/" replace />} />
       </Routes>
