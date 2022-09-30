@@ -1,5 +1,7 @@
 import { BrowserRouter } from 'react-router-dom';
+import { AuthProvider } from '../contexts/AuthContext';
 import LoginScreen from '../Pages/LoginScreen';
+
 import SignInRoutes from './SignInRoutes';
 /*
 import OtherRoutes from './OtherRoutes';
@@ -23,9 +25,11 @@ const Routes = () => {
 const Routes = () => {
   return (
     <BrowserRouter>
-      <LoginScreen>
-        <SignInRoutes />
-      </LoginScreen>
+      <AuthProvider>
+        <LoginScreen>
+          <SignInRoutes />
+        </LoginScreen>
+      </AuthProvider>
     </BrowserRouter>
   );
 };

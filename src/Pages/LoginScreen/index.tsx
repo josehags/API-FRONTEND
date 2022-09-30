@@ -1,27 +1,18 @@
 import { Button, Checkbox, Form, Input, Layout, Space, Typography } from 'antd';
 import { LockOutlined } from '@ant-design/icons';
 import { PoweroffOutlined, UserOutlined } from '@ant-design/icons';
-import React, { ChangeEvent, useState } from 'react';
+import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { useAuthContext } from '../../contexts';
+import { useAuthContext } from '../../contexts/AuthContext';
 require('./style.css');
-
 interface ILoginProps {
   children: React.ReactNode;
 }
 const LoginScreen: React.FC<ILoginProps> = ({ children }) => {
   const navigate = useNavigate();
   const { isAuthenticated } = useAuthContext();
-
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
-
-  const handleEmailInput = (event: ChangeEvent<HTMLInputElement>) => {
-    setEmail(event.target.value);
-  };
-  const handlePasswordInput = (event: ChangeEvent<HTMLInputElement>) => {
-    setPassword(event.target.value);
-  };
 
   const onFinish = (values: any) => {
     console.log('Success:', values);
@@ -68,7 +59,7 @@ const LoginScreen: React.FC<ILoginProps> = ({ children }) => {
             maxLength={60}
             placeholder="Informe o email do usuário"
             value={email}
-            onChange={handleEmailInput}
+            onChange={e => setEmail(e.target.value)}
           />
         </Form.Item>
 
@@ -96,7 +87,7 @@ const LoginScreen: React.FC<ILoginProps> = ({ children }) => {
             prefix={<LockOutlined className="site-form-item-icon" />}
             type="password"
             value={password}
-            onChange={handlePasswordInput}
+            onChange={e => setPassword(e.target.value)}
             placeholder="Informe sua senha"
           />
         </Form.Item>

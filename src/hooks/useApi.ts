@@ -1,9 +1,11 @@
 import axios from 'axios';
-import { BaseUrlUsers } from '../../Constants/BaseUrl';
-import { errorInterceptor, responseInterceptor } from './interceptors';
+import {
+  errorInterceptor,
+  responseInterceptor,
+} from './axios-config/interceptors';
 
 const Api = axios.create({
-  baseURL: BaseUrlUsers,
+  baseURL: process.env.URL_BASE,
 });
 
 Api.interceptors.response.use(

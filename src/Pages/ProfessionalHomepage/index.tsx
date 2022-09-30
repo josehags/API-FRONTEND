@@ -6,6 +6,7 @@ import {
 import { MenuProps, Typography, Breadcrumb, Layout, Menu } from 'antd';
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { useAuthContext } from '../../contexts/AuthContext';
 import Dashboard from '../Dashboard';
 import FormServer from '../FormServer';
 import FormUser from '../FormUser';
@@ -39,6 +40,7 @@ const items: MenuItem[] = [
 const ProfessionalHomePage: React.FC = () => {
   const [collapsed, setCollapsed] = useState(true);
   const [chave, setChave] = useState('1');
+  const { logout } = useAuthContext();
   const navigate = useNavigate();
 
   const rotas = (item: any) => {
@@ -47,7 +49,8 @@ const ProfessionalHomePage: React.FC = () => {
       window.location.reload();
     }
     if (item.key === '4') {
-      navigate('/', { replace: true });
+      logout();
+      navigate('/login', { replace: true });
     }
     setChave(item.key);
   };

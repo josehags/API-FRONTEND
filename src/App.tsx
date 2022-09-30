@@ -1,5 +1,3 @@
-import { AuthProvider } from './contexts';
-import LoginScreen from './Pages/LoginScreen';
 import Routes from './Routes';
 /*
 import UserProvider from './Context';
@@ -13,11 +11,7 @@ function App() {
 }
 */
 function App() {
-  return (
-    <AuthProvider>
-      <Routes />
-    </AuthProvider>
-  );
+  return <Routes />;
 }
 
 export default App;
