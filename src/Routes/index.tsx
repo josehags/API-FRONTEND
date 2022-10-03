@@ -26,9 +26,7 @@ const Routes = () => {
   return (
     <BrowserRouter>
       <AuthProvider>
-        <LoginScreen>
-          <SignInRoutes />
-        </LoginScreen>
+        <SignInRoutes />
       </AuthProvider>
     </BrowserRouter>
   );

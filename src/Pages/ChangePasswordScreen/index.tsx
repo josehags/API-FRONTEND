@@ -1,7 +1,4 @@
 import { Button, Form, Input, Layout, Typography } from 'antd';
-import { useState } from 'react';
-import { Link } from 'react-router-dom';
-
 require('./style.css');
 
 const ChangePasswordScreen: React.FC = () => {
@@ -51,12 +48,7 @@ const ChangePasswordScreen: React.FC = () => {
           ]}
           hasFeedback
         >
-          <Input.Password
-            placeholder="Informe a nova senha para o usuário"
-            type="password"
-            // onChange={text => setPassword(password)}
-            // value={password || ''}
-          />
+          <Input.Password placeholder="Informe a nova senha para o usuário" />
         </Form.Item>
 
         <Form.Item
@@ -76,21 +68,12 @@ const ChangePasswordScreen: React.FC = () => {
           ]}
           hasFeedback
         >
-          <Input.Password
-            placeholder="Confirme sua nova senha"
-            // onChange={text => setConfirmPassword(confirmPassword)}
-            // value={confirmPassword || ''}
-          />
+          <Input.Password placeholder="Confirme sua nova senha" />
         </Form.Item>
 
         <Form.Item wrapperCol={{ offset: 17 }}>
-          <Button className="botao" type="primary">
-            <Link
-              to={'/home'}
-              // onChange={() => handleChangePassword(password, confirmPassword)}
-            >
-              Confirmar
-            </Link>
+          <Button className="botao" type="primary" htmlType="submit">
+            Confirmar
           </Button>
         </Form.Item>
       </Form>

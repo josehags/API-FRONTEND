@@ -4,15 +4,21 @@ import { PoweroffOutlined, UserOutlined } from '@ant-design/icons';
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAuthContext } from '../../contexts/AuthContext';
+import { Link } from 'react-router-dom';
 require('./style.css');
-interface ILoginProps {
-  children: React.ReactNode;
-}
-const LoginScreen: React.FC<ILoginProps> = ({ children }) => {
+
+const LoginScreen: React.FC = () => {
   const navigate = useNavigate();
-  const { isAuthenticated } = useAuthContext();
+  // eslint-disable-next-line no-empty-pattern
+  const {} = useAuthContext();
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+
+  const handleLogin = () => {
+    console.log('login');
+    console.log('email', email);
+    console.log('password', password);
+  };
 
   const onFinish = (values: any) => {
     console.log('Success:', values);
@@ -24,7 +30,6 @@ const LoginScreen: React.FC<ILoginProps> = ({ children }) => {
     console.log('Failed:', errorInfo);
     navigate('/criar-senha', { replace: true });
   };
-  if (isAuthenticated) return <>{children}</>;
   return (
     <Layout className="containerLogin">
       <Form
@@ -109,7 +114,12 @@ const LoginScreen: React.FC<ILoginProps> = ({ children }) => {
         </Form.Item>
 
         <Form.Item wrapperCol={{ offset: 17 }}>
-          <Button className="my-button" type="primary" htmlType="submit">
+          <Button
+            className="my-button"
+            type="primary"
+            htmlType="submit"
+            onClick={handleLogin}
+          >
             <PoweroffOutlined />
             Entrar
           </Button>

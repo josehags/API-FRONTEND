@@ -6,7 +6,7 @@ import RecoverPasswordScreen from '../Pages/RecoverPasswordScreen';
 
 const SignInRoutes = () => (
   <Routes>
-    <Route path="/login" element={<LoginScreen children={undefined} />} />
+    <Route path="/login" element={<LoginScreen />} />
 
     <Route path="/recuperar-senha" element={<RecoverPasswordScreen />} />
     <Route path="/criar-senha" element={<ChangePasswordScreen />} />
