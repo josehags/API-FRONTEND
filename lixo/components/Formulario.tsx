@@ -1,4 +1,5 @@
 import { Input, Form, Row, Col, Button } from 'antd';
+import React from 'react';
 import { useState } from 'react';
 
 export default function Formulario() {

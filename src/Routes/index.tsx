@@ -1,33 +1,16 @@
 import { BrowserRouter } from 'react-router-dom';
-import { AuthProvider } from '../contexts/AuthContext';
-import LoginScreen from '../Pages/LoginScreen';
+import { useProfileUser } from '../contexts/AuthContext';
+import Dashbord from '../Pages/Dashboard';
+import OtherRoutes from './OtherRoutes';
 
 import SignInRoutes from './SignInRoutes';
-/*
-import OtherRoutes from './OtherRoutes';
-import { useProfileUser } from '../Context';
-import NavbarComp from '../Components/NavbarComp';
 
 const Routes = () => {
   const { token } = useProfileUser();
   return (
     <BrowserRouter>
-      <NavbarComp />
-      {
-        token
-          ? <OtherRoutes />
-          : <SignInRoutes />
-      }
-    </BrowserRouter>
-  );
-};
-*/
-const Routes = () => {
-  return (
-    <BrowserRouter>
-      <AuthProvider>
-        <SignInRoutes />
-      </AuthProvider>
+      {/* <Dashbord /> esta sumindo com a tela de login*/}
+      {token ? <OtherRoutes /> : <SignInRoutes />}
     </BrowserRouter>
   );
 };

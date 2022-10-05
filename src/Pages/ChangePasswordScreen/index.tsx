@@ -1,7 +1,14 @@
 import { Button, Form, Input, Layout, Typography } from 'antd';
+import { ChangeEvent, useState } from 'react';
+import { Link } from 'react-router-dom';
+import { useProfileUser } from '../../contexts/AuthContext';
 require('./style.css');
 
 const ChangePasswordScreen: React.FC = () => {
+  const [password, setPassword] = useState('');
+  const [confirmPassword, setConfirmPassword] = useState('');
+  const { handleChangePassword } = useProfileUser();
+
   const onFinish = (values: any) => {
     console.log('Success:', values);
   };
@@ -48,7 +55,11 @@ const ChangePasswordScreen: React.FC = () => {
           ]}
           hasFeedback
         >
-          <Input.Password placeholder="Informe a nova senha para o usuário" />
+          <Input.Password
+            placeholder="Informe a nova senha para o usuário"
+            value={password}
+            onChange={e => setPassword(e.target.value)}
+          />
         </Form.Item>
 
         <Form.Item
@@ -68,11 +79,20 @@ const ChangePasswordScreen: React.FC = () => {
           ]}
           hasFeedback
         >
-          <Input.Password placeholder="Confirme sua nova senha" />
+          <Input.Password
+            placeholder="Confirme sua nova senha"
+            value={confirmPassword}
+            onChange={e => setConfirmPassword(e.target.value)}
+          />
         </Form.Item>
 
         <Form.Item wrapperCol={{ offset: 17 }}>
-          <Button className="botao" type="primary" htmlType="submit">
+          <Button
+            className="botao"
+            type="primary"
+            htmlType="submit"
+            onClick={() => handleChangePassword(password, confirmPassword)}
+          >
             Confirmar
           </Button>
         </Form.Item>

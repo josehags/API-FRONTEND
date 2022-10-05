@@ -3,22 +3,15 @@ import { LockOutlined } from '@ant-design/icons';
 import { PoweroffOutlined, UserOutlined } from '@ant-design/icons';
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { useAuthContext } from '../../contexts/AuthContext';
-import { Link } from 'react-router-dom';
+import { useProfileUser } from '../../contexts/AuthContext';
+
 require('./style.css');
 
 const LoginScreen: React.FC = () => {
   const navigate = useNavigate();
-  // eslint-disable-next-line no-empty-pattern
-  const {} = useAuthContext();
+  const { handleLogin } = useProfileUser();
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
-
-  const handleLogin = () => {
-    console.log('login');
-    console.log('email', email);
-    console.log('password', password);
-  };
 
   const onFinish = (values: any) => {
     console.log('Success:', values);
@@ -118,7 +111,7 @@ const LoginScreen: React.FC = () => {
             className="my-button"
             type="primary"
             htmlType="submit"
-            onClick={handleLogin}
+            onClick={() => handleLogin(email, password)}
           >
             <PoweroffOutlined />
             Entrar

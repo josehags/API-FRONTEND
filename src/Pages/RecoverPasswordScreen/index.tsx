@@ -48,7 +48,7 @@ const RecoverPasswordScreen: React.FC = () => {
 
         <Form.Item wrapperCol={{ offset: 5 }}>
           <Space size={300}>
-            <Button className="login-form-forgot" type="link" href="/">
+            <Button className="login-form-forgot" type="link" href="/login">
               Voltar
             </Button>
             <Button className="botao" type="primary" htmlType="submit">
