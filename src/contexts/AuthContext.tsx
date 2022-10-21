@@ -5,16 +5,27 @@ import {
   useEffect,
   useState,
 } from 'react';
-import { User } from '../types/User';
 import { APIServidores, APIUsuarios } from '../Services/Axios/baseService';
-import { changePassword, loginUsuario } from '../Services/Axios/userServices';
+import {
+  changePassword,
+  loginUsuario,
+  SignInPropos,
+} from '../Services/Axios/userServices';
+import { userInfo } from 'os';
+
+type User = {
+  id: string;
+  name: string;
+  email: string;
+};
 
 interface IAuthContextData {
   logout: () => void;
   user: User | null;
   token: string | undefined;
+  isAuthenticated: boolean;
   handleChangePassword: any;
-  handleLogin: (email: string, password: string) => void;
+  handleLogin: (credentials: SignInPropos) => Promise<void>;
 }
 
 const AuthContext = createContext({} as IAuthContextData);
@@ -29,26 +40,31 @@ const AuthProvider: React.FC<IAuthProviderProps> = ({ children }) => {
   const [showMessage, setShowMessage] = useState(false);
   const handleCloseMessage = () => setShowMessage(true);
   const handleShowMessage = () => setShowMessage(true);
-  const [alertState, setAlertState] = useState(true);
+  const isAuthenticated = !!user;
 
   useEffect(() => {
     const storagedToken = localStorage.getItem('@App:token');
+    const storagedUser = JSON.parse(
+      localStorage.getItem('@App:user') as string,
+    );
 
-    if (!token && storagedToken) {
+    console.log(token);
+
+    if (!token && storagedToken && storagedUser) {
       const storagedUser = JSON.parse(storagedToken);
       setToken(storagedToken);
       setUser(storagedUser);
 
-      APIUsuarios.defaults.headers;
-      {
-        ('Authorization');
-        `x-access-token ${storagedToken}`;
-      }
-      APIServidores.defaults.headers;
-      {
-        ('Authorization');
-        `x-access-token ${storagedToken}`;
-      }
+      APIUsuarios.defaults.headers.common['Authorization'] =
+        'Bearer ' + 'x-access-token' + storagedToken;
+
+      // APIUsuarios.defaults.headers.common[
+      //   'Authorization'
+      // ] = `Bearer ${storagedToken}`;
+
+      // APIUsuarios.defaults.headers.common = {
+      //   'x-access-token': storagedToken,
+      // };
     }
   }, []);
 
@@ -65,15 +81,16 @@ const AuthProvider: React.FC<IAuthProviderProps> = ({ children }) => {
     }
   }, [user]);
 
-  const startModal = (text: any) => {
+  const startModal = (text: string) => {
     setMessage(text);
     handleShowMessage();
   };
 
-  const handleLogin = async (email: any, temporaryPassword: string) => {
-    const userInfo = await loginUsuario(email, temporaryPassword, startModal);
+  const handleLogin = async ({ email, password }: SignInPropos) => {
+    const userInfo = await loginUsuario(email, password);
     if (!userInfo) {
-      setToken(userInfo?.token);
+      setToken(token);
+      setUser(userInfo);
     }
   };
 
@@ -92,6 +109,7 @@ const AuthProvider: React.FC<IAuthProviderProps> = ({ children }) => {
   return (
     <AuthContext.Provider
       value={{
+        isAuthenticated,
         token,
         user,
         handleLogin,

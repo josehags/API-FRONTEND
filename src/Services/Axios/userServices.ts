@@ -16,34 +16,32 @@ import { APIServidores, APIUsuarios } from './baseService';
 //   }
 //   return false;
 // }
+export type SignInPropos = {
+  email: string;
+  password: string;
+};
 
-export async function loginUsuario(
-  email: any,
-  temporaryPassword: string,
-  startModal: (arg0: string) => void,
-) {
+export async function loginUsuario(email: string, temporaryPassword: string) {
   try {
-    const response = await APIUsuarios.post('login', {
+    const response = await APIUsuarios.post('/login', {
       email: email,
       pass: temporaryPassword,
     });
     if (response.data.message) {
-      startModal('Email e/ou senha inválidos.');
+      alert('Email e/ou senha inválidos.');
     } else {
-      APIUsuarios.defaults.headers;
-      {
-        ('Authorization');
-        `x-access-token ${response.data.token}`;
-      }
-      APIServidores.defaults.headers;
-      {
-        ('Authorization');
-        `x-access-token ${response.data.token}`;
-      }
+      APIUsuarios.defaults.headers.common['Authorization'] =
+        'Bearer ' + response.data.token;
     }
+    // APIServidores.defaults.headers;
+    // {
+    //   ('Authorization');
+    //   `x-access-token ${response.data.token}`;
+    // }
+
     return response.data;
   } catch (error) {
-    startModal('Não foi possivel fazer login. Tente novamente mais tarde.');
+    alert('Não foi possivel fazer login. Tente novamente mais tarde.');
     console.error(error);
     return null;
   }

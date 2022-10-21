@@ -1,3 +1,3 @@
-export const BaseUrlUsuarios = 'http://localhost:3001/usuarios';
+export const BaseUrlUsuarios = 'http://localhost:3001';
 
-export const BaseUrlServidores = 'http://localhost:3002/servidores';
+export const BaseUrlServidores = 'http://localhost:3002';

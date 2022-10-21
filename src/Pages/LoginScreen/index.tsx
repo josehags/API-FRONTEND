@@ -1,7 +1,7 @@
 import { Button, Checkbox, Form, Input, Layout, Space, Typography } from 'antd';
 import { LockOutlined } from '@ant-design/icons';
 import { PoweroffOutlined, UserOutlined } from '@ant-design/icons';
-import React, { useState } from 'react';
+import React, { FormEvent, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useProfileUser } from '../../contexts/AuthContext';
 
@@ -12,6 +12,23 @@ const LoginScreen: React.FC = () => {
   const { handleLogin } = useProfileUser();
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const [loading, setLoading] = useState(false);
+
+  async function login(event: FormEvent) {
+    event.preventDefault();
+
+    if (email === '' || password === '') {
+      alert('Preencha os dados');
+    }
+
+    setLoading(true);
+
+    const data = { email, password };
+
+    await handleLogin(data);
+
+    setLoading(false);
+  }
 
   const onFinish = (values: any) => {
     console.log('Success:', values);
@@ -34,6 +51,7 @@ const LoginScreen: React.FC = () => {
         onFinishFailed={onFinishFailed}
         autoComplete="off"
         className="loginScreen"
+        onSubmitCapture={login}
       >
         <Typography.Title level={3} className="page-header-login" underline>
           SISTEMA
@@ -100,6 +118,7 @@ const LoginScreen: React.FC = () => {
               className="login-form-forgot"
               type="link"
               href="/recuperar-senha"
+              loading={loading}
             >
               Esqueci a senha!
             </Button>
@@ -111,7 +130,7 @@ const LoginScreen: React.FC = () => {
             className="my-button"
             type="primary"
             htmlType="submit"
-            onClick={() => handleLogin(email, password)}
+            // onClick={() => handleLogin(loading)}
           >
             <PoweroffOutlined />
             Entrar
