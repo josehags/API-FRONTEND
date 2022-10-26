@@ -4,7 +4,7 @@ import { BaseUrlServidores, BaseUrlUsuarios } from '../../../Constants/BaseUrl';
 export const APIUsuarios = axios.create({
   baseURL: BaseUrlUsuarios,
   headers: {
-    Authorization: `Bearer ${localStorage['@App:token']}`,
+    Authorization: `Bearer ${['@App:token']}`,
   },
 });
 

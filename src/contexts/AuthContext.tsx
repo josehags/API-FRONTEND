@@ -6,17 +6,19 @@ import {
   useState,
 } from 'react';
 import { APIServidores, APIUsuarios } from '../Services/Axios/baseService';
-import {
-  changePassword,
-  loginUsuario,
-  SignInPropos,
-} from '../Services/Axios/userServices';
+import { changePassword, loginUsuario } from '../Services/Axios/userServices';
 import { userInfo } from 'os';
+import { toast } from 'react-toastify';
+import { useNavigate } from 'react-router-dom';
 
 type User = {
   id: string;
   name: string;
   email: string;
+};
+type SignInPropos = {
+  email: string;
+  password: string;
 };
 
 interface IAuthContextData {
@@ -25,7 +27,7 @@ interface IAuthContextData {
   token: string | undefined;
   isAuthenticated: boolean;
   handleChangePassword: any;
-  handleLogin: (credentials: SignInPropos) => Promise<void>;
+  signIn: (credentials: SignInPropos) => Promise<void>;
 }
 
 const AuthContext = createContext({} as IAuthContextData);
@@ -33,64 +35,100 @@ const AuthContext = createContext({} as IAuthContextData);
 interface IAuthProviderProps {
   children: React.ReactNode;
 }
+
 const AuthProvider: React.FC<IAuthProviderProps> = ({ children }) => {
   const [token, setToken] = useState('');
   const [user, setUser] = useState<User | null>(null);
+  const isAuthenticated = !!user;
+
   const [message, setMessage] = useState('');
   const [showMessage, setShowMessage] = useState(false);
   const handleCloseMessage = () => setShowMessage(true);
   const handleShowMessage = () => setShowMessage(true);
-  const isAuthenticated = !!user;
 
-  useEffect(() => {
-    const storagedToken = localStorage.getItem('@App:token');
-    const storagedUser = JSON.parse(
-      localStorage.getItem('@App:user') as string,
-    );
+  // useEffect(() => {
+  //   const storagedToken = localStorage.getItem('@App:token');
+  //   const storagedUser = JSON.parse(
+  //     localStorage.getItem('@App:user') as string,
+  //   );
 
-    console.log(token);
+  //   console.log(token);
 
-    if (!token && storagedToken && storagedUser) {
-      const storagedUser = JSON.parse(storagedToken);
-      setToken(storagedToken);
-      setUser(storagedUser);
+  //   if (!token && storagedToken && storagedUser) {
+  //     const storagedUser = JSON.parse(storagedToken);
+  //     setToken(storagedToken);
+  //     setUser(storagedUser);
 
-      APIUsuarios.defaults.headers.common['Authorization'] =
-        'Bearer ' + 'x-access-token' + storagedToken;
+  //     APIUsuarios.defaults.headers.common['Authorization'] =
+  //       'Bearer ' + 'x-access-token' + storagedToken;
 
-      // APIUsuarios.defaults.headers.common[
-      //   'Authorization'
-      // ] = `Bearer ${storagedToken}`;
+  // APIUsuarios.defaults.headers.common[
+  //   'Authorization'
+  // ] = `Bearer ${storagedToken}`;
 
-      // APIUsuarios.defaults.headers.common = {
-      //   'x-access-token': storagedToken,
-      // };
-    }
-  }, []);
+  // APIUsuarios.defaults.headers.common = {
+  //   'x-access-token': storagedToken,
+  // };
+  //   }
+  // }, []);
 
-  useEffect(() => {
-    if (token) {
-      localStorage.setItem('@App:token', token);
-      localStorage.setItem('@App:user', JSON.stringify(user));
-    }
-  }, [token, user]);
+  // useEffect(() => {
+  //   if (token) {
+  //     localStorage.setItem('@App:token', token);
+  //     localStorage.setItem('@App:user', JSON.stringify(user));
+  //   }
+  // }, [token, user]);
 
-  useEffect(() => {
-    if (user) {
-      localStorage.setItem('@App:user', JSON.stringify(user));
-    }
-  }, [user]);
+  // useEffect(() => {
+  //   if (user) {
+  //     localStorage.setItem('@App:user', JSON.stringify(user));
+  //   }
+  // }, [user]);
 
   const startModal = (text: string) => {
     setMessage(text);
     handleShowMessage();
   };
 
-  const handleLogin = async ({ email, password }: SignInPropos) => {
-    const userInfo = await loginUsuario(email, password);
-    if (!userInfo) {
-      setToken(token);
-      setUser(userInfo);
+  const signIn = async ({ email, password }: SignInPropos) => {
+    try {
+      const response = await APIUsuarios.post('/login', {
+        email,
+        password,
+      });
+
+      const { id, name, token } = response.data;
+      console.log(response.data);
+
+      const storagedToken = JSON.parse(
+        localStorage.getItem('@App:user') as string,
+      );
+      const storagedUser = JSON.parse(
+        localStorage.getItem('@App:user') as string,
+      );
+
+      if (token) {
+        setToken(storagedToken);
+        localStorage.setItem('@App:token', token);
+        localStorage.setItem('@App:user', JSON.stringify(user));
+      }
+      setUser(storagedUser);
+      setUser({
+        id,
+        name,
+        email,
+      });
+
+      //Passar para proximas requisiçoes o nosso token
+      APIUsuarios.defaults.headers.common['Authorization'] = `Bearer ${token}`;
+
+      toast.success('Logado com sucesso!');
+      //
+
+      //
+    } catch (err) {
+      toast.error('Erro ao acessar!');
+      console.log('ERRO AO ACESSAR ', err);
     }
   };
 
@@ -112,7 +150,7 @@ const AuthProvider: React.FC<IAuthProviderProps> = ({ children }) => {
         isAuthenticated,
         token,
         user,
-        handleLogin,
+        signIn,
         logout: handleLogout,
         handleChangePassword,
       }}

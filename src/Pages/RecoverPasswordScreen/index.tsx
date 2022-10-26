@@ -1,8 +1,11 @@
 import { Button, Form, Input, Layout, Space, Typography } from 'antd';
 import { UserOutlined } from '@ant-design/icons';
+import { toast, ToastContainer } from 'react-toastify';
 require('./style.css');
 
 const RecoverPasswordScreen: React.FC = () => {
+  const notify = (email: any) => toast('Email enviado com sucesso!');
+
   const onFinish = (values: any) => {
     console.log('Success:', values);
   };
@@ -51,9 +54,15 @@ const RecoverPasswordScreen: React.FC = () => {
             <Button className="login-form-forgot" type="link" href="/login">
               Voltar
             </Button>
-            <Button className="botao" type="primary" htmlType="submit">
+            <Button
+              className="botao"
+              type="primary"
+              htmlType="submit"
+              onClick={notify}
+            >
               Enviar
             </Button>
+            <ToastContainer />
           </Space>
         </Form.Item>
       </Form>

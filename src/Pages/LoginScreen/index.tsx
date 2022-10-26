@@ -9,7 +9,7 @@ require('./style.css');
 
 const LoginScreen: React.FC = () => {
   const navigate = useNavigate();
-  const { handleLogin } = useProfileUser();
+  const { signIn } = useProfileUser();
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [loading, setLoading] = useState(false);
@@ -25,7 +25,7 @@ const LoginScreen: React.FC = () => {
 
     const data = { email, password };
 
-    await handleLogin(data);
+    await signIn(data);
 
     setLoading(false);
   }
@@ -130,7 +130,8 @@ const LoginScreen: React.FC = () => {
             className="my-button"
             type="primary"
             htmlType="submit"
-            // onClick={() => handleLogin(loading)}
+            loading={loading}
+            // onClick={() => login(loading)}
           >
             <PoweroffOutlined />
             Entrar

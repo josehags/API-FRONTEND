@@ -16,10 +16,10 @@ import { APIServidores, APIUsuarios } from './baseService';
 //   }
 //   return false;
 // }
-export type SignInPropos = {
-  email: string;
-  password: string;
-};
+// export type SignInPropos = {
+//   email: string;
+//   password: string;
+// };
 
 export async function loginUsuario(email: string, temporaryPassword: string) {
   try {

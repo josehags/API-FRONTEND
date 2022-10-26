@@ -8,7 +8,6 @@ const ChangePasswordScreen: React.FC = () => {
   const [password, setPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
   const { handleChangePassword } = useProfileUser();
-
   const onFinish = (values: any) => {
     console.log('Success:', values);
   };
