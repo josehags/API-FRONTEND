@@ -1,18 +1,18 @@
 .containerRecover {
-    width: 100vw;
-    height: 100vh;
-    background: #e4e4e4;
-    justify-content: center;
-    align-items: center;
-    }
+  width: 100vw;
+  height: 100vh;
+  background: #e4e4e4;
+  justify-content: center;
+  align-items: center;
+}
 .recoverScreen {
-    width: 650px;
-    height: 300px;
-    border: 1px solid black;
-    box-shadow: 5px 5px rgb(185, 185, 185);
-    padding: 50px;
+  width: 650px;
+  height: 300px;
+  border: 1px solid black;
+  box-shadow: 5px 5px rgb(185, 185, 185);
+  padding: 50px;
 }
 .page-header-recover {
-    padding: 25px;
-    text-align: center;
+  padding: 25px;
+  text-align: center;
 }

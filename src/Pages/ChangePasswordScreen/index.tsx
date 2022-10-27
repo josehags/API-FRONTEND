@@ -1,16 +1,14 @@
 import { Button, Form, Input, Layout, Typography } from 'antd';
-import { useNavigate } from 'react-router-dom';
 import { useProfileUser } from '../../Context';
+import { useNavigate } from 'react-router-dom';
 require('./style.css');
 
 const ChangePasswordScreen: React.FC = () => {
   const { handleChangePassword } = useProfileUser();
   const navigate = useNavigate();
-  console.log('oi');
 
   const onFinish = (values: any) => {
     handleChangePassword(values.password);
-
     navigate('/', { replace: true });
   };
 

@@ -10,7 +10,7 @@ const LoginScreen: React.FC = () => {
   const navigate = useNavigate();
   const [emailReceived, setEmailReceived] = useState('');
   const [passwordReceived, setPasswordReceived] = useState('');
-  const { handleLogin } = useProfileUser();
+  const { handleLogin, user } = useProfileUser();
 
   if (localStorage.getItem('@App:token')) {
     navigate('/', { replace: true });
@@ -68,33 +68,51 @@ const LoginScreen: React.FC = () => {
           />
         </Form.Item>
 
-        <Form.Item
-          label="Senha"
-          name="Password"
-          rules={[
-            { required: true, message: 'Por favor, informe sua senha!' },
-            { min: 6 },
-            {
-              validator: (_, value) =>
-                value &&
-                !(value === value.toUpperCase()) &&
-                !(value === value.toLowerCase()) &&
-                value.search(/\W|_/) !== -1
-                  ? Promise.resolve()
-                  : Promise.reject(
-                      'A senha deve ter ao menos uma letra Maiúscula/Minuscula/Caracter Especial',
-                    ),
-            },
-          ]}
-          hasFeedback
-        >
-          <Input.Password
-            onChange={e => setPasswordReceived(e.target.value)}
-            allowClear
-            placeholder="Informe sua senha"
-            autoComplete="off"
-          />
-        </Form.Item>
+        {user?.temporaryPassword ? (
+          <Form.Item
+            label="Senha"
+            name="Password"
+            rules={[
+              { required: true, message: 'Por favor, informe sua senha!' },
+            ]}
+            hasFeedback
+          >
+            <Input.Password
+              onChange={e => setPasswordReceived(e.target.value)}
+              allowClear
+              placeholder="Informe sua senha"
+              autoComplete="off"
+            />
+          </Form.Item>
+        ) : (
+          <Form.Item
+            label="Senha"
+            name="Password"
+            rules={[
+              { required: true, message: 'Por favor, informe sua senha!' },
+              { min: 6 },
+              {
+                validator: (_, value) =>
+                  value &&
+                  !(value === value.toUpperCase()) &&
+                  !(value === value.toLowerCase()) &&
+                  value.search(/\W|_/) !== -1
+                    ? Promise.resolve()
+                    : Promise.reject(
+                        'A senha deve ter ao menos uma letra Maiúscula/Minuscula/Caracter Especial',
+                      ),
+              },
+            ]}
+            hasFeedback
+          >
+            <Input.Password
+              onChange={e => setPasswordReceived(e.target.value)}
+              allowClear
+              placeholder="Informe sua senha"
+              autoComplete="off"
+            />
+          </Form.Item>
+        )}
 
         <Form.Item wrapperCol={{ offset: 5, span: 20 }}>
           <Space size={120}>

@@ -69,9 +69,9 @@ const UserProvider = ({ children }: { children: JSX.Element }) => {
   const startModal = (type: Types, text: string) => {
     setMessage(text);
     setTypeMessage(type);
-    // setTimeout(() => {
-    //   window.location.reload();
-    // }, 3000);
+    setTimeout(() => {
+      window.location.reload();
+    }, 3000);
   };
 
   const handleChangePassword = async (password: any) => {
@@ -84,7 +84,6 @@ const UserProvider = ({ children }: { children: JSX.Element }) => {
   };
 
   const handleLogin = async (email: any, password: any) => {
-    console.log(email, password);
     const userInfo = await loginUser(email, password, startModal);
     if (!userInfo.message) {
       setToken(userInfo?.token);
