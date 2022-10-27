@@ -1,15 +1,17 @@
 import { Button, Form, Input, Layout, Typography } from 'antd';
-import { ChangeEvent, useState } from 'react';
-import { Link } from 'react-router-dom';
-import { useProfileUser } from '../../contexts/AuthContext';
+import { useNavigate } from 'react-router-dom';
+import { useProfileUser } from '../../Context';
 require('./style.css');
 
 const ChangePasswordScreen: React.FC = () => {
-  const [password, setPassword] = useState('');
-  const [confirmPassword, setConfirmPassword] = useState('');
   const { handleChangePassword } = useProfileUser();
+  const navigate = useNavigate();
+  console.log('oi');
+
   const onFinish = (values: any) => {
-    console.log('Success:', values);
+    handleChangePassword(values.password);
+
+    navigate('/', { replace: true });
   };
 
   const onFinishFailed = (errorInfo: any) => {
@@ -55,9 +57,9 @@ const ChangePasswordScreen: React.FC = () => {
           hasFeedback
         >
           <Input.Password
+            allowClear
             placeholder="Informe a nova senha para o usuário"
-            value={password}
-            onChange={e => setPassword(e.target.value)}
+            autoComplete="off"
           />
         </Form.Item>
 
@@ -79,19 +81,14 @@ const ChangePasswordScreen: React.FC = () => {
           hasFeedback
         >
           <Input.Password
+            allowClear
             placeholder="Confirme sua nova senha"
-            value={confirmPassword}
-            onChange={e => setConfirmPassword(e.target.value)}
+            autoComplete="off"
           />
         </Form.Item>
 
         <Form.Item wrapperCol={{ offset: 17 }}>
-          <Button
-            className="botao"
-            type="primary"
-            htmlType="submit"
-            onClick={() => handleChangePassword(password, confirmPassword)}
-          >
+          <Button className="botao" type="primary" htmlType="submit">
             Confirmar
           </Button>
         </Form.Item>

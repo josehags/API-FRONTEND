@@ -1,18 +1,15 @@
 import axios from 'axios';
-import { BaseUrlServidores, BaseUrlUsuarios } from '../../../Constants/BaseUrl';
+import { BaseUrlUsers, BaseUrlServidores } from '../../../Constants/baseUrl';
 
-export const APIUsuarios = axios.create({
-  baseURL: BaseUrlUsuarios,
-  headers: {
-    Authorization: `Bearer ${['@App:token']}`,
-  },
+export const APIUsers = axios.create({
+  baseURL: BaseUrlUsers,
 });
 
 export const APIServidores = axios.create({
   baseURL: BaseUrlServidores,
 });
 
-APIUsuarios.interceptors.response.use(
+APIUsers.interceptors.response.use(
   async response => response,
   error => {
     if (error.response.status === 500) {
@@ -24,9 +21,9 @@ APIUsuarios.interceptors.response.use(
 );
 
 APIServidores.interceptors.response.use(
-  async (response: { status: any }) => {
+  async response => {
     try {
-      const authToken = await response.status;
+      const authToken = response.status;
       if (authToken === 500 || authToken === 401) {
         localStorage.clear();
         window.location.reload();
@@ -36,7 +33,7 @@ APIServidores.interceptors.response.use(
       return response;
     }
   },
-  (error: { response: { status: number } }) => {
+  error => {
     if (error.response.status === 500) {
       localStorage.clear();
       window.location.reload();

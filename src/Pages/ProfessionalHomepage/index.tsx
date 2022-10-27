@@ -6,11 +6,10 @@ import {
 import { MenuProps, Typography, Breadcrumb, Layout, Menu } from 'antd';
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { useProfileUser } from '../../contexts/AuthContext';
 import Dashboard from '../Dashboard';
 import FormServer from '../FormServer';
 import FormUser from '../FormUser';
-
+import { useProfileUser } from '../../Context';
 require('./style.css');
 
 const { Header, Content, Footer, Sider } = Layout;
@@ -40,16 +39,15 @@ const items: MenuItem[] = [
 const ProfessionalHomePage: React.FC = () => {
   const [collapsed, setCollapsed] = useState(true);
   const [chave, setChave] = useState('1');
-  const { logout } = useProfileUser();
   const navigate = useNavigate();
+  const { handleLogout } = useProfileUser();
 
   const rotas = (item: any) => {
-    console.log(item.key);
     if (item.key === '1') {
       window.location.reload();
     }
     if (item.key === '4') {
-      logout();
+      handleLogout();
       navigate('/', { replace: true });
     }
     setChave(item.key);
@@ -67,7 +65,7 @@ const ProfessionalHomePage: React.FC = () => {
           src="Brasao.png"
           alt="Brasão PC"
           width={50}
-          height={80}
+          height={100}
           onClick={() => {
             rotas({ key: '1' });
           }}

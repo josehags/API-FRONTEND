@@ -1,19 +1,40 @@
-import { BrowserRouter } from 'react-router-dom';
-// import { useProfileUser } from '../contexts/AuthContext';
-// import Dashbord from '../Pages/Dashboard';
-// import OtherRoutes from './OtherRoutes';
+import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
+import { useProfileUser } from '../Context';
+import ChangePasswordScreen from '../Pages/ChangePasswordScreen';
+import LoginScreen from '../Pages/LoginScreen';
+import ProfessionalHomepage from '../Pages/ProfessionalHomepage';
+import RecoverPasswordScreen from '../Pages/RecoverPasswordScreen';
 
-import SignInRoutes from './SignInRoutes';
-
-const Routes = () => {
-  // const { token } = useProfileUser();
+const MyRoutes = () => {
+  const { token, user } = useProfileUser();
   return (
     <BrowserRouter>
-      {/* <Dashbord /> esta sumindo com a tela de login*/}
-      {/* { <OtherRoutes /> : <SignInRoutes />} */}
-      <SignInRoutes />
+      {token ? (
+        user && user?.temporaryPassword ? (
+          <Routes>
+            <Route path="/" element={<ChangePasswordScreen />} />
+            <Route path="*" element={<Navigate to="/" replace />} />
+          </Routes>
+        ) : (
+          <Routes>
+            <Route path="/" element={<ProfessionalHomepage />} />
+            <Route path="/login" element={<LoginScreen />} />
+            <Route
+              path="/recuperar-senha"
+              element={<RecoverPasswordScreen />}
+            />
+            <Route path="*" element={<Navigate to="/" replace />} />
+          </Routes>
+        )
+      ) : (
+        <Routes>
+          <Route path="/" element={<LoginScreen />} />
+          <Route path="/recuperar-senha" element={<RecoverPasswordScreen />} />
+          <Route path="*" element={<Navigate to="/" replace />} />
+        </Routes>
+      )}
     </BrowserRouter>
   );
 };
 
-export default Routes;
+export default MyRoutes;

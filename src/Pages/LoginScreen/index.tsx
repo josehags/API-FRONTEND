@@ -1,45 +1,37 @@
 import { Button, Checkbox, Form, Input, Layout, Space, Typography } from 'antd';
-import { LockOutlined } from '@ant-design/icons';
 import { PoweroffOutlined, UserOutlined } from '@ant-design/icons';
-import React, { FormEvent, useState } from 'react';
+import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { useProfileUser } from '../../contexts/AuthContext';
-
+import { useProfileUser } from '../../Context';
 require('./style.css');
 
 const LoginScreen: React.FC = () => {
+  //  const [loading, setLoading] = useState(false)
   const navigate = useNavigate();
-  const { signIn } = useProfileUser();
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
-  const [loading, setLoading] = useState(false);
+  const [emailReceived, setEmailReceived] = useState('');
+  const [passwordReceived, setPasswordReceived] = useState('');
+  const { handleLogin } = useProfileUser();
 
-  async function login(event: FormEvent) {
-    event.preventDefault();
-
-    if (email === '' || password === '') {
-      alert('Preencha os dados');
-    }
-
-    setLoading(true);
-
-    const data = { email, password };
-
-    await signIn(data);
-
-    setLoading(false);
+  if (localStorage.getItem('@App:token')) {
+    navigate('/', { replace: true });
   }
 
   const onFinish = (values: any) => {
-    console.log('Success:', values);
-
-    navigate('/criar-senha', { replace: true });
+    /*    setLoading(true);
+    setTimeout(() => {
+      setLoading(false)
+    }, 2000);
+      navigate('/home', { replace: true });
+      */
+    handleLogin(emailReceived, passwordReceived);
+    navigate('/', { replace: true });
   };
 
   const onFinishFailed = (errorInfo: any) => {
     console.log('Failed:', errorInfo);
-    navigate('/criar-senha', { replace: true });
+    navigate('/', { replace: true });
   };
+
   return (
     <Layout className="containerLogin">
       <Form
@@ -51,12 +43,10 @@ const LoginScreen: React.FC = () => {
         onFinishFailed={onFinishFailed}
         autoComplete="off"
         className="loginScreen"
-        onSubmitCapture={login}
       >
         <Typography.Title level={3} className="page-header-login" underline>
           SISTEMA
         </Typography.Title>
-
         <Form.Item
           label="Usuário"
           name="Username"
@@ -73,9 +63,8 @@ const LoginScreen: React.FC = () => {
             prefix={<UserOutlined />}
             allowClear
             maxLength={60}
+            onChange={e => setEmailReceived(e.target.value)}
             placeholder="Informe o email do usuário"
-            value={email}
-            onChange={e => setEmail(e.target.value)}
           />
         </Form.Item>
 
@@ -100,16 +89,15 @@ const LoginScreen: React.FC = () => {
           hasFeedback
         >
           <Input.Password
-            prefix={<LockOutlined className="site-form-item-icon" />}
-            type="password"
-            value={password}
-            onChange={e => setPassword(e.target.value)}
+            onChange={e => setPasswordReceived(e.target.value)}
+            allowClear
             placeholder="Informe sua senha"
+            autoComplete="off"
           />
         </Form.Item>
 
-        <Form.Item wrapperCol={{ offset: 5, span: 15 }}>
-          <Space size={170}>
+        <Form.Item wrapperCol={{ offset: 5, span: 20 }}>
+          <Space size={120}>
             <Form.Item name="remember" valuePropName="checked" noStyle>
               <Checkbox>Lembrar senha</Checkbox>
             </Form.Item>
@@ -118,21 +106,16 @@ const LoginScreen: React.FC = () => {
               className="login-form-forgot"
               type="link"
               href="/recuperar-senha"
-              loading={loading}
             >
               Esqueci a senha!
             </Button>
           </Space>
         </Form.Item>
 
-        <Form.Item wrapperCol={{ offset: 17 }}>
-          <Button
-            className="my-button"
-            type="primary"
-            htmlType="submit"
-            loading={loading}
-            // onClick={() => login(loading)}
-          >
+        <Form.Item wrapperCol={{ offset: 16 }}>
+          {/*        <Button className="my-button" type="primary" loading={loading} href='/home' htmlType="submit" >   */}
+          {/*        <Button className="my-button" type="primary" href='/home' htmlType="submit" >   */}
+          <Button className="my-button" type="primary" htmlType="submit">
             <PoweroffOutlined />
             Entrar
           </Button>

@@ -1,13 +1,13 @@
 import { Button, Form, Input, Layout, Space, Typography } from 'antd';
 import { UserOutlined } from '@ant-design/icons';
-import { toast, ToastContainer } from 'react-toastify';
+import { useProfileUser } from '../../Context';
 require('./style.css');
 
 const RecoverPasswordScreen: React.FC = () => {
-  const notify = (email: any) => toast('Email enviado com sucesso!');
+  const { handlePassword } = useProfileUser();
 
   const onFinish = (values: any) => {
-    console.log('Success:', values);
+    handlePassword(values.email);
   };
 
   const onFinishFailed = (errorInfo: any) => {
@@ -50,19 +50,13 @@ const RecoverPasswordScreen: React.FC = () => {
         </Form.Item>
 
         <Form.Item wrapperCol={{ offset: 5 }}>
-          <Space size={300}>
-            <Button className="login-form-forgot" type="link" href="/login">
+          <Space size={200}>
+            <Button className="login-form-forgot" type="link" href="/">
               Voltar
             </Button>
-            <Button
-              className="botao"
-              type="primary"
-              htmlType="submit"
-              onClick={notify}
-            >
+            <Button className="botao" type="primary" htmlType="submit">
               Enviar
             </Button>
-            <ToastContainer />
           </Space>
         </Form.Item>
       </Form>
