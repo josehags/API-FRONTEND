@@ -10,7 +10,7 @@ const LoginScreen: React.FC = () => {
   const navigate = useNavigate();
   const [emailReceived, setEmailReceived] = useState('');
   const [passwordReceived, setPasswordReceived] = useState('');
-  const { handleLogin, user } = useProfileUser();
+  const { handleLogin } = useProfileUser();
 
   if (localStorage.getItem('@App:token')) {
     navigate('/', { replace: true });

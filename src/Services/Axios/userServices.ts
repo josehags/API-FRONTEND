@@ -1,5 +1,6 @@
 import { APIUsers, APIServidores } from './baseService/index';
 import { Types } from '../../Context/index';
+import userEvent from '@testing-library/user-event';
 
 export async function getUser(
   url: string,
@@ -92,7 +93,7 @@ export async function loginUser(
       email: inputEmail,
       password: inputPassword,
     });
-    console.log(response);
+    // console.log(response);
     if (response.data.message) {
       startModal('error', 'Email e/ou senha inválidos.');
     } else {
