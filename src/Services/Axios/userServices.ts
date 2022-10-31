@@ -1,6 +1,5 @@
 import { APIUsers, APIServidores } from './baseService/index';
 import { Types } from '../../Context/index';
-import userEvent from '@testing-library/user-event';
 
 export async function getUser(
   url: string,
@@ -93,7 +92,7 @@ export async function loginUser(
       email: inputEmail,
       password: inputPassword,
     });
-    // console.log(response);
+    console.log(response.data);
     if (response.data.message) {
       startModal('error', 'Email e/ou senha inválidos.');
     } else {
@@ -103,6 +102,10 @@ export async function loginUser(
       APIServidores.defaults.headers.common = {
         'x-access-token': response.data.token,
       };
+      // eslint-disable-next-line no-constant-condition
+      if ('success') {
+        response.data.message = null;
+      }
     }
     return response.data;
   } catch (error) {

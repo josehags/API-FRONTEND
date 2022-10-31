@@ -69,9 +69,9 @@ const UserProvider = ({ children }: { children: JSX.Element }) => {
   const startModal = (type: Types, text: string) => {
     setMessage(text);
     setTypeMessage(type);
-    // setTimeout(() => {
-    //   window.location.reload();
-    // }, 3000);
+    setTimeout(() => {
+      setTypeMessage(null!);
+    }, 3000);
   };
 
   const handleChangePassword = async (password: any) => {
