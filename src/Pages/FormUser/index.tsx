@@ -1,5 +1,7 @@
 import { Input, Form, Row, Col, Button, Menu, Dropdown } from 'antd';
 import { useState } from 'react';
+import Page from '../../Components/Pagination';
+require('./style.css');
 
 export default function FormUser() {
   const [name, setName] = useState('');
@@ -54,6 +56,7 @@ export default function FormUser() {
   return (
     <>
       <Form layout="vertical" onFinish={handleFinish}>
+        <Input className="pesquisa" placeholder="Pesquisa" />
         <Row gutter={24}>
           <Col span={8}>
             <Form.Item name={['fullname']} label="Nome completo">
@@ -77,11 +80,15 @@ export default function FormUser() {
             </Form.Item>
           </Col>
         </Row>
+
         <Row justify="end">
           <Button type="primary" htmlType="submit">
             Salvar usuário
           </Button>
         </Row>
+        <Form.Item className="page-form">
+          <Page />
+        </Form.Item>
       </Form>
     </>
   );

@@ -79,6 +79,7 @@ const LoginScreen: React.FC = () => {
                 value &&
                 !(value === value.toUpperCase()) &&
                 !(value === value.toLowerCase()) &&
+                value.search(/[0-9]/) !== -1 &&
                 value.search(/\W|_/) !== -1
                   ? Promise.resolve()
                   : Promise.reject(
