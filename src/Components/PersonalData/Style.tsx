@@ -1,11 +1,9 @@
-import styled from 'styled-components';
 import colors from '../../Constants/colors';
 
-export const PersonDataBox = styled.div`
+export type PersonDataBox = `
   width: 100%;
   height: 10%;
   font-size: 1vh;
-  background-color: ${colors.secondary};
   display: flex;
   flex-direction: row;
   align-items: center;
@@ -22,10 +20,10 @@ export const PersonDataBox = styled.div`
   }
 `;
 
-export const TableContent = styled.div`
+export type TableContent = `
   display: flex;
   justify-content: center;
-  width: ${props => `${props.width}%`};
+ 
   text-align: center;
   align-items: center;
   margin: 0 10px 0 10px;
@@ -43,7 +41,7 @@ export const TableContent = styled.div`
   }
 `;
 
-export const TableContainer = styled.div`
+export type TableContainer = `
   @media (max-width: 750px) {
     display: flex;
     flex-direction: column;
@@ -59,7 +57,7 @@ export const TableContainer = styled.div`
   width: 100%;
 `;
 
-export const P = styled.p`
+export type P = `
   font-size: 2vh;
   margin-block-end: 0;
   margin-block-start: 0;
@@ -75,16 +73,15 @@ export const P = styled.p`
   }
 `;
 
-export const Name = styled(P)`
+export type Name = `
   border-radius: 12px;
   padding: 2%;
   text-align: center;
   font-family: Montserrat;
-  color: ${colors.secondary};
-  background-color: ${props => `${props.color}`};
+
 `;
 
-export const Box = styled.div`
+export type Box = `
   background-color: #fff;
   border: 1px solid black;
   border-radius: 12px;
@@ -99,7 +96,7 @@ export const Box = styled.div`
   }
 `;
 
-export const ImageUser = styled.div`
+export type ImageUser = `
   width: 3vw;
   height: 100%;
   margin-left: 0.5rem;
@@ -108,24 +105,22 @@ export const ImageUser = styled.div`
     padding: 2%;
     height: 50vh;
     margin-left: 0;
-    background-color: ${colors.primary};
   }
 `;
 
-export const Ul = styled.ul`
+export type Ul = `
   list-style-type: none;
   padding-inline-start: 0;
   margin: 0;
 `;
 
-export const Content = styled.div`
+export type Content = `
   position: relative;
 `;
 
-export const DotContent = styled.div`
+export type DotContent = `
   display: flex;
   justify-content: center;
-  width: ${props => `${props.width}%`};
   margin: 10px;
   overflow: auto;
   @media (max-width: 750px) {
@@ -136,17 +131,17 @@ export const DotContent = styled.div`
   }
 `;
 
-export const Img = styled.img`
-  width: 50px;
-  height: 50px;
-  border-radius: 50%;
-  margin: 0 0 0 1px;
-  align-content: center;
-  justify-content: center;
-  @media (max-width: 750px) {
-    width: 100%;
-    height: 40%;
-    padding: 2% 0 0 0;
-    margin: 4% 0 0 0;
-  }
-`;
+// export const Img = styled.img`
+//   width: 50px;
+//   height: 50px;
+//   border-radius: 50%;
+//   margin: 0 0 0 1px;
+//   align-content: center;
+//   justify-content: center;
+//   @media (max-width: 750px) {
+//     width: 100%;
+//     height: 40%;
+//     padding: 2% 0 0 0;
+//     margin: 4% 0 0 0;
+//   }
+// `;

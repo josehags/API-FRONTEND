@@ -4,7 +4,7 @@ import {
   TeamOutlined,
 } from '@ant-design/icons';
 import { MenuProps, Typography, Breadcrumb, Layout, Menu } from 'antd';
-import React, { useState } from 'react';
+import React, { Children, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import Dashboard from '../Dashboard';
 import FormServer from '../FormServer';
@@ -100,9 +100,11 @@ const ProfessionalHomePage: React.FC = () => {
             style={{ padding: 24, minHeight: 360 }}
           >
             {
-              { '1': <Dashboard />, '2': <FormUser />, '3': <FormServer /> }[
-                chave
-              ]
+              {
+                '1': <Dashboard />,
+                '2': <FormUser />,
+                '3': <FormServer />,
+              }[chave]
             }
           </div>
         </Content>

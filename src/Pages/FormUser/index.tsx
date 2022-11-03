@@ -45,7 +45,7 @@ export default function FormUser() {
               rel="noopener noreferrer"
               href="https://www.luohanacademy.com"
             >
-              Auditor
+              Profissional
             </a>
           ),
         },
@@ -73,9 +73,9 @@ export default function FormUser() {
             </Form.Item>
           </Col>
           <Col span={8}>
-            <Form.Item name={['credential']} label="Credencial">
+            <Form.Item name={['credential']} label="Função">
               <Dropdown overlay={menu} placement="bottom">
-                <Button>Privilégios</Button>
+                <Button>...</Button>
               </Dropdown>
             </Form.Item>
           </Col>

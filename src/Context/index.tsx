@@ -7,7 +7,7 @@ import {
 } from '../Services/Axios/userServices';
 import ModalMessage from '../Components/ModalMessage';
 
-type UserTipo = {
+export type UserTipo = {
   id: string;
   name: string;
   email: string;
