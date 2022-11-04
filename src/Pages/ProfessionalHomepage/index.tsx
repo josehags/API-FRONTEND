@@ -8,8 +8,8 @@ import React, { Children, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import Dashboard from '../Dashboard';
 import FormServer from '../FormServer';
-import FormUser from '../FormUser';
 import { useProfileUser } from '../../Context';
+import FormUser from '../FormUser';
 require('./style.css');
 
 const { Header, Content, Footer, Sider } = Layout;
