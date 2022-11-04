@@ -7,7 +7,8 @@ export async function getUser(
 ) {
   try {
     const response = await APIUsers.get(url);
-    return response;
+    console.log(response.data);
+    return response.data;
   } catch (error) {
     //    if (error.response.status === 500) {
     if (error === 500) {

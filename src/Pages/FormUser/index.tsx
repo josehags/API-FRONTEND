@@ -19,13 +19,16 @@ interface DataType {
   role: string;
   sector: string;
 }
-
+type res = {
+  response: any;
+  data: any;
+};
 export default function FormUser() {
   const { user, startModal } = useProfileUser();
   const [word, setWord] = useState();
   const [filterUsers, setFilterUsers] = useState([]);
   const [users, setUsers] = useState([]);
-  //const navigate = useNavigate();
+  const navigate = useNavigate();
 
   function handleFinish(a: any) {
     console.log(a);
@@ -46,10 +49,10 @@ export default function FormUser() {
   // };
 
   const getUsers = async () => {
-    await getUser('usuarios', startModal)
+    await getUser('/usuarios', startModal)
       .then(response => setUsers(response.data))
       .catch(err => {
-        console.error(`Ocorreu um erro inesperado ao obter usuários. ${err}`);
+        console.error(`Ocorreu um erro inesperado ao obter usuários.. ${err}`);
       });
   };
 
@@ -79,9 +82,9 @@ export default function FormUser() {
   //   return filterUsers?.map(User => <PersonalData key={user?.id} />);
   // };
 
-  // if (!localStorage.getItem('@App:token')) {
-  //   navigate('/login', { replace: true });
-  // }
+  if (!localStorage.getItem('@App:token')) {
+    navigate('/login', { replace: true });
+  }
 
   const columns: ColumnsType<DataType> = [
     { title: 'Nome', dataIndex: 'name', key: 'name' },
