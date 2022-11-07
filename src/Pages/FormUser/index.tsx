@@ -182,9 +182,6 @@ const FormUser = () => {
   // as duas formas dão certo
   useEffect(() => {
     const loading = async () => {
-      // const response = await APIUsers.get(
-      //   '/paginarUsuarios/?perPage=2&page=1&column=name',
-      // );
       const response = await APIUsers.get('usuarios');
       console.log(response.data);
       setUsers(response.data);
@@ -198,7 +195,7 @@ const FormUser = () => {
   // };
 
   // const getUsers = async () => {
-  //   await getUser('/paginar/?perPage=3&page=1&column=name', startModal)
+  //   await getUser('usuarios', startModal)
   //     .then(response => setUsers(response.data))
   //     .catch(err => {
   //       console.error(`Ocorreu um erro inesperado ao obter usuários.. ${err}`);
@@ -220,10 +217,6 @@ const FormUser = () => {
   useEffect(() => {
     setFilterUsers(users);
   }, [users]);
-
-  // useEffect(() => {
-  //   setFilterUsers(users);
-  // }, [users]);
 
   // const listUsers = () => {
   //   if (users?.length === 0) {
