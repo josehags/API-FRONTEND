@@ -1,19 +1,11 @@
-import React, { useState, useEffect, useRef } from 'react';
-import { Input, Form, InputRef, Button, Space } from 'antd';
 import { SearchOutlined } from '@ant-design/icons';
-
+import type { InputRef } from 'antd';
+import { Button, Input, Space, Table } from 'antd';
 import type { ColumnsType, ColumnType } from 'antd/es/table';
+import type { FilterConfirmProps } from 'antd/es/table/interface';
+import React, { useRef, useState } from 'react';
 import Highlighter from 'react-highlight-words';
-import { Table } from 'antd';
-import { getUser } from '../../Services/Axios/userServices';
-import { useProfileUser } from '../../Context';
-import { useNavigate } from 'react-router-dom';
-import { APIUsers } from '../../Services/Axios/baseService';
-import PersonalData from '../../Components/PersonalData';
-import ListUser from '../../../lixo/ListUser';
-import { FilterConfirmProps } from 'antd/lib/table/interface';
-
-require('./style.css');
+import { useProfileUser } from '../../src/Context';
 
 interface DataType {
   key: React.Key;
@@ -26,21 +18,44 @@ interface DataType {
 
 type DataIndex = keyof DataType;
 
-const FormUser = () => {
+// const data: DataType[] = [
+//   {
+//     key: '1',
+//     name: 'John Brown',
+//     email: 'jbbrown@gmail.com',
+//     role: 'New York No. 1 Lake Park',
+//     sector: 'teste',
+//   },
+//   {
+//     key: '1',
+//     name: 'John Brown',
+//     email: 'jbbrown@gmail.com',
+//     role: 'New York No. 1 Lake Park',
+//     sector: 'teste',
+//   },
+//   {
+//     key: '1',
+//     name: 'John Brown',
+//     email: 'jbbrown@gmail.com',
+//     role: 'New York No. 1 Lake Park',
+//     sector: 'teste',
+//   },
+//   {
+//     key: '1',
+//     name: 'John Brown',
+//     email: 'jbbrown@gmail.com',
+//     role: 'New York No. 1 Lake Park',
+//     sector: 'teste',
+//   },
+// ];
+
+const App: React.FC = () => {
   const [searchText, setSearchText] = useState('');
   const [searchedColumn, setSearchedColumn] = useState('');
   const searchInput = useRef<InputRef>(null);
-  const { user, startModal } = useProfileUser();
-  const [word, setWord] = useState();
-  const [filterUsers, setFilterUsers] = useState([]);
   const [users, setUsers] = useState([]);
-  const navigate = useNavigate();
-  // const close = () => void;
+  const { user, startModal } = useProfileUser();
 
-  function handleFinish(a: any) {
-    console.log(a);
-  }
-  // litagem
   const handleSearch = (
     selectedKeys: string[],
     confirm: (param?: FilterConfirmProps) => void,
@@ -64,7 +79,6 @@ const FormUser = () => {
       selectedKeys,
       confirm,
       clearFilters,
-      // close,
     }) => (
       <div style={{ padding: 8 }}>
         <Input
@@ -98,7 +112,17 @@ const FormUser = () => {
           >
             Reset
           </Button>
-
+          <Button
+            type="link"
+            size="small"
+            onClick={() => {
+              confirm({ closeDropdown: false });
+              setSearchText((selectedKeys as string[])[0]);
+              setSearchedColumn(dataIndex);
+            }}
+          >
+            Filter
+          </Button>
           <Button
             type="link"
             size="small"
@@ -144,7 +168,6 @@ const FormUser = () => {
       key: 'name',
       width: '30%',
       ...getColumnSearchProps('name'),
-      sorter: (a, b) => a.name.length - b.name.length,
       sortDirections: ['descend', 'ascend'],
     },
     {
@@ -153,22 +176,14 @@ const FormUser = () => {
       key: 'email',
       width: '20%',
       ...getColumnSearchProps('email'),
-      sorter: (a, b) => a.email.length - b.email.length,
       sortDirections: ['descend', 'ascend'],
     },
     {
       title: 'Role',
       dataIndex: 'role',
       key: 'role',
-
+      ...getColumnSearchProps('role'),
       sorter: (a, b) => a.role.length - b.role.length,
-      sortDirections: ['descend', 'ascend'],
-    },
-    {
-      title: 'Sector',
-      dataIndex: 'sector',
-      key: 'sector',
-      sorter: (a, b) => a.sector.length - b.sector.length,
       sortDirections: ['descend', 'ascend'],
     },
     {
@@ -179,93 +194,16 @@ const FormUser = () => {
     },
   ];
 
-  // as duas formas dão certo
-  useEffect(() => {
-    const loading = async () => {
-      // const response = await APIUsers.get(
-      //   '/paginarUsuarios/?perPage=2&page=1&column=name',
-      // );
-      const response = await APIUsers.get('usuarios');
-      console.log(response.data);
-      setUsers(response.data);
-    };
-    loading();
-  }, []);
-
-  // const getUsers = async () => {
-  //   const response = await APIUsers.get('usuarios', startModal);
-  //   setUsers(response.data);
-  // };
-
-  // const getUsers = async () => {
-  //   await getUser('/paginar/?perPage=3&page=1&column=name', startModal)
-  //     .then(response => setUsers(response.data))
-  //     .catch(err => {
-  //       console.error(`Ocorreu um erro inesperado ao obter usuários.. ${err}`);
-  //     });
-  // };
-
-  // useEffect(() => {
-  //   getUsers();
-  // }, [user]);
-
-  // useEffect(() => {
-  //   setFilterUsers(
-  //     users.filter(User =>
-  //       User.name.toLowerCase().includes(User?.toLowerCase()),
-  //     ),
-  //   );
-  // }, [word]);
-
-  useEffect(() => {
-    setFilterUsers(users);
-  }, [users]);
-
-  // useEffect(() => {
-  //   setFilterUsers(users);
-  // }, [users]);
-
-  // const listUsers = () => {
-  //   if (users?.length === 0) {
-  //     return <h1>Sem resultados</h1>;
-  //   }
-  //   if (filterUsers?.length === 0) {
-  //     return <h1>Sem resultados</h1>;
-  //   }
-  // return filterUsers?.map(User => (
-  //   <PersonalData user={User} key={User._id} getUsers={getUsers} />
-  // ));
-  // };
-
-  if (!localStorage.getItem('@App:token')) {
-    navigate('/login', { replace: true });
-  }
-
   return (
-    <>
-      {/* {user ? (
-        <>
-          {user.role === 'admin' ? ( */}
-      <Form layout="vertical" onFinish={handleFinish}>
-        <Table
-          key={user?.id}
-          columns={columns}
-          expandable={{
-            rowExpandable: record => record.name !== 'Not Expandable',
-          }}
-          dataSource={users}
-        />
-      </Form>
-
-      {/* ) : (
-            navigate('//nao-autorizado', { replace: true }) */}
-      {/* )}
-        </>
-      ) : (
-        <h1>Carregando...</h1>
-      )} */}
-    </>
+    <Table
+      key={user?.id}
+      columns={columns}
+      expandable={{
+        rowExpandable: record => record.name !== 'Not Expandable',
+      }}
+      dataSource={users}
+    />
   );
 };
 
-export default FormUser;
+export default App;
