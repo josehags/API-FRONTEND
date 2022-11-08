@@ -4,15 +4,14 @@ import { SearchOutlined } from '@ant-design/icons';
 import { DownOutlined } from '@ant-design/icons';
 
 import type { ColumnsType, ColumnType } from 'antd/es/table';
-import Highlighter from 'react-highlight-words';
 import { Table } from 'antd';
 import { getUser } from '../../Services/Axios/userServices';
 import { useProfileUser } from '../../Context';
-import { Navigate, useHref, useNavigate } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
 import { APIUsers } from '../../Services/Axios/baseService';
-import PersonalData from '../../Components/PersonalData';
 import UserUpdate from '../../Pages/UserUpdate';
 import { FilterConfirmProps } from 'antd/lib/table/interface';
+import Highlighter from 'react-highlight-words';
 
 require('./style.css');
 
@@ -35,19 +34,19 @@ const FormUser = (_newUser: any) => {
   const [filterUsers, setFilterUsers] = useState([]);
   const [users, setUsers] = useState([]);
   const navigate = useNavigate();
+  //const { id } = useParams();
 
   const items = [
     {
       key: '1',
-      label: 'Alterar',
-      a: <a href="/update">...</a>,
+      label: <a href={`/usuarios/editar/${user?.id}`}>Alterar</a>,
     },
     {
       key: '2',
       label: 'Desativar',
     },
   ];
-if ('1' == )
+
   function handleFinish(a: any) {
     console.log(a);
   }
@@ -150,7 +149,7 @@ if ('1' == )
 
   const columns: ColumnsType<DataType> = [
     {
-      title: 'Name',
+      title: 'Nome',
       dataIndex: 'name',
       key: 'name',
       width: '30%',
@@ -168,7 +167,7 @@ if ('1' == )
       sortDirections: ['descend', 'ascend'],
     },
     {
-      title: 'Role',
+      title: 'Função',
       dataIndex: 'role',
       key: 'role',
 
@@ -176,7 +175,7 @@ if ('1' == )
       sortDirections: ['descend', 'ascend'],
     },
     {
-      title: 'Sector',
+      title: 'Setor',
       dataIndex: 'sector',
       key: 'sector',
       sorter: (a, b) => a.sector.length - b.sector.length,
@@ -184,8 +183,8 @@ if ('1' == )
     },
     {
       title: 'Ação',
-      dataIndex: '',
-      key: 'x',
+      dataIndex: 'operation',
+      key: 'operation',
       render: () => (
         <Space size="middle">
           <Dropdown menu={{ items }}>
@@ -195,62 +194,24 @@ if ('1' == )
           </Dropdown>
         </Space>
       ),
-      // => <a href="/atualizar">Alterar</a>,
     },
   ];
 
-  //as duas formas dão certo
-  // useEffect(() => {
-  //   const loading = async () => {
-  //     const response = await APIUsers.get('usuarios');
-  //     console.log(response.data);
-  //     setUsers(response.data);
-  //   };
-  //   loading();
-  // }, []);
-
-  const getUsers = async () => {
-    const response = await APIUsers.get('usuarios');
-    setUsers(response.data);
-  };
-
-  // const getUsers = async () => {
-  //   await getUser('usuarios', startModal)
-  //     .then(response => setUsers(response.data))
-  //     .catch(err => {
-  //       console.error(
-  //         `An unexpected error ocourred while getting users. ${err}`,
-  //       );
-  //     });
-  // };
-
   useEffect(() => {
-    getUsers();
-  }, [user, _newUser]);
-
-  // useEffect(() => {
-  //   setFilterUsers(
-  //     users.filter(User =>
-  //       User.name.toLowerCase().includes(User?.toLowerCase()),
-  //     ),
-  //   );
-  // }, [word]);
+    const loading = async () => {
+      const response = await getUser('usuarios', startModal);
+      if (response !== false) {
+        setUsers(response.data);
+      } else {
+        alert('Ocorreu um erro inesperado ao obter usuários.');
+      }
+    };
+    loading();
+  }, []);
 
   useEffect(() => {
     setFilterUsers(users);
   }, [users]);
-
-  // const listUsers = () => {
-  //   if (users?.length === 0) {
-  //     return <h1>Sem resultados</h1>;
-  //   }
-  //   if (filterUsers?.length === 0) {
-  //     return <h1>Sem resultados</h1>;
-  //   }
-  // return filterUsers?.map(User => (
-  //   <PersonalData user={User} key={User._id} getUsers={getUsers} />
-  // ));
-  // };
 
   if (!localStorage.getItem('@App:token')) {
     navigate('/login', { replace: true });
@@ -258,9 +219,6 @@ if ('1' == )
 
   return (
     <>
-      {/* {user ? (
-        <>
-          {user.role === 'admin' ? ( */}
       <Form layout="vertical" onFinish={handleFinish}>
         <Table
           key={user?.id}
@@ -271,14 +229,6 @@ if ('1' == )
           dataSource={users}
         />
       </Form>
-
-      {/* ) : (
-            navigate('//nao-autorizado', { replace: true }) */}
-      {/* )}
-        </>
-      ) : (
-        <h1>Carregando...</h1>
-      )} */}
     </>
   );
 };
