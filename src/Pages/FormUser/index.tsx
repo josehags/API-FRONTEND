@@ -25,16 +25,13 @@ interface DataType {
 }
 type DataIndex = keyof DataType;
 
-const FormUser = (_newUser: any) => {
+const FormUser = () => {
   const [searchText, setSearchText] = useState('');
   const [searchedColumn, setSearchedColumn] = useState('');
   const searchInput = useRef<InputRef>(null);
   const { user, startModal } = useProfileUser();
-  const [word, setWord] = useState();
-  const [filterUsers, setFilterUsers] = useState([]);
   const [users, setUsers] = useState([]);
   const navigate = useNavigate();
-  //const { id } = useParams();
 
   const items = [
     {
@@ -203,15 +200,11 @@ const FormUser = (_newUser: any) => {
       if (response !== false) {
         setUsers(response.data);
       } else {
-        alert('Ocorreu um erro inesperado ao obter usuários.');
+        startModal('error', 'Ocorreu um erro inesperado ao obter usuários.');
       }
     };
     loading();
   }, []);
-
-  useEffect(() => {
-    setFilterUsers(users);
-  }, [users]);
 
   if (!localStorage.getItem('@App:token')) {
     navigate('/login', { replace: true });
