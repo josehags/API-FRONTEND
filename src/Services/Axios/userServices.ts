@@ -7,16 +7,15 @@ export async function getUser(
 ) {
   try {
     const response = await APIUsers.get(url);
-    console.log(response.data);
+    console.log(response.data, ' UserService');
     return response.data;
+    //
   } catch (error) {
-    //    if (error.response.status === 500) {
     if (error === 500) {
       startModal(
         'error',
         'O tempo da sua sessão expirou, faça o login novamente',
       );
-      //      } else if (error.response.status !== 401) {
     } else if (error !== 401) {
       startModal(
         'error',
