@@ -36,7 +36,7 @@ const FormUser = () => {
   const items = [
     {
       key: '1',
-      label: <a href={`/usuarios/editar/${user?.id}`}>Alterar</a>,
+      label: <a href={`/usuarios/${user?.id}`}> Alterar</a>,
     },
     {
       key: '2',
