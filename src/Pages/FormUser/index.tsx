@@ -1,16 +1,17 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { Input, Form, InputRef, Button, Space } from 'antd';
+import { Input, Form, InputRef, Button, Space, Dropdown } from 'antd';
 import { SearchOutlined } from '@ant-design/icons';
+import { DownOutlined } from '@ant-design/icons';
 
 import type { ColumnsType, ColumnType } from 'antd/es/table';
 import Highlighter from 'react-highlight-words';
 import { Table } from 'antd';
 import { getUser } from '../../Services/Axios/userServices';
 import { useProfileUser } from '../../Context';
-import { useNavigate } from 'react-router-dom';
+import { Navigate, useHref, useNavigate } from 'react-router-dom';
 import { APIUsers } from '../../Services/Axios/baseService';
 import PersonalData from '../../Components/PersonalData';
-import ListUser from '../../../lixo/ListUser';
+import UserUpdate from '../../Pages/UserUpdate';
 import { FilterConfirmProps } from 'antd/lib/table/interface';
 
 require('./style.css');
@@ -23,10 +24,9 @@ interface DataType {
   role: string;
   sector: string;
 }
-
 type DataIndex = keyof DataType;
 
-const FormUser = () => {
+const FormUser = (_newUser: any) => {
   const [searchText, setSearchText] = useState('');
   const [searchedColumn, setSearchedColumn] = useState('');
   const searchInput = useRef<InputRef>(null);
@@ -35,8 +35,19 @@ const FormUser = () => {
   const [filterUsers, setFilterUsers] = useState([]);
   const [users, setUsers] = useState([]);
   const navigate = useNavigate();
-  // const close = () => void;
 
+  const items = [
+    {
+      key: '1',
+      label: 'Alterar',
+      a: <a href="/update">...</a>,
+    },
+    {
+      key: '2',
+      label: 'Desativar',
+    },
+  ];
+if ('1' == )
   function handleFinish(a: any) {
     console.log(a);
   }
@@ -64,7 +75,7 @@ const FormUser = () => {
       selectedKeys,
       confirm,
       clearFilters,
-      // close,
+      close,
     }) => (
       <div style={{ padding: 8 }}>
         <Input
@@ -175,36 +186,47 @@ const FormUser = () => {
       title: 'Ação',
       dataIndex: '',
       key: 'x',
-      render: () => <a href="/atualizar">Alterar</a>,
+      render: () => (
+        <Space size="middle">
+          <Dropdown menu={{ items }}>
+            <a>
+              Mais <DownOutlined />
+            </a>
+          </Dropdown>
+        </Space>
+      ),
+      // => <a href="/atualizar">Alterar</a>,
     },
   ];
 
-  // as duas formas dão certo
-  useEffect(() => {
-    const loading = async () => {
-      const response = await APIUsers.get('usuarios');
-      console.log(response.data);
-      setUsers(response.data);
-    };
-    loading();
-  }, []);
+  //as duas formas dão certo
+  // useEffect(() => {
+  //   const loading = async () => {
+  //     const response = await APIUsers.get('usuarios');
+  //     console.log(response.data);
+  //     setUsers(response.data);
+  //   };
+  //   loading();
+  // }, []);
 
-  // const getUsers = async () => {
-  //   const response = await APIUsers.get('usuarios', startModal);
-  //   setUsers(response.data);
-  // };
+  const getUsers = async () => {
+    const response = await APIUsers.get('usuarios');
+    setUsers(response.data);
+  };
 
   // const getUsers = async () => {
   //   await getUser('usuarios', startModal)
   //     .then(response => setUsers(response.data))
   //     .catch(err => {
-  //       console.error(`Ocorreu um erro inesperado ao obter usuários.. ${err}`);
+  //       console.error(
+  //         `An unexpected error ocourred while getting users. ${err}`,
+  //       );
   //     });
   // };
 
-  // useEffect(() => {
-  //   getUsers();
-  // }, [user]);
+  useEffect(() => {
+    getUsers();
+  }, [user, _newUser]);
 
   // useEffect(() => {
   //   setFilterUsers(
