@@ -7,17 +7,16 @@ import type { ColumnsType, ColumnType } from 'antd/es/table';
 import { Table } from 'antd';
 import { getUser } from '../../Services/Axios/userServices';
 import { useProfileUser } from '../../Context';
-import { useNavigate, useParams } from 'react-router-dom';
-import { APIUsers } from '../../Services/Axios/baseService';
+import { useNavigate } from 'react-router-dom';
 import UserUpdate from '../../Pages/UserUpdate';
 import { FilterConfirmProps } from 'antd/lib/table/interface';
 import Highlighter from 'react-highlight-words';
+import type { MenuProps } from 'antd';
 
 require('./style.css');
 
 interface DataType {
   key: React.Key;
-  // id: string;
   name: string;
   email: string;
   role: string;
@@ -31,16 +30,33 @@ const FormUser = () => {
   const searchInput = useRef<InputRef>(null);
   const { user, startModal } = useProfileUser();
   const [users, setUsers] = useState([]);
+  const [open, setOpen] = useState(false);
   const navigate = useNavigate();
 
-  const items = [
+  // pegando o clique em alterar
+  const handleMenuClick: MenuProps['onClick'] = e => {
+    if (e.key === '1') {
+      // console.log('teste', user?.name, user?.email);
+      <UserUpdate />;
+    }
+  };
+
+  const handleOpenChange = (flag: boolean) => {
+    setOpen(flag);
+  };
+
+  const items: MenuProps['items'] = [
     {
+      label: (
+        <a target="_blank" href={`usuarios/${user?.id}`}>
+          Alterar
+        </a>
+      ),
       key: '1',
-      label: <a href={`/usuarios/${user?.id}`}> Alterar</a>,
     },
     {
+      label: <a target="_blank">Deletar</a>,
       key: '2',
-      label: 'Desativar',
     },
   ];
 
@@ -184,9 +200,16 @@ const FormUser = () => {
       key: 'operation',
       render: () => (
         <Space size="middle">
-          <Dropdown menu={{ items }}>
-            <a>
-              Mais <DownOutlined />
+          <Dropdown
+            menu={{ items, onClick: handleMenuClick }}
+            onOpenChange={handleOpenChange}
+            // open={open}
+          >
+            <a onClick={e => e.preventDefault()}>
+              <Space>
+                mais
+                <DownOutlined />
+              </Space>
             </a>
           </Dropdown>
         </Space>
@@ -215,6 +238,7 @@ const FormUser = () => {
       <Form layout="vertical" onFinish={handleFinish}>
         <Table
           key={user?.id}
+          rowKey="uid"
           columns={columns}
           expandable={{
             rowExpandable: record => record.name !== 'Not Expandable',

@@ -1,6 +1,5 @@
 import { Input, Form, Row, Col, Button } from 'antd';
 import { useState } from 'react';
-import ListUser from '../../../lixo/ListUser';
 
 export default function FormServer() {
   const [name, setName] = useState('');

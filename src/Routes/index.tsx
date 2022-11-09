@@ -25,7 +25,7 @@ const MyRoutes = () => {
               element={<RecoverPasswordScreen />}
             />
             <Route path="/usuarios" element={<LoginScreen />} />
-
+            <Route path="/usuarios/:id" element={<UserUpdate />} />
             <Route path="*" element={<Navigate to="/" replace />} />
           </Routes>
         )
