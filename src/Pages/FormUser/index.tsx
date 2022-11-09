@@ -12,6 +12,7 @@ import { FilterConfirmProps } from 'antd/lib/table/interface';
 import Highlighter from 'react-highlight-words';
 import type { MenuProps } from 'antd';
 import App from '../../Components/Modal';
+import ModalUpdate from '../../Components/Modal';
 
 require('./style.css');
 
@@ -34,19 +35,19 @@ const FormUser = () => {
   const navigate = useNavigate();
 
   // pegando o clique em alterar
-  const handleMenuClick: MenuProps['onClick'] = e => {
-    if (e.key === '1') {
-      // console.log('teste', user?.name, user?.email);
-    }
-  };
+  // const handleMenuClick: MenuProps['onClick'] = e => {
+  //   if (e.key === '1') {
+  // console.log('teste', user?.name, user?.email);
+  //   }
+  // };
 
-  const handleOpenChange = (flag: boolean) => {
-    setOpen(flag);
-  };
+  // const handleOpenChange = (flag: boolean) => {
+  //   setOpen(flag);
+  // };
 
   const items: MenuProps['items'] = [
     {
-      label: <App />,
+      label: <ModalUpdate />,
       key: '1',
     },
     {
@@ -195,11 +196,7 @@ const FormUser = () => {
       key: 'operation',
       render: () => (
         <Space size="middle">
-          <Dropdown
-            menu={{ items, onClick: handleMenuClick }}
-            onOpenChange={handleOpenChange}
-            // open={open}
-          >
+          <Dropdown menu={{ items }}>
             <a onClick={e => e.preventDefault()}>
               <Space>
                 Mais

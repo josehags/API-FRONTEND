@@ -4,7 +4,7 @@ import React, { useState } from 'react';
 import { Col } from 'antd';
 import { useNavigate } from 'react-router-dom';
 
-const App: React.FC = () => {
+const ModalUpdate: React.FC = () => {
   const [open, setOpen] = useState(false);
   const [name, setName] = useState('');
   const [email, setEmail] = useState('');
@@ -102,4 +102,4 @@ const App: React.FC = () => {
   );
 };
 
-export default App;
+export default ModalUpdate;
