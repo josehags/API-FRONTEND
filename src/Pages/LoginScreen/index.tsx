@@ -114,8 +114,6 @@ const LoginScreen: React.FC = () => {
         </Form.Item>
 
         <Form.Item wrapperCol={{ offset: 16 }}>
-          {/*        <Button className="my-button" type="primary" loading={loading} href='/home' htmlType="submit" >   */}
-          {/*        <Button className="my-button" type="primary" href='/home' htmlType="submit" >   */}
           <Button className="my-button" type="primary" htmlType="submit">
             <PoweroffOutlined />
             Entrar

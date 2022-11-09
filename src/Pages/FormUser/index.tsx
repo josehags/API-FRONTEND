@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { Input, Form, InputRef, Button, Space, Dropdown } from 'antd';
+import { Input, Form, InputRef, Button, Space, Dropdown, Row } from 'antd';
 import { SearchOutlined } from '@ant-design/icons';
 import { DownOutlined } from '@ant-design/icons';
 
@@ -227,8 +227,15 @@ const FormUser = () => {
 
   return (
     <>
-      <Form layout="vertical" onFinish={handleFinish}>
+      <Form className="layout" layout="vertical" onFinish={handleFinish}>
+        <Form.Item>
+          <Button className="button-criar" type="primary" htmlType="submit">
+            Criar usuário
+          </Button>
+        </Form.Item>
+
         <Table
+          className="grid"
           key={user?.id}
           rowKey="uid"
           columns={columns}

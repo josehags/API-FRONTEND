@@ -1,6 +1,9 @@
+.button-criar{
+    width: auto;
+    float: right;
+}
 
-
-.pesquisa{
-    margin-bottom: 16px ;
+.grid{
+    width: 1005;
 }
 
