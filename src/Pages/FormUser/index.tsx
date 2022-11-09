@@ -8,10 +8,10 @@ import { Table } from 'antd';
 import { getUser } from '../../Services/Axios/userServices';
 import { useProfileUser } from '../../Context';
 import { useNavigate } from 'react-router-dom';
-import UserUpdate from '../../Pages/UserUpdate';
 import { FilterConfirmProps } from 'antd/lib/table/interface';
 import Highlighter from 'react-highlight-words';
 import type { MenuProps } from 'antd';
+import App from '../../Components/Modal';
 
 require('./style.css');
 
@@ -37,7 +37,6 @@ const FormUser = () => {
   const handleMenuClick: MenuProps['onClick'] = e => {
     if (e.key === '1') {
       // console.log('teste', user?.name, user?.email);
-      <UserUpdate />;
     }
   };
 
@@ -47,11 +46,7 @@ const FormUser = () => {
 
   const items: MenuProps['items'] = [
     {
-      label: (
-        <a target="_blank" href={`usuarios/${user?.id}`}>
-          Alterar
-        </a>
-      ),
+      label: <App />,
       key: '1',
     },
     {
@@ -207,7 +202,7 @@ const FormUser = () => {
           >
             <a onClick={e => e.preventDefault()}>
               <Space>
-                mais
+                Mais
                 <DownOutlined />
               </Space>
             </a>
@@ -242,6 +237,13 @@ const FormUser = () => {
           columns={columns}
           expandable={{
             rowExpandable: record => record.name !== 'Not Expandable',
+          }}
+          onRow={(record, rowIndex) => {
+            return {
+              onClick: event => {
+                console.log(record.email);
+              }, // click row
+            };
           }}
           dataSource={users}
         />

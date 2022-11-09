@@ -4,7 +4,7 @@ import ChangePasswordScreen from '../Pages/ChangePasswordScreen';
 import LoginScreen from '../Pages/LoginScreen';
 import ProfessionalHomepage from '../Pages/ProfessionalHomepage';
 import RecoverPasswordScreen from '../Pages/RecoverPasswordScreen';
-import UserUpdate from '../Pages/UserUpdate';
+import UserUpdate from '../Components/Modal';
 
 const MyRoutes = () => {
   const { token, user } = useProfileUser();
@@ -25,7 +25,6 @@ const MyRoutes = () => {
               element={<RecoverPasswordScreen />}
             />
             <Route path="/usuarios" element={<LoginScreen />} />
-            <Route path="/usuarios/:id" element={<UserUpdate />} />
             <Route path="*" element={<Navigate to="/" replace />} />
           </Routes>
         )
