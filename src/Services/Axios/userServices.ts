@@ -122,7 +122,7 @@ export const updateUser = async (
   inputEmail: any,
   inputRole: any,
   inputSector: any,
-  //baseImage: any,
+  baseImage: any,
   id: any,
   startModal: { (type: Types, description: string): void },
 ) => {
@@ -132,7 +132,7 @@ export const updateUser = async (
       email: inputEmail,
       role: inputRole,
       sector: inputSector,
-      //image: baseImage,
+      image: baseImage,
     });
     startModal('success', 'Usuário atualizado com sucesso!');
   } catch (error) {

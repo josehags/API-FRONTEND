@@ -20,17 +20,20 @@ const ModalUpdate: React.FC = () => {
   const navigate = useNavigate();
 
   useEffect(() => {
-    const getUsuario = async () => {
-      const response = await getUser(`usuarios/${id}`, startModal);
-      // console.log(response);
-      if (response) {
+    const loading = async () => {
+      const response = await getUser('usuarios/' + id, startModal);
+      console.log(response);
+      if (response !== false) {
         setName(response.data.name);
         setEmail(response.data.email);
         setRole(response.data.role);
         setSector(response.data.sector);
+        // setBaseImage(response.data.image);
+      } else {
+        startModal('error', 'Ocorreu um erro ao buscar o usúario.');
       }
     };
-    getUsuario();
+    loading();
   }, []);
 
   const submit = async () => {
@@ -40,11 +43,11 @@ const ModalUpdate: React.FC = () => {
         inputEmail,
         inputRole,
         inputSector,
-        //baseImage,
+        baseImage,
         id,
         startModal,
       );
-      startModal('Usuário atualizado com sucesso!');
+      startModal('success', 'Usuário atualizado com sucesso!');
       navigate('/usuarios');
     }
     startModal(
@@ -69,6 +72,24 @@ const ModalUpdate: React.FC = () => {
     setOpen(false);
   };
 
+  // Realizando verificações
+  // if (!inputName || inputName === '') {
+  //   alert('Nome é obrigatório!');
+  //   return;
+  // }
+  // if (!inputEmail || inputEmail === '') {
+  //   alert('Email é obrigatório!');
+  //   return;
+  // }
+  // if (!inputRole || inputRole === '') {
+  //   alert('Função é obrigatório!');
+  //   return;
+  // }
+  // if (!inputSector || inputSector === '') {
+  //   alert('Setor é obrigatório!');
+  //   return;
+  // }
+
   if (!localStorage.getItem('@App:token')) {
     navigate('/login', { replace: true });
   }
@@ -88,7 +109,7 @@ const ModalUpdate: React.FC = () => {
           <Button key="submit" type="primary" onClick={handleOk}>
             Cancelar
           </Button>,
-          <Button key="link" type="primary" onClick={submit}>
+          <Button key="link" type="primary" onClick={() => submit()}>
             Salvar
           </Button>,
         ]}

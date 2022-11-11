@@ -44,11 +44,14 @@ const FormUser = () => {
   const ClickDeleteUser = async (id: any, index: any) => {
     await deleteUser(record, startModal);
     const novosUsuarios = [...users];
-    // console.log(users);
     novosUsuarios.splice(index, 1);
-    // console.log(novosUsuarios);
     setUsers(novosUsuarios);
   };
+
+  // async function identifyUpdate() {
+  //   const [record, setRecord] = useState('');
+  //   return record;
+  // }
 
   const items: MenuProps['items'] = [
     {
@@ -67,12 +70,6 @@ const FormUser = () => {
       key: '2',
     },
   ];
-
-  // label: (
-  //   <a target="_blank" onClick={ClickDeleteUser}>
-  //     Deletar
-  //   </a>
-  // ),
 
   function handleFinish(a: any) {
     console.log(a);
@@ -253,9 +250,6 @@ const FormUser = () => {
         </Form.Item>
 
         <Table
-          className="grid"
-          key={user?.id}
-          rowKey="uid"
           columns={columns}
           expandable={{
             rowExpandable: record => record.name !== 'Not Expandable',
@@ -264,7 +258,7 @@ const FormUser = () => {
             return {
               onClick: event => {
                 setRecord(record.id);
-                // console.log(record.id);
+                console.log(record.id);
               }, // click row
             };
           }}
