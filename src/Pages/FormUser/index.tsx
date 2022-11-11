@@ -1,23 +1,30 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { Input, Form, InputRef, Button, Space, Dropdown, Row } from 'antd';
+import {
+  Input,
+  Form,
+  InputRef,
+  Button,
+  Space,
+  Dropdown,
+  Popconfirm,
+} from 'antd';
 import { SearchOutlined } from '@ant-design/icons';
 import { DownOutlined } from '@ant-design/icons';
 
 import type { ColumnsType, ColumnType } from 'antd/es/table';
 import { Table } from 'antd';
-import { getUser } from '../../Services/Axios/userServices';
+import { deleteUser, getUser } from '../../Services/Axios/userServices';
 import { useProfileUser } from '../../Context';
 import { useNavigate } from 'react-router-dom';
 import { FilterConfirmProps } from 'antd/lib/table/interface';
 import Highlighter from 'react-highlight-words';
 import type { MenuProps } from 'antd';
-import App from '../../Components/Modal';
-import ModalUpdate from '../../Components/Modal';
-
-require('./style.css');
+import ModalUpdate from '../../Components/ModalUpdate';
+import ModalCreate from '../../Components/ModalCreate';
 
 interface DataType {
   key: React.Key;
+  id: string;
   name: string;
   email: string;
   role: string;
@@ -31,19 +38,17 @@ const FormUser = () => {
   const searchInput = useRef<InputRef>(null);
   const { user, startModal } = useProfileUser();
   const [users, setUsers] = useState([]);
-  const [open, setOpen] = useState(false);
+  const [record, setRecord] = useState('');
   const navigate = useNavigate();
 
-  // pegando o clique em alterar
-  // const handleMenuClick: MenuProps['onClick'] = e => {
-  //   if (e.key === '1') {
-  // console.log('teste', user?.name, user?.email);
-  //   }
-  // };
-
-  // const handleOpenChange = (flag: boolean) => {
-  //   setOpen(flag);
-  // };
+  const ClickDeleteUser = async (id: any, index: any) => {
+    await deleteUser(record, startModal);
+    const novosUsuarios = [...users];
+    // console.log(users);
+    novosUsuarios.splice(index, 1);
+    // console.log(novosUsuarios);
+    setUsers(novosUsuarios);
+  };
 
   const items: MenuProps['items'] = [
     {
@@ -51,10 +56,23 @@ const FormUser = () => {
       key: '1',
     },
     {
-      label: <a target="_blank">Deletar</a>,
+      label: (
+        <Popconfirm
+          title="Você tem certeza que quer desativar este usuário?"
+          onConfirm={() => ClickDeleteUser(user?.id, indexedDB)}
+        >
+          <a>Delete</a>
+        </Popconfirm>
+      ),
       key: '2',
     },
   ];
+
+  // label: (
+  //   <a target="_blank" onClick={ClickDeleteUser}>
+  //     Deletar
+  //   </a>
+  // ),
 
   function handleFinish(a: any) {
     console.log(a);
@@ -179,7 +197,7 @@ const FormUser = () => {
       title: 'Função',
       dataIndex: 'role',
       key: 'role',
-
+      width: '20%',
       sorter: (a, b) => a.role.length - b.role.length,
       sortDirections: ['descend', 'ascend'],
     },
@@ -187,6 +205,7 @@ const FormUser = () => {
       title: 'Setor',
       dataIndex: 'sector',
       key: 'sector',
+      width: '20%',
       sorter: (a, b) => a.sector.length - b.sector.length,
       sortDirections: ['descend', 'ascend'],
     },
@@ -228,10 +247,9 @@ const FormUser = () => {
   return (
     <>
       <Form className="layout" layout="vertical" onFinish={handleFinish}>
+        {/*  */}
         <Form.Item>
-          <Button className="button-criar" type="primary" htmlType="submit">
-            Criar usuário
-          </Button>
+          <ModalCreate />
         </Form.Item>
 
         <Table
@@ -245,7 +263,8 @@ const FormUser = () => {
           onRow={(record, rowIndex) => {
             return {
               onClick: event => {
-                console.log(record.email);
+                setRecord(record.id);
+                // console.log(record.id);
               }, // click row
             };
           }}

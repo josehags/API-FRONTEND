@@ -4,7 +4,7 @@ import ChangePasswordScreen from '../Pages/ChangePasswordScreen';
 import LoginScreen from '../Pages/LoginScreen';
 import ProfessionalHomepage from '../Pages/ProfessionalHomepage';
 import RecoverPasswordScreen from '../Pages/RecoverPasswordScreen';
-import UserUpdate from '../Components/Modal';
+import UserUpdate from '../Components/ModalUpdate';
 
 const MyRoutes = () => {
   const { token, user } = useProfileUser();

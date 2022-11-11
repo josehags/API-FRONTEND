@@ -122,17 +122,17 @@ export const updateUser = async (
   inputEmail: any,
   inputRole: any,
   inputSector: any,
-  baseImage: any,
+  //baseImage: any,
   id: any,
   startModal: { (type: Types, description: string): void },
 ) => {
   try {
-    await APIUsers.put(`/users/update/${id}`, {
+    await APIUsers.put(`usuarios/${id}`, {
       name: inputName,
       email: inputEmail,
       role: inputRole,
       sector: inputSector,
-      image: baseImage,
+      //image: baseImage,
     });
     startModal('success', 'Usuário atualizado com sucesso!');
   } catch (error) {
@@ -159,7 +159,7 @@ export async function deleteUser(
   startModal: { (type: Types, description: string): void },
 ) {
   try {
-    await APIUsers.delete(`/users/delete/${id}`);
+    await APIUsers.delete(`usuarios/${id}`);
   } catch (error) {
     if (error === 500) {
       startModal(

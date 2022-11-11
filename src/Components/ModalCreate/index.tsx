@@ -3,14 +3,41 @@ import { Button, Form, Input } from 'antd';
 import React, { useState } from 'react';
 import { Col } from 'antd';
 import { useNavigate } from 'react-router-dom';
+import { validateSignUp } from '../../Utils/validations';
+import { postUser } from '../../Services/Axios/userServices';
+import { useProfileUser } from '../../Context';
+import { APIUsers } from '../../Services/Axios/baseService';
 
-const ModalUpdate: React.FC = () => {
+require('./style.css');
+
+const ModalCreate: React.FC = () => {
   const [open, setOpen] = useState(false);
-  const [name, setName] = useState('');
-  const [email, setEmail] = useState('');
-  const [role, setRole] = useState('');
-  const [sector, setSector] = useState('');
+  const [inputName, setName] = useState('');
+  const [inputEmail, setEmail] = useState('');
+  const [inputRole, setRole] = useState('');
+  const [inputSector, setSector] = useState('');
+  const { user, startModal } = useProfileUser();
+  const [baseImage, setBaseImage] = useState('');
+
   const navigate = useNavigate();
+
+  const submit = async () => {
+    if (validateSignUp(inputEmail, inputName)) {
+      await postUser(
+        inputName,
+        inputEmail,
+        inputRole,
+        inputSector,
+        baseImage,
+        startModal,
+      );
+      return navigate('/usuarios', { replace: true });
+    }
+    startModal(
+      "Nome deve ser completo, sem números e o email deve conter o formato 'nome@email.com'.",
+    );
+    return undefined;
+  };
 
   const showModal = () => {
     setOpen(true);
@@ -28,31 +55,32 @@ const ModalUpdate: React.FC = () => {
     setOpen(false);
   };
 
+  const cancel = () => {
+    setName('');
+    setEmail('');
+    setRole('');
+    setSector('');
+  };
+
   if (!localStorage.getItem('@App:token')) {
     navigate('/login', { replace: true });
   }
 
   return (
     <>
-      <a type="primary" onClick={showModal}>
-        {' '}
-        Alterar
-      </a>
+      <Button className="button-criar" type="primary" onClick={showModal}>
+        Criar Usuário
+      </Button>
       <Modal
         open={open}
-        title="Atualizar Usuário..."
+        title="Criar novo usuário"
         onOk={handleOk}
         onCancel={handleCancel}
         footer={[
           <Button key="submit" type="primary" onClick={handleOk}>
             Cancelar
           </Button>,
-          <Button
-            key="link"
-            href="https://google.com"
-            type="primary"
-            onClick={handleOk}
-          >
+          <Button key="link" type="primary" onClick={submit}>
             Salvar
           </Button>,
         ]}
@@ -62,7 +90,7 @@ const ModalUpdate: React.FC = () => {
             <Col offset={1} span={16}>
               <Form.Item name={['fullname']} label="Nome">
                 <Input
-                  value={name}
+                  value={inputName}
                   placeholder="Digite o seu nome"
                   onChange={e => setName(e.target.value)}
                 />
@@ -71,7 +99,7 @@ const ModalUpdate: React.FC = () => {
             <Col offset={1} span={16}>
               <Form.Item name={['email']} label="Email">
                 <Input
-                  value={email}
+                  value={inputEmail}
                   placeholder="Digite o seu email"
                   onChange={e => setEmail(e.target.value)}
                 />
@@ -80,7 +108,7 @@ const ModalUpdate: React.FC = () => {
             <Col offset={1} span={16}>
               <Form.Item name={['role']} label="Função">
                 <Input
-                  value={role}
+                  value={inputRole}
                   placeholder="Digite a sua função"
                   onChange={e => setRole(e.target.value)}
                 />
@@ -89,7 +117,7 @@ const ModalUpdate: React.FC = () => {
             <Col offset={1} span={16}>
               <Form.Item name={['sector']} label="Setor">
                 <Input
-                  value={sector}
+                  value={inputSector}
                   placeholder="Digite o seu setor"
                   onChange={e => setSector(e.target.value)}
                 />
@@ -102,4 +130,4 @@ const ModalUpdate: React.FC = () => {
   );
 };
 
-export default ModalUpdate;
+export default ModalCreate;
