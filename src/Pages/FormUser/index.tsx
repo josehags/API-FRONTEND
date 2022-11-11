@@ -48,10 +48,8 @@ const FormUser = () => {
     setUsers(novosUsuarios);
   };
 
-  // async function identifyUpdate() {
-  //   const [record, setRecord] = useState('');
-  //   return record;
-  // }
+  const data = JSON.stringify($('input').val());
+  sessionStorage.setItem('chave', data);
 
   const items: MenuProps['items'] = [
     {
