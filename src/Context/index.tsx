@@ -39,6 +39,9 @@ const UserProvider = ({ children }: { children: JSX.Element }) => {
   const [message, setMessage] = useState('');
   const [typeMessage, setTypeMessage] = useState<Types>(null!);
 
+  // const dados = JSON.stringify('input').valueOf();
+  // sessionStorage.setItem('@userClick', dados);
+
   useEffect(() => {
     const storagedToken = localStorage.getItem('@App:token');
     const storagedUser = localStorage.getItem('@App:user');

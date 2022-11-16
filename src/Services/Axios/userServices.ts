@@ -123,11 +123,10 @@ export const updateUser = async (
   inputRole: any,
   inputSector: any,
   baseImage: any,
-  id: any,
   startModal: { (type: Types, description: string): void },
 ) => {
   try {
-    await APIUsers.put(`usuarios/${id}`, {
+    await APIUsers.put(`usuarios/`, {
       name: inputName,
       email: inputEmail,
       role: inputRole,

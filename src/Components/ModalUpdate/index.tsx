@@ -22,7 +22,6 @@ const ModalUpdate: React.FC = () => {
   useEffect(() => {
     const loading = async () => {
       const response = await getUser('usuarios/' + id, startModal);
-      console.log(response);
       if (response !== false) {
         setName(response.data.name);
         setEmail(response.data.email);
@@ -44,7 +43,7 @@ const ModalUpdate: React.FC = () => {
         inputRole,
         inputSector,
         baseImage,
-        id,
+
         startModal,
       );
       startModal('success', 'Usuário atualizado com sucesso!');
@@ -72,24 +71,6 @@ const ModalUpdate: React.FC = () => {
     setOpen(false);
   };
 
-  // Realizando verificações
-  // if (!inputName || inputName === '') {
-  //   alert('Nome é obrigatório!');
-  //   return;
-  // }
-  // if (!inputEmail || inputEmail === '') {
-  //   alert('Email é obrigatório!');
-  //   return;
-  // }
-  // if (!inputRole || inputRole === '') {
-  //   alert('Função é obrigatório!');
-  //   return;
-  // }
-  // if (!inputSector || inputSector === '') {
-  //   alert('Setor é obrigatório!');
-  //   return;
-  // }
-
   if (!localStorage.getItem('@App:token')) {
     navigate('/login', { replace: true });
   }
@@ -109,7 +90,7 @@ const ModalUpdate: React.FC = () => {
           <Button key="submit" type="primary" onClick={handleOk}>
             Cancelar
           </Button>,
-          <Button key="link" type="primary" onClick={() => submit()}>
+          <Button key="link" type="primary" onClick={() => handleOk()}>
             Salvar
           </Button>,
         ]}

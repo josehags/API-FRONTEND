@@ -69,7 +69,7 @@ const ModalCreate: React.FC = () => {
   return (
     <>
       <Button className="button-criar" type="primary" onClick={showModal}>
-        Criar Usuário
+        Criar novo usuário
       </Button>
       <Modal
         open={open}
