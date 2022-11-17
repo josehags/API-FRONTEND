@@ -8,22 +8,22 @@ import {
   Dropdown,
   Popconfirm,
   Modal,
-  Col,
 } from 'antd';
 import { SearchOutlined } from '@ant-design/icons';
 import { DownOutlined } from '@ant-design/icons';
-
 import type { ColumnsType, ColumnType } from 'antd/es/table';
 import { Table } from 'antd';
-import { deleteUser, getUser } from '../../Services/Axios/userServices';
+import {
+  deleteUser,
+  getUser,
+  updateUser,
+} from '../../Services/Axios/userServices';
 import { useProfileUser } from '../../Context';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
 import { FilterConfirmProps } from 'antd/lib/table/interface';
 import Highlighter from 'react-highlight-words';
-import type { MenuProps } from 'antd';
-import ModalUpdate from '../../Components/ModalUpdate';
 import ModalCreate from '../../Components/ModalCreate';
-import { preProcessFile } from 'typescript';
+import { validateSignUp } from '../../Utils/validations';
 
 interface DataType {
   key: React.Key;
@@ -33,14 +33,6 @@ interface DataType {
   role: string;
   sector: string;
 }
-
-// type IUser = {
-//   id: string;
-//   name: string;
-//   email: string;
-//   role: string;
-//   sector: string;
-// };
 type DataIndex = keyof DataType;
 
 const FormUser = () => {
@@ -49,65 +41,26 @@ const FormUser = () => {
   const searchInput = useRef<InputRef>(null);
   const { user, startModal } = useProfileUser();
   const [inputName, setName] = useState('');
+  const [inputEmail, setEmail] = useState('');
+  const [inputRole, setRole] = useState('');
+  const [inputSector, setSector] = useState('');
+  const [baseImage, setBaseImage] = useState('');
   const [users, setUsers] = useState([]);
   const [open, setOpen] = useState(false);
+  const { id } = useParams();
 
-  const [record, setRecord] = useState('');
+  const [recordUser, setRecordUser] = useState('');
 
   const [isEditing, setIsEditing] = useState(false);
   const [editingUser, setEditingUser] = useState<DataType | null>(null);
 
   const navigate = useNavigate();
 
-  const ClickDeleteUser = async (id: any, index: any) => {
-    await deleteUser(record, startModal);
-    console.log(record);
-    const novosUsuarios = [...users];
-    novosUsuarios.splice(index, 1);
-    setUsers(novosUsuarios);
-  };
-
-  const items: MenuProps['items'] = [
-    {
-      // label: <ModalUpdate />,
-      label: (
-        <a
-          onClick={() => {
-            onEditUsuarios(record);
-          }}
-        >
-          Alterar
-        </a>
-      ),
-      key: '1',
-    },
-    {
-      label: (
-        <Popconfirm
-          title="Are you sure, you want to disable this user record ?"
-          onConfirm={() => ClickDeleteUser(user?.id, indexedDB)}
-        >
-          <a>Delete</a>
-        </Popconfirm>
-      ),
-      key: '2',
-    },
-  ];
-
   function handleFinish(a: any) {
     console.log(a);
   }
-  //ATUALIZAÇÃO DE USUARIOS************
 
-  const onEditUsuarios = (record: any) => {
-    setIsEditing(true);
-    setEditingUser({ ...record });
-    console.log(record);
-  };
-  const resetEditing = () => {
-    setIsEditing(false);
-    setEditingUser(null);
-  };
+  // ******************************
 
   // LISTAGEM DE USUARIOS**************
   const handleSearch = (
@@ -243,20 +196,53 @@ const FormUser = () => {
     },
     {
       title: 'Ação',
-      dataIndex: 'operation',
+
       key: 'operation',
-      render: () => (
-        <Space size="middle">
-          <Dropdown menu={{ items }}>
-            <a onClick={e => e.preventDefault()}>
-              <Space>
-                Mais
-                <DownOutlined />
-              </Space>
-            </a>
-          </Dropdown>
-        </Space>
-      ),
+      render: (record: any) => {
+        return (
+          <Space size="middle">
+            <Dropdown
+              menu={{
+                items: [
+                  {
+                    label: (
+                      <>
+                        <a
+                          onClick={() => {
+                            onEditUser(record);
+                            console.log(record);
+                          }}
+                        >
+                          Alterar
+                        </a>
+                      </>
+                    ),
+                    key: '1',
+                  },
+                  {
+                    label: (
+                      <Popconfirm
+                        title="Tem certeza de que deseja desabilitar este registro de usuário ?"
+                        onConfirm={() => ClickDeleteUser(user?.id, indexedDB)}
+                      >
+                        <a>Excluir</a>
+                      </Popconfirm>
+                    ),
+                    key: '2',
+                  },
+                ],
+              }}
+            >
+              <a onClick={e => e.preventDefault()}>
+                <Space>
+                  Mais
+                  <DownOutlined />
+                </Space>
+              </a>
+            </Dropdown>
+          </Space>
+        );
+      },
     },
   ];
 
@@ -275,9 +261,54 @@ const FormUser = () => {
   if (!localStorage.getItem('@App:token')) {
     navigate('/login', { replace: true });
   }
+
+  // exclusão de usuario
+  const ClickDeleteUser = async (record: any, index: any) => {
+    await deleteUser(record, startModal);
+    console.log('antigos: ', users);
+    const novosUsuarios = [...users];
+    novosUsuarios.splice(index, 1);
+    console.log('novos: ', novosUsuarios);
+    setUsers(novosUsuarios);
+  };
+
+  //************************************** */
+  //ATUALIZAÇÃO DE USUARIOS************
+
+  const onEditUser = (record: any) => {
+    setIsEditing(true);
+    setEditingUser(record);
+    //retorna o obejto
+  };
+
+  const resetEditing = () => {
+    setIsEditing(false);
+    setEditingUser(null);
+  };
+
+  const submit = async () => {
+    if (validateSignUp(inputEmail, inputName)) {
+      await updateUser(
+        inputName,
+        inputEmail,
+        inputRole,
+        inputSector,
+        baseImage,
+        id,
+        startModal,
+      );
+      startModal('success', 'Usuário atualizado com sucesso!');
+      navigate('/usuarios');
+    }
+    startModal(
+      "Nome deve ser completo, sem números. Email deve conter o formato 'nome@email.com'. Senha deve conter no minimo 6 caracteres. As senhas devem ser iguais!",
+    );
+    return undefined;
+  };
   const handleOk = () => {
     setOpen(false);
   };
+
   return (
     <>
       <Form className="layout" layout="vertical" onFinish={handleFinish}>
@@ -294,7 +325,8 @@ const FormUser = () => {
           onRow={(record: any, rowIndex) => {
             return {
               onClick: event => {
-                setRecord(record);
+                setRecordUser(record.id);
+                console.log(record.id); //retorna o obejto
               }, // click row
             };
           }}
@@ -307,22 +339,33 @@ const FormUser = () => {
           open={open}
           title="Editar usuário"
           visible={isEditing}
-          okText="Save"
+          onOk={handleOk}
           onCancel={() => {
             resetEditing();
           }}
-          onOk={() => {
-            setUsers((pre: any) => {
-              return pre.map((user: any) => {
-                if (user.id === editingUser?.id) {
-                  return editingUser;
-                } else {
-                  return user;
-                }
-              });
-            });
-            resetEditing();
-          }}
+          footer={[
+            <Button key="submit" type="primary" onClick={() => resetEditing()}>
+              Cancelar
+            </Button>,
+            <Button
+              key="link"
+              type="primary"
+              onClick={() => {
+                setUsers((pre: any) => {
+                  return pre.map((user: any) => {
+                    if (user.id === editingUser?.id) {
+                      return editingUser;
+                    } else {
+                      return user;
+                    }
+                  });
+                });
+                resetEditing();
+              }}
+            >
+              Salvar
+            </Button>,
+          ]}
         >
           <label>Nome</label>
           <Input

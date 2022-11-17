@@ -19,21 +19,21 @@ const ModalUpdate: React.FC = () => {
   const { id } = useParams();
   const navigate = useNavigate();
 
-  useEffect(() => {
-    const loading = async () => {
-      const response = await getUser('usuarios/' + id, startModal);
-      if (response !== false) {
-        setName(response.data.name);
-        setEmail(response.data.email);
-        setRole(response.data.role);
-        setSector(response.data.sector);
-        // setBaseImage(response.data.image);
-      } else {
-        startModal('error', 'Ocorreu um erro ao buscar o usúario.');
-      }
-    };
-    loading();
-  }, []);
+  // useEffect(() => {
+  //   const loading = async () => {
+  //     const response = await getUser('usuarios/' + id, startModal);
+  //     if (response !== false) {
+  //       setName(response.data.name);
+  //       setEmail(response.data.email);
+  //       setRole(response.data.role);
+  //       setSector(response.data.sector);
+  //       // setBaseImage(response.data.image);
+  //     } else {
+  //       startModal('error', 'Ocorreu um erro ao buscar o usúario.');
+  //     }
+  //   };
+  //   loading();
+  // }, []);
 
   const submit = async () => {
     if (validateSignUp(inputEmail, inputName)) {
@@ -43,7 +43,7 @@ const ModalUpdate: React.FC = () => {
         inputRole,
         inputSector,
         baseImage,
-
+        id,
         startModal,
       );
       startModal('success', 'Usuário atualizado com sucesso!');
