@@ -33,6 +33,15 @@ interface DataType {
   role: string;
   sector: string;
 }
+
+interface IUser {
+  key: React.Key;
+  id: string;
+  name: string;
+  email: string;
+  role: string;
+  sector: string;
+}
 type DataIndex = keyof DataType;
 
 const FormUser = () => {
@@ -210,7 +219,6 @@ const FormUser = () => {
                         <a
                           onClick={() => {
                             onEditUser(record);
-                            console.log(record);
                           }}
                         >
                           Alterar
@@ -223,7 +231,7 @@ const FormUser = () => {
                     label: (
                       <Popconfirm
                         title="Tem certeza de que deseja desabilitar este registro de usuário ?"
-                        onConfirm={() => ClickDeleteUser(user?.id, indexedDB)}
+                        onConfirm={() => ClickDeleteUser()}
                       >
                         <a>Excluir</a>
                       </Popconfirm>
@@ -247,30 +255,63 @@ const FormUser = () => {
   ];
 
   useEffect(() => {
-    const loading = async () => {
-      const response = await getUser('usuarios', startModal);
-      if (response !== false) {
-        setUsers(response.data);
-      } else {
-        startModal('error', 'Ocorreu um erro inesperado ao obter usuários.');
-      }
-    };
-    loading();
+    loadingUser();
   }, []);
+
+  async function loadingUser() {
+    const response = await getUser('usuarios', startModal);
+    if (response !== false) {
+      setUsers(response.data);
+    } else {
+      startModal('error', 'Ocorreu um erro inesperado ao obter usuários.');
+    }
+  }
+
+  // useEffect(() => {
+  //   const loadingUser = async () => {
+  //     const response = await getUser('usuarios', startModal);
+  //     if (response !== false) {
+  //       setUsers(response.data);
+  //     } else {
+  //       startModal('error', 'Ocorreu um erro inesperado ao obter usuários.');
+  //     }
+  //   };
+  //   loadingUser();
+  // }, []);
 
   if (!localStorage.getItem('@App:token')) {
     navigate('/login', { replace: true });
   }
 
   // exclusão de usuario
-  const ClickDeleteUser = async (record: any, index: any) => {
-    await deleteUser(record, startModal);
-    console.log('antigos: ', users);
-    const novosUsuarios = [...users];
-    novosUsuarios.splice(index, 1);
-    console.log('novos: ', novosUsuarios);
-    setUsers(novosUsuarios);
-  };
+  // const ClickDeleteUser = async (record: any, index: any) => {
+  //   await deleteUser(record, startModal);
+  //   const novosUsuarios = [...users];
+  //   novosUsuarios.splice(index, 1);
+  //   console.log('novos: ', novosUsuarios);
+  //   setUsers(novosUsuarios);
+  // };
+
+  async function ClickDeleteUser() {
+    await deleteUser(recordUser, startModal);
+    console.log(recordUser);
+    loadingUser();
+  }
+
+  // const ClickDeleteUser = (record: any,) => {
+  //   Modal.confirm({
+  //     title: 'Are you sure, you want to delete this student record?',
+  //     okText: 'Yes',
+  //     okType: 'danger',
+  //     onOk: () => {
+  //       const novosUsuarios = [...users];
+  //       setUsers(novosUsuarios);
+  //       setUsers(pre => {
+  //         return pre.filter(user => user.id !== record.id);
+  //       });
+  //     },
+  //   });
+  // };
 
   //************************************** */
   //ATUALIZAÇÃO DE USUARIOS************
@@ -326,7 +367,7 @@ const FormUser = () => {
             return {
               onClick: event => {
                 setRecordUser(record.id);
-                console.log(record.id); //retorna o obejto
+                // console.log(record.id); //retorna o obejto
               }, // click row
             };
           }}
