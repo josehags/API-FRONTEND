@@ -365,22 +365,19 @@ const FormUser = () => {
               type="primary"
               className="button-save"
               onClick={() => {
-                editingUser && editingUser.id ? (
-                setUsers((pre: any) => {
-                  return pre.map((user: any) => {
-                    if (user.id === editingUser?.id) {
-                      console.log(editingUser);
-                      return editingUser;
-                    } else {
-                      resetEditing();
-                      return user;
-                    }
-                  });
-                })
-                ):(
-                  
-
-                )
+                editingUser && editingUser.id
+                  ? setUsers((pre: any) => {
+                      return pre.map((user: any) => {
+                        if (user.id === editingUser?.id) {
+                          console.log(editingUser);
+                          return editingUser;
+                        } else {
+                          resetEditing();
+                          return user;
+                        }
+                      });
+                    })
+                  : console.log('teste');
               }}
             >
               Salvar
