@@ -22,5 +22,5 @@
   },
   "include": [
     "src"
-, "src/components" , "lixo/components", "lixo/ListUser" ]
+, "src/components" , "lixo/components", "lixo/ListUser", "lixo/ModalUpdate" ]
 }

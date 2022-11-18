@@ -8,7 +8,7 @@ import { postUser } from '../../Services/Axios/userServices';
 import { useProfileUser } from '../../Context';
 import { APIUsers } from '../../Services/Axios/baseService';
 
-require('./style.css');
+require('./index.css');
 
 const ModalCreate: React.FC = () => {
   const [open, setOpen] = useState(false);
@@ -68,7 +68,7 @@ const ModalCreate: React.FC = () => {
 
   return (
     <>
-      <Button className="button-criar" type="primary" onClick={showModal}>
+      <Button className="button-create" type="primary" onClick={showModal}>
         Criar novo usuário
       </Button>
       <Modal
@@ -77,10 +77,20 @@ const ModalCreate: React.FC = () => {
         onOk={handleOk}
         onCancel={handleCancel}
         footer={[
-          <Button key="submit" type="primary" onClick={handleOk}>
+          <Button
+            key="submit"
+            type="primary"
+            className="button-save-create"
+            onClick={handleOk}
+          >
             Cancelar
           </Button>,
-          <Button key="link" type="primary" onClick={submit}>
+          <Button
+            key="link"
+            type="primary"
+            className="button-delete-create"
+            onClick={submit}
+          >
             Salvar
           </Button>,
         ]}

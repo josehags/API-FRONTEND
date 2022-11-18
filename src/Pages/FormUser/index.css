@@ -1,0 +1,42 @@
+.form-modal{
+
+}
+.ant-modal-header{  
+  background: rgb(0, 21, 42);
+}
+
+.ant-modal-title{
+  color: aliceblue;
+}
+
+.ant-modal-close{
+  color: aliceblue;
+}
+
+
+
+
+
+.button-save{
+  background: rgb(0, 21, 42);
+}
+.button-save:defined{
+  background: rgb(0, 21, 42);
+
+}
+.button-save:hover{
+  background: rgb(50, 67, 83);
+
+}
+
+
+.button-delete{
+  background:rgb(0, 21, 42);
+  }
+.button-delete:defined{
+  background: rgb(0, 21, 42);
+}
+
+.button-delete:hover{
+    background: rgb(50, 67, 83);
+}

@@ -3,9 +3,9 @@ import { Button, Form, Input } from 'antd';
 import React, { useEffect, useState } from 'react';
 import { Col } from 'antd';
 import { useNavigate, useParams } from 'react-router-dom';
-import { getUser, updateUser } from '../../Services/Axios/userServices';
-import { useProfileUser } from '../../Context';
-import { validateSignUp } from '../../Utils/validations';
+import { getUser, updateUser } from '../../src/Services/Axios/userServices';
+import { useProfileUser } from '../../src/Context';
+import { validateSignUp } from '../../src/Utils/validations';
 
 const ModalUpdate: React.FC = () => {
   const [open, setOpen] = useState(false);
