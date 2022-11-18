@@ -8,6 +8,7 @@ import {
   Dropdown,
   Popconfirm,
   Modal,
+  Col,
 } from 'antd';
 import { SearchOutlined } from '@ant-design/icons';
 import { DownOutlined } from '@ant-design/icons';
@@ -24,7 +25,7 @@ import { FilterConfirmProps } from 'antd/lib/table/interface';
 import Highlighter from 'react-highlight-words';
 import ModalCreate from '../../Components/ModalCreate';
 import { validateSignUp } from '../../Utils/validations';
-
+require('./index.css');
 interface DataType {
   key: React.Key;
   id: string;
@@ -32,16 +33,9 @@ interface DataType {
   email: string;
   role: string;
   sector: string;
+  image: string;
 }
 
-interface IUser {
-  key: React.Key;
-  id: string;
-  name: string;
-  email: string;
-  role: string;
-  sector: string;
-}
 type DataIndex = keyof DataType;
 
 const FormUser = () => {
@@ -58,7 +52,10 @@ const FormUser = () => {
   const [open, setOpen] = useState(false);
   const { id } = useParams();
 
-  const [recordUser, setRecordUser] = useState('');
+  const [recordUser, setRecordUser] = useState<{
+    record: any;
+    rowIndex: any;
+  }>();
 
   const [isEditing, setIsEditing] = useState(false);
   const [editingUser, setEditingUser] = useState<DataType | null>(null);
@@ -231,7 +228,7 @@ const FormUser = () => {
                     label: (
                       <Popconfirm
                         title="Tem certeza de que deseja desabilitar este registro de usuário ?"
-                        onConfirm={() => ClickDeleteUser()}
+                        onConfirm={() => ClickDeleteUser(record.id)}
                       >
                         <a>Excluir</a>
                       </Popconfirm>
@@ -241,8 +238,8 @@ const FormUser = () => {
                 ],
               }}
             >
-              <a onClick={e => e.preventDefault()}>
-                <Space>
+              <a onClick={e => e.preventDefault()} className="option">
+                <Space style={{ background: 'red' }}>
                   Mais
                   <DownOutlined />
                 </Space>
@@ -267,51 +264,13 @@ const FormUser = () => {
     }
   }
 
-  // useEffect(() => {
-  //   const loadingUser = async () => {
-  //     const response = await getUser('usuarios', startModal);
-  //     if (response !== false) {
-  //       setUsers(response.data);
-  //     } else {
-  //       startModal('error', 'Ocorreu um erro inesperado ao obter usuários.');
-  //     }
-  //   };
-  //   loadingUser();
-  // }, []);
-
-  if (!localStorage.getItem('@App:token')) {
-    navigate('/login', { replace: true });
-  }
-
   // exclusão de usuario
-  // const ClickDeleteUser = async (record: any, index: any) => {
-  //   await deleteUser(record, startModal);
-  //   const novosUsuarios = [...users];
-  //   novosUsuarios.splice(index, 1);
-  //   console.log('novos: ', novosUsuarios);
-  //   setUsers(novosUsuarios);
-  // };
-
-  async function ClickDeleteUser() {
-    await deleteUser(recordUser, startModal);
-    console.log(recordUser);
-    loadingUser();
-  }
-
-  // const ClickDeleteUser = (record: any,) => {
-  //   Modal.confirm({
-  //     title: 'Are you sure, you want to delete this student record?',
-  //     okText: 'Yes',
-  //     okType: 'danger',
-  //     onOk: () => {
-  //       const novosUsuarios = [...users];
-  //       setUsers(novosUsuarios);
-  //       setUsers(pre => {
-  //         return pre.filter(user => user.id !== record.id);
-  //       });
-  //     },
-  //   });
-  // };
+  const ClickDeleteUser = async (record: any) => {
+    await deleteUser(record, startModal);
+    const novosUsuarios = [...users];
+    novosUsuarios.splice(recordUser?.rowIndex, 1);
+    setUsers(novosUsuarios);
+  };
 
   //************************************** */
   //ATUALIZAÇÃO DE USUARIOS************
@@ -328,27 +287,33 @@ const FormUser = () => {
   };
 
   const submit = async () => {
-    if (validateSignUp(inputEmail, inputName)) {
-      await updateUser(
-        inputName,
-        inputEmail,
-        inputRole,
-        inputSector,
-        baseImage,
-        id,
-        startModal,
+    if (editingUser?.email !== undefined && editingUser.name !== null) {
+      if (validateSignUp(editingUser?.email, editingUser?.name)) {
+        await updateUser(
+          editingUser?.name,
+          editingUser?.email,
+          editingUser?.role,
+          editingUser?.sector,
+          editingUser?.image,
+          editingUser?.id,
+          startModal,
+        );
+        startModal('success', 'Usuário atualizado com sucesso!');
+        navigate('/usuarios');
+      }
+      startModal(
+        "Nome deve ser completo, sem números. Email deve conter o formato 'nome@email.com'. Senha deve conter no minimo 6 caracteres. As senhas devem ser iguais!",
       );
-      startModal('success', 'Usuário atualizado com sucesso!');
-      navigate('/usuarios');
     }
-    startModal(
-      "Nome deve ser completo, sem números. Email deve conter o formato 'nome@email.com'. Senha deve conter no minimo 6 caracteres. As senhas devem ser iguais!",
-    );
-    return undefined;
   };
+
   const handleOk = () => {
     setOpen(false);
   };
+
+  if (!localStorage.getItem('@App:token')) {
+    navigate('/login', { replace: true });
+  }
 
   return (
     <>
@@ -363,11 +328,10 @@ const FormUser = () => {
           expandable={{
             rowExpandable: record => record.name !== 'Not Expandable',
           }}
-          onRow={(record: any, rowIndex) => {
+          onRow={(record: any, rowIndex: any) => {
             return {
               onClick: event => {
-                setRecordUser(record.id);
-                // console.log(record.id); //retorna o obejto
+                setRecordUser({ record, rowIndex });
               }, // click row
             };
           }}
@@ -379,29 +343,44 @@ const FormUser = () => {
         <Modal
           open={open}
           title="Editar usuário"
+          style={{}}
+          className="form-modal"
+          centered
           visible={isEditing}
           onOk={handleOk}
           onCancel={() => {
             resetEditing();
           }}
           footer={[
-            <Button key="submit" type="primary" onClick={() => resetEditing()}>
+            <Button
+              key="submit"
+              type="primary"
+              className="button-delete"
+              onClick={() => resetEditing()}
+            >
               Cancelar
             </Button>,
             <Button
-              key="link"
+              key="submit"
               type="primary"
+              className="button-save"
               onClick={() => {
+                editingUser && editingUser.id ? (
                 setUsers((pre: any) => {
                   return pre.map((user: any) => {
                     if (user.id === editingUser?.id) {
+                      console.log(editingUser);
                       return editingUser;
                     } else {
+                      resetEditing();
                       return user;
                     }
                   });
-                });
-                resetEditing();
+                })
+                ):(
+                  
+
+                )
               }}
             >
               Salvar
@@ -437,16 +416,21 @@ const FormUser = () => {
               });
             }}
           />
-          <p></p>
-          <label>Sector</label>
-          <Input
-            value={editingUser?.sector}
-            onChange={e => {
-              setEditingUser((pre: any) => {
-                return { ...pre, sector: e.target.value };
-              });
-            }}
-          />
+
+          {/* <Form.Item name={['sector']} label="Setor">
+            <Input
+              value={editingUser?.sector}
+              placeholder="Digite o seu setor"
+              onChange={e => setSector(e.target.value)}
+            />
+          </Form.Item> */}
+          <Form.Item
+            label="Username"
+            name="username"
+            rules={[{ required: true, message: 'Please input your username!' }]}
+          >
+            <Input />
+          </Form.Item>
         </Modal>
       </Form>
     </>
