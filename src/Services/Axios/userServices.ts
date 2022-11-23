@@ -76,7 +76,7 @@ export async function postUser(
     } else if (error !== 401) {
       startModal('warning', 'Email já cadastrado.');
       console.error(
-        `An unexpected error ocourred while registering a new user.${error}`,
+        `Ocorreu um erro inesperado ao registrar um novo usuário.${error}`,
       );
     }
   }

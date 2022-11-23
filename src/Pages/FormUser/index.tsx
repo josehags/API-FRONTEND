@@ -7,25 +7,20 @@ import {
   Space,
   Dropdown,
   Popconfirm,
-  Modal,
-  Col,
 } from 'antd';
 import { SearchOutlined } from '@ant-design/icons';
 import { DownOutlined } from '@ant-design/icons';
 import type { ColumnsType, ColumnType } from 'antd/es/table';
 import { Table } from 'antd';
-import {
-  deleteUser,
-  getUser,
-  updateUser,
-} from '../../Services/Axios/userServices';
+import { deleteUser, getUser } from '../../Services/Axios/userServices';
 import { useProfileUser } from '../../Context';
-import { useNavigate, useParams } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import { FilterConfirmProps } from 'antd/lib/table/interface';
 import Highlighter from 'react-highlight-words';
-import ModalCreate from '../../Components/ModalCreate';
-import { validateSignUp } from '../../Utils/validations';
+import ModalUser from '../../Components/ModalUser';
+
 require('./index.css');
+
 interface DataType {
   key: React.Key;
   id: string;
@@ -43,30 +38,19 @@ const FormUser = () => {
   const [searchedColumn, setSearchedColumn] = useState('');
   const searchInput = useRef<InputRef>(null);
   const { user, startModal } = useProfileUser();
-  const [inputName, setName] = useState('');
-  const [inputEmail, setEmail] = useState('');
-  const [inputRole, setRole] = useState('');
-  const [inputSector, setSector] = useState('');
-  const [baseImage, setBaseImage] = useState('');
+  const [openModal, setOpenModal] = useState(false);
   const [users, setUsers] = useState([]);
-  const [open, setOpen] = useState(false);
-  const { id } = useParams();
 
   const [recordUser, setRecordUser] = useState<{
     record: any;
     rowIndex: any;
   }>();
 
-  const [isEditing, setIsEditing] = useState(false);
-  const [editingUser, setEditingUser] = useState<DataType | null>(null);
-
   const navigate = useNavigate();
 
   function handleFinish(a: any) {
     console.log(a);
   }
-
-  // ******************************
 
   // LISTAGEM DE USUARIOS**************
   const handleSearch = (
@@ -205,6 +189,7 @@ const FormUser = () => {
 
       key: 'operation',
       render: (record: any) => {
+        // console.log(record);
         return (
           <Space size="middle">
             <Dropdown
@@ -215,7 +200,13 @@ const FormUser = () => {
                       <>
                         <a
                           onClick={() => {
-                            onEditUser(record);
+                            //(recordUser?.record);
+                            console.log(
+                              'clique do formulario',
+                              recordUser?.record,
+                            );
+                            recordUser?.record;
+                            setOpenModal(true);
                           }}
                         >
                           Alterar
@@ -239,7 +230,7 @@ const FormUser = () => {
               }}
             >
               <a onClick={e => e.preventDefault()} className="option">
-                <Space style={{ background: 'red' }}>
+                <Space>
                   Mais
                   <DownOutlined />
                 </Space>
@@ -251,8 +242,14 @@ const FormUser = () => {
     },
   ];
 
+  // const onEditStudent = (record: any) => {
+  //   setEditing({ ...record });
+  //   console.log(record);
+  // };
+  //listagem de usuarios na tabela
   useEffect(() => {
     loadingUser();
+    setOpenModal(false);
   }, []);
 
   async function loadingUser() {
@@ -271,59 +268,35 @@ const FormUser = () => {
     novosUsuarios.splice(recordUser?.rowIndex, 1);
     setUsers(novosUsuarios);
   };
-
-  //************************************** */
-  //ATUALIZAÇÃO DE USUARIOS************
-
-  const onEditUser = (record: any) => {
-    setIsEditing(true);
-    setEditingUser(record);
-    //retorna o obejto
-  };
-
-  const resetEditing = () => {
-    setIsEditing(false);
-    setEditingUser(null);
-  };
-
-  const submit = async () => {
-    if (editingUser?.email !== undefined && editingUser.name !== null) {
-      if (validateSignUp(editingUser?.email, editingUser?.name)) {
-        await updateUser(
-          editingUser?.name,
-          editingUser?.email,
-          editingUser?.role,
-          editingUser?.sector,
-          editingUser?.image,
-          editingUser?.id,
-          startModal,
-        );
-        startModal('success', 'Usuário atualizado com sucesso!');
-        navigate('/usuarios');
-      }
-      startModal(
-        "Nome deve ser completo, sem números. Email deve conter o formato 'nome@email.com'. Senha deve conter no minimo 6 caracteres. As senhas devem ser iguais!",
-      );
-    }
-  };
-
-  const handleOk = () => {
-    setOpen(false);
+  //fechar modal
+  const closeModal = (open: boolean) => {
+    setOpenModal(false);
   };
 
   if (!localStorage.getItem('@App:token')) {
     navigate('/login', { replace: true });
   }
 
+  const edit = sessionStorage.getItem('@userEdit');
+  sessionStorage.setItem('@userEdit', JSON.stringify(recordUser));
+
   return (
     <>
       <Form className="layout" layout="vertical" onFinish={handleFinish}>
-        {/*  */}
-        <Form.Item>
-          <ModalCreate />
+        <Form.Item className="form">
+          <Button
+            className="button-create"
+            type="primary"
+            onClick={() => {
+              setOpenModal(true);
+            }}
+          >
+            <a>Criar novo usuário</a>
+          </Button>
         </Form.Item>
 
         <Table
+          className="form-table"
           columns={columns}
           expandable={{
             rowExpandable: record => record.name !== 'Not Expandable',
@@ -332,104 +305,19 @@ const FormUser = () => {
             return {
               onClick: event => {
                 setRecordUser({ record, rowIndex });
+                // console.log(recordUser);
               }, // click row
             };
           }}
           dataSource={users}
         />
-
-        {/* MODAL DE ATUALIZAÇÃO DE USUÁRIO */}
-
-        <Modal
-          open={open}
-          title="Editar usuário"
-          style={{}}
-          className="form-modal"
-          centered
-          visible={isEditing}
-          onOk={handleOk}
-          onCancel={() => {
-            resetEditing();
-          }}
-          footer={[
-            <Button
-              key="submit"
-              type="primary"
-              className="button-delete"
-              onClick={() => resetEditing()}
-            >
-              Cancelar
-            </Button>,
-            <Button
-              key="submit"
-              type="primary"
-              className="button-save"
-              onClick={() => {
-                editingUser && editingUser.id
-                  ? setUsers((pre: any) => {
-                      return pre.map((user: any) => {
-                        if (user.id === editingUser?.id) {
-                          console.log(editingUser);
-                          return editingUser;
-                        } else {
-                          resetEditing();
-                          return user;
-                        }
-                      });
-                    })
-                  : console.log('teste');
-              }}
-            >
-              Salvar
-            </Button>,
-          ]}
-        >
-          <label>Nome</label>
-          <Input
-            value={editingUser?.name}
-            onChange={e => {
-              setEditingUser((pre: any) => {
-                return { ...pre, name: e.target.value };
-              });
-            }}
-          />
-          <p></p>
-          <label>Email</label>
-          <Input
-            value={editingUser?.email}
-            onChange={e => {
-              setEditingUser((pre: any) => {
-                return { ...pre, email: e.target.value };
-              });
-            }}
-          />
-          <p></p>
-          <label>Role</label>
-          <Input
-            value={editingUser?.role}
-            onChange={e => {
-              setEditingUser((pre: any) => {
-                return { ...pre, role: e.target.value };
-              });
-            }}
-          />
-
-          {/* <Form.Item name={['sector']} label="Setor">
-            <Input
-              value={editingUser?.sector}
-              placeholder="Digite o seu setor"
-              onChange={e => setSector(e.target.value)}
-            />
-          </Form.Item> */}
-          <Form.Item
-            label="Username"
-            name="username"
-            rules={[{ required: true, message: 'Please input your username!' }]}
-          >
-            <Input />
-          </Form.Item>
-        </Modal>
       </Form>
+      <ModalUser
+        id={recordUser?.record.id}
+        openModal={openModal}
+        closeModal={closeModal}
+        edit={edit}
+      />
     </>
   );
 };

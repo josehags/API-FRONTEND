@@ -44,146 +44,179 @@
 //     </>
 //   );
 // }
-import { Modal } from 'antd';
-import { Button, Form, Input } from 'antd';
-import React, { useEffect, useState } from 'react';
-import { Col } from 'antd';
-import { useNavigate, useParams } from 'react-router-dom';
-import { getUser, updateUser } from '../../Services/Axios/userServices';
-import { useProfileUser } from '../../Context';
-import { validateSignUp } from '../../Utils/validations';
+import 'antd/dist/antd.css';
+import { Button, Table, Modal, Input } from 'antd';
+import { useState } from 'react';
+import { EditOutlined, DeleteOutlined } from '@ant-design/icons';
 
-const ModalUpdate: React.FC = () => {
-  const [open, setOpen] = useState(false);
-  const [inputName, setName] = useState('');
-  const [inputEmail, setEmail] = useState('');
-  const [inputRole, setRole] = useState('');
-  const [inputSector, setSector] = useState('');
-  const [baseImage, setBaseImage] = useState('');
-
-  const { user, startModal } = useProfileUser();
-  const { id } = useParams();
-  const navigate = useNavigate();
-
-  // useEffect(() => {
-  //   const loading = async () => {
-  //     const response = await getUser('usuarios/' + id, startModal);
-  //     if (response !== false) {
-  //       setName(response.data.name);
-  //       setEmail(response.data.email);
-  //       setRole(response.data.role);
-  //       setSector(response.data.sector);
-  //       // setBaseImage(response.data.image);
-  //     } else {
-  //       startModal('error', 'Ocorreu um erro ao buscar o usúario.');
-  //     }
-  //   };
-  //   loading();
-  // }, []);
-
-  const submit = async () => {
-    if (validateSignUp(inputEmail, inputName)) {
-      await updateUser(
-        inputName,
-        inputEmail,
-        inputRole,
-        inputSector,
-        baseImage,
-        id,
-        startModal,
-      );
-      startModal('success', 'Usuário atualizado com sucesso!');
-      navigate('/usuarios');
-    }
-    startModal(
-      "Nome deve ser completo, sem números. Email deve conter o formato 'nome@email.com'. Senha deve conter no minimo 6 caracteres. As senhas devem ser iguais!",
-    );
-    return undefined;
-  };
-
-  const showModal = () => {
-    setOpen(true);
-  };
-
-  function handleFinish(a: any) {
-    console.log(a);
-  }
-
-  const handleOk = () => {
-    setOpen(false);
-  };
-
-  const handleCancel = () => {
-    setOpen(false);
-  };
-
-  if (!localStorage.getItem('@App:token')) {
-    navigate('/login', { replace: true });
-  }
-
-  return (
-    <>
-      <a type="primary" onClick={showModal}>
-        {' '}
-        Alterar
-      </a>
-      <Modal
-        open={open}
-        title="Atualizar Usuário..."
-        onOk={handleOk}
-        onCancel={handleCancel}
-        footer={[
-          <Button key="submit" type="primary" onClick={handleOk}>
-            Cancelar
-          </Button>,
-          <Button key="link" type="primary" onClick={() => handleOk()}>
-            Salvar
-          </Button>,
-        ]}
-      >
-        <>
-          <Form layout="vertical" onFinish={handleFinish}>
-            <Col offset={1} span={16}>
-              <Form.Item name={['fullname']} label="Nome">
-                <Input
-                  value={inputName}
-                  placeholder="Digite o seu nome"
-                  onChange={e => setName(e.target.value)}
-                />
-              </Form.Item>
-            </Col>
-            <Col offset={1} span={16}>
-              <Form.Item name={['email']} label="Email">
-                <Input
-                  value={inputEmail}
-                  placeholder="Digite o seu email"
-                  onChange={e => setEmail(e.target.value)}
-                />
-              </Form.Item>
-            </Col>
-            <Col offset={1} span={16}>
-              <Form.Item name={['role']} label="Função">
-                <Input
-                  value={inputRole}
-                  placeholder="Digite a sua função"
-                  onChange={e => setRole(e.target.value)}
-                />
-              </Form.Item>
-            </Col>
-            <Col offset={1} span={16}>
-              <Form.Item name={['sector']} label="Setor">
-                <Input
-                  value={inputSector}
-                  placeholder="Digite o seu setor"
-                  onChange={e => setSector(e.target.value)}
-                />
-              </Form.Item>
-            </Col>
-          </Form>
-        </>
-      </Modal>
-    </>
-  );
+type Property = {
+  id: number;
+  name: string;
+  email: string;
+  address: string;
 };
+function App() {
+  const [isEditing, setIsEditing] = useState(false);
+  const [editingStudent, setEditingStudent] = useState<Property | null>(null);
+  const [dataSource, setDataSource] = useState([
+    {
+      id: 1,
+      name: 'John',
+      email: 'john@gmail.com',
+      address: 'John Address',
+    },
+    {
+      id: 2,
+      name: 'David',
+      email: 'david@gmail.com',
+      address: 'David Address',
+    },
+    {
+      id: 3,
+      name: 'James',
+      email: 'james@gmail.com',
+      address: 'James Address',
+    },
+    {
+      id: 4,
+      name: 'Sam',
+      email: 'sam@gmail.com',
+      address: 'Sam Address',
+    },
+  ]);
+  const columns = [
+    {
+      key: '1',
+      title: 'ID',
+      dataIndex: 'id',
+    },
+    {
+      key: '2',
+      title: 'Name',
+      dataIndex: 'name',
+    },
+    {
+      key: '3',
+      title: 'Email',
+      dataIndex: 'email',
+    },
+    {
+      key: '4',
+      title: 'Address',
+      dataIndex: 'address',
+    },
+    {
+      key: '5',
+      title: 'Actions',
+      render: (record: any) => {
+        return (
+          <>
+            <EditOutlined
+              onClick={() => {
+                console.log(record);
+                onEditStudent(record);
+              }}
+            />
+            <DeleteOutlined
+              onClick={() => {
+                onDeleteStudent(record);
+              }}
+              style={{ color: 'red', marginLeft: 12 }}
+            />
+          </>
+        );
+      },
+    },
+  ];
 
-export default ModalUpdate;
+  const onAddStudent = () => {
+    const randomNumber = Math.random() * 1000;
+    const newStudent = {
+      id: randomNumber,
+      name: 'Name ' + randomNumber,
+      email: randomNumber + '@gmail.com',
+      address: 'Address ' + randomNumber,
+    };
+    setDataSource(pre => {
+      return [...pre, newStudent];
+    });
+  };
+  const onDeleteStudent = (record: any) => {
+    Modal.confirm({
+      title: 'Are you sure, you want to delete this student record?',
+      okText: 'Yes',
+      okType: 'danger',
+      onOk: () => {
+        setDataSource(pre => {
+          return pre.filter(student => student.id !== record.id);
+        });
+      },
+    });
+  };
+  const onEditStudent = (record: any) => {
+    setIsEditing(true);
+    setEditingStudent({ ...record });
+    console.log(record);
+  };
+  const resetEditing = () => {
+    setIsEditing(false);
+    setEditingStudent(null);
+  };
+  return (
+    <div className="App">
+      <header className="App-header">
+        <Button onClick={onAddStudent}>Add a new Student</Button>
+        <Table columns={columns} dataSource={dataSource}></Table>
+        <Modal
+          title="Edit Student"
+          visible={isEditing}
+          okText="Save"
+          onCancel={() => {
+            resetEditing();
+          }}
+          onOk={() => {
+            setDataSource(pre => {
+              return pre.map(student => {
+                if (
+                  editingStudent !== null &&
+                  student.id === editingStudent.id
+                ) {
+                  return editingStudent;
+                } else {
+                  return student;
+                }
+              });
+            });
+            resetEditing();
+          }}
+        >
+          <Input
+            value={editingStudent?.name}
+            onChange={e => {
+              setEditingStudent((pre: any) => {
+                return { ...pre, name: e.target.value };
+              });
+            }}
+          />
+          <Input
+            value={editingStudent?.email}
+            onChange={e => {
+              setEditingStudent((pre: any) => {
+                return { ...pre, email: e.target.value };
+              });
+            }}
+          />
+          <Input
+            value={editingStudent?.address}
+            onChange={e => {
+              setEditingStudent((pre: any) => {
+                return { ...pre, address: e.target.value };
+              });
+            }}
+          />
+        </Modal>
+      </header>
+    </div>
+  );
+}
+export default App;

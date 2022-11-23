@@ -3,7 +3,16 @@ import {
   PoweroffOutlined,
   TeamOutlined,
 } from '@ant-design/icons';
-import { MenuProps, Typography, Breadcrumb, Layout, Menu } from 'antd';
+import {
+  MenuProps,
+  Typography,
+  Breadcrumb,
+  Layout,
+  Menu,
+  Space,
+  Avatar,
+  Image,
+} from 'antd';
 import React, { Children, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import Dashboard from '../Dashboard';
@@ -33,14 +42,13 @@ function getItem(
 const items: MenuItem[] = [
   getItem('Usuários', '2', <UserOutlined />),
   getItem('Servidores', '3', <TeamOutlined />),
-  getItem('Sair', '4', <PoweroffOutlined />),
 ];
 
 const ProfessionalHomePage: React.FC = () => {
   const [collapsed, setCollapsed] = useState(true);
   const [chave, setChave] = useState('1');
   const navigate = useNavigate();
-  const { handleLogout } = useProfileUser();
+  const { handleLogout, user } = useProfileUser();
 
   const rotas = (item: any) => {
     if (item.key === '1') {
@@ -82,7 +90,33 @@ const ProfessionalHomePage: React.FC = () => {
         />
       </Sider>
       <Layout className="site-layout">
-        <Header className="site-layout-background" style={{ padding: 0 }} />
+        <Header
+          className="site-layout-background"
+          style={{
+            padding: '20px',
+            textAlign: 'right',
+          }}
+        >
+          <Typography.Title level={5} style={{ margin: 2 }}>
+            <Space>
+              <Avatar
+                src={
+                  <Image
+                    src="https://joeschmoe.io/api/v1/random"
+                    style={{ width: 32 }}
+                  />
+                }
+              />
+              {user?.name}
+              <PoweroffOutlined
+                style={{ color: '#990303' }}
+                onClick={() => {
+                  handleLogout();
+                }}
+              />
+            </Space>
+          </Typography.Title>
+        </Header>{' '}
         <Content style={{ margin: '0 16px' }}>
           <Breadcrumb style={{ margin: '16px 0' }}>
             <Breadcrumb.Item>

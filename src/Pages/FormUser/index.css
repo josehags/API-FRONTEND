@@ -1,6 +1,25 @@
-.form-modal{
+
+
+
+.button-create{
+    width: auto;
+    float: right;
+    background: rgb(0, 21, 42);
+    border-color: rgb(0, 21, 42);
 
 }
+.button-create:defined{
+  background: rgb(0, 21, 42);
+}
+
+.button-create:hover{
+  background: rgb(50, 67, 83);
+  border-color:  rgb(50, 67, 83);
+}
+
+
+
+
 .ant-modal-header{  
   background: rgb(0, 21, 42);
 }
@@ -15,28 +34,40 @@
 
 
 
-
-
-.button-save{
+.button-save-create{
   background: rgb(0, 21, 42);
-}
-.button-save:defined{
-  background: rgb(0, 21, 42);
+  border-color: rgb(0, 21, 42);
 
 }
-.button-save:hover{
+.button-save-create:defined{
+  background: rgb(0, 21, 42);
+  border-color: rgb(0, 21, 42);
+
+
+}
+.button-save-create:hover{
   background: rgb(50, 67, 83);
+  border-color: rgb(50, 67, 83);
+
 
 }
 
 
-.button-delete{
+.button-delete-create{
   background:rgb(0, 21, 42);
+  border-color: rgb(0, 21, 42);
   }
-.button-delete:defined{
+
+.button-delete-create:defined{
   background: rgb(0, 21, 42);
+  border-color: rgb(0, 21, 42);
 }
 
-.button-delete:hover{
+.button-delete-create:hover{
     background: rgb(50, 67, 83);
+    border-color: rgb(50, 67, 83);
 }
+
+
+
+
