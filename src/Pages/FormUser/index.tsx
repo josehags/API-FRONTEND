@@ -200,12 +200,7 @@ const FormUser = () => {
                       <>
                         <a
                           onClick={() => {
-                            //(recordUser?.record);
-                            console.log(
-                              'clique do formulario',
-                              recordUser?.record,
-                            );
-                            recordUser?.record;
+                            console.log('lado do formUser', recordUser?.record);
                             setOpenModal(true);
                           }}
                         >
@@ -242,10 +237,6 @@ const FormUser = () => {
     },
   ];
 
-  // const onEditStudent = (record: any) => {
-  //   setEditing({ ...record });
-  //   console.log(record);
-  // };
   //listagem de usuarios na tabela
   useEffect(() => {
     loadingUser();
@@ -313,7 +304,7 @@ const FormUser = () => {
         />
       </Form>
       <ModalUser
-        id={recordUser?.record.id}
+        id={recordUser?.record}
         openModal={openModal}
         closeModal={closeModal}
         edit={edit}

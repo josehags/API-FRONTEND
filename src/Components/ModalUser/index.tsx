@@ -42,7 +42,7 @@ const ModalUser = ({ id, openModal, closeModal, edit }: Propos) => {
     const userEdit = JSON.parse(String(sessionStorage.getItem('@userEdit')));
     console.log('clique modal', editingUser);
     setEditingUser(userEdit.record);
-    editingUser && editingUser.id ? submitUpadate : submitCreate;
+    // editingUser && editingUser.id ? submitUpadate : submitCreate;
   };
 
   //************************************** */
@@ -180,7 +180,7 @@ const ModalUser = ({ id, openModal, closeModal, edit }: Propos) => {
               </Form.Item>
             </Col>
             <Col offset={1} span={16}>
-              <Form.Item name={['image']} label="image">
+              <Form.Item name={['image']} label="Imagem">
                 {' '}
                 <Input
                   value={editingUser?.image}
