@@ -122,18 +122,24 @@ const ModalUser = ({ id, openModal, closeModal, edit }: Propos) => {
         <>
           <Form layout="vertical" onFinish={handleFinish}>
             <Col offset={1} span={16}>
-              <Input
-                value={editingUser?.name}
-                placeholder="Digite o seu nome"
-                onChange={e => {
-                  setEditingUser((pre: any) => {
-                    return { ...pre, name: e.target.value };
-                  });
-                }}
-              />
-            </Col>
+              <Form.Item name={['name']} label="Nome">
+                {' '}
+                <Input
+                  title="name"
+                  className="input-"
+                  value={editingUser?.name}
+                  placeholder="Digite o seu nome"
+                  onChange={e => {
+                    setEditingUser((pre: any) => {
+                      return { ...pre, name: e.target.value };
+                    });
+                  }}
+                />
+              </Form.Item>
+            </Col>{' '}
             <Col offset={1} span={16}>
-              <Form.Item name={['email']} label="Email">
+              <Form.Item name={['email']} label="E-mail">
+                {' '}
                 <Input
                   value={editingUser?.email}
                   placeholder="Digite o seu email"
@@ -147,6 +153,7 @@ const ModalUser = ({ id, openModal, closeModal, edit }: Propos) => {
             </Col>
             <Col offset={1} span={16}>
               <Form.Item name={['role']} label="Função">
+                {' '}
                 <Input
                   value={editingUser?.role}
                   placeholder="Digite a sua função"
@@ -160,6 +167,7 @@ const ModalUser = ({ id, openModal, closeModal, edit }: Propos) => {
             </Col>
             <Col offset={1} span={16}>
               <Form.Item name={['sector']} label="Setor">
+                {' '}
                 <Input
                   value={editingUser?.sector}
                   placeholder="Digite o seu setor"
@@ -173,6 +181,7 @@ const ModalUser = ({ id, openModal, closeModal, edit }: Propos) => {
             </Col>
             <Col offset={1} span={16}>
               <Form.Item name={['image']} label="image">
+                {' '}
                 <Input
                   value={editingUser?.image}
                   placeholder="Coloque sua foto"
