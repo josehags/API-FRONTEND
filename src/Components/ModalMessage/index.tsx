@@ -9,8 +9,7 @@ const ModalMessage = ({type, description}:AlerType) => (
 export default ModalMessage;
 */
 import { message } from 'antd';
-import 'antd/dist/antd.min.css';
-
+import 'antd/dist/reset.css';
 type ComponentMessage = {
   type: 'success' | 'warning' | 'error' | 'info';
   description: string;

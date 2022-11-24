@@ -1,6 +1,6 @@
 import { Modal } from 'antd';
 import { Button, Form, Input } from 'antd';
-import React, { useEffect, useState } from 'react';
+import React, { useState } from 'react';
 import { Col } from 'antd';
 import { useNavigate } from 'react-router-dom';
 import { postUser, updateUser } from '../../Services/Axios/userServices';
@@ -38,9 +38,10 @@ const ModalUser = ({ id, openModal, closeModal, edit }: Propos) => {
   // const userEdit = JSON.parse(String(sessionStorage.getItem('')));
   // console.log('índice', userEdit.rowIndex);
   // console.log('objeto', userEdit.record);
+
   const handle = async () => {
     const userEdit = JSON.parse(String(sessionStorage.getItem('@userEdit')));
-    console.log('clique modal', editingUser);
+    console.log('clique  no modal', userEdit.record);
     setEditingUser(userEdit.record);
     // editingUser && editingUser.id ? submitUpadate : submitCreate;
   };
@@ -122,7 +123,7 @@ const ModalUser = ({ id, openModal, closeModal, edit }: Propos) => {
         <>
           <Form layout="vertical" onFinish={handleFinish}>
             <Col offset={1} span={16}>
-              <Form.Item name={['name']} label="Nome">
+              <Form.Item name={['name']} label="Nome" className="input">
                 {' '}
                 <Input
                   title="name"
