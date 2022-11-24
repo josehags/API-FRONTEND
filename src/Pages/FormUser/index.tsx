@@ -17,7 +17,7 @@ import { useProfileUser } from '../../Context';
 import { useNavigate } from 'react-router-dom';
 import { FilterConfirmProps } from 'antd/lib/table/interface';
 import Highlighter from 'react-highlight-words';
-import ModalUser from '../../Components/ModalUser';
+import ModalUser, { IUser } from '../../Components/ModalUser';
 
 interface DataType {
   key: React.Key;
@@ -38,6 +38,7 @@ const FormUser = () => {
   const { user, startModal } = useProfileUser();
   const [openModal, setOpenModal] = useState(false);
   const [users, setUsers] = useState([]);
+  const [teste, setTeste] = useState<IUser | null>(null);
 
   const [recordUser, setRecordUser] = useState<{
     record: any;
@@ -198,7 +199,11 @@ const FormUser = () => {
                       <>
                         <a
                           onClick={() => {
-                            console.log('lado do formUser', recordUser?.record);
+                            console.log(
+                              'clique  na tabela',
+                              recordUser?.record,
+                            );
+                            recordUser?.record;
                             setOpenModal(true);
                           }}
                         >
@@ -266,8 +271,8 @@ const FormUser = () => {
     navigate('/login', { replace: true });
   }
 
-  const edit = sessionStorage.getItem('@userEdit');
-  sessionStorage.setItem('@userEdit', JSON.stringify(recordUser));
+  // const edit = sessionStorage.getItem('@userEdit');
+  // sessionStorage.setItem('@userEdit', JSON.stringify(recordUser));
 
   return (
     <>
@@ -303,10 +308,10 @@ const FormUser = () => {
         />
       </Form>
       <ModalUser
-        id={recordUser?.record}
+        id={recordUser?.record.id}
         openModal={openModal}
         closeModal={closeModal}
-        edit={edit}
+        editUser={recordUser?.record}
       />
     </>
   );

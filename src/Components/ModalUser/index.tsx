@@ -6,8 +6,7 @@ import { useNavigate } from 'react-router-dom';
 import { postUser, updateUser } from '../../Services/Axios/userServices';
 import { useProfileUser } from '../../Context';
 
-interface IUser {
-  key: React.Key;
+export interface IUser {
   id: string;
   name: string;
   email: string;
@@ -19,11 +18,11 @@ interface IUser {
 type Propos = {
   id: string;
   openModal: boolean;
-  edit: string | null;
+  editUser: IUser;
   closeModal: (open: boolean) => void;
 };
 
-const ModalUser = ({ id, openModal, closeModal, edit }: Propos) => {
+const ModalUser = ({ id, openModal, closeModal, editUser }: Propos) => {
   const { user, startModal } = useProfileUser();
   const [users, setUsers] = useState([]);
 
@@ -35,14 +34,24 @@ const ModalUser = ({ id, openModal, closeModal, edit }: Propos) => {
     console.log(a);
   }
 
-  // const userEdit = JSON.parse(String(sessionStorage.getItem('')));
-  // console.log('índice', userEdit.rowIndex);
-  // console.log('objeto', userEdit.record);
-
   const handle = async () => {
-    const userEdit = JSON.parse(String(sessionStorage.getItem('@userEdit')));
-    console.log('clique  no modal', userEdit.record);
-    setEditingUser(userEdit.record);
+    setEditingUser(editUser);
+    editingUser && editingUser.id
+      ? setUsers((pre: any) => {
+          return pre.map((user: any) => {
+            if (user.id === editingUser?.id) {
+              console.log('oi ', editingUser);
+              return editingUser;
+            } else {
+              closeModal(false);
+              return user;
+            }
+          });
+        })
+      : submitCreate;
+
+    console.log('clique  no modal!', editingUser);
+
     // editingUser && editingUser.id ? submitUpadate : submitCreate;
   };
 
@@ -87,9 +96,6 @@ const ModalUser = ({ id, openModal, closeModal, edit }: Propos) => {
   if (!localStorage.getItem('@App:token')) {
     navigate('/login', { replace: true });
   }
-  // useEffect(() => {
-  //   handle();
-  // }, []);
 
   return (
     <>
@@ -123,12 +129,15 @@ const ModalUser = ({ id, openModal, closeModal, edit }: Propos) => {
         <>
           <Form layout="vertical" onFinish={handleFinish}>
             <Col offset={1} span={16}>
-              <Form.Item name={['name']} label="Nome" className="input">
-                {' '}
+              <Form.Item
+                name={['name']}
+                label="Nome"
+                initialValue={editingUser?.name}
+              >
                 <Input
                   title="name"
                   className="input-"
-                  value={editingUser?.name}
+                  // value={}
                   placeholder="Digite o seu nome"
                   onChange={e => {
                     setEditingUser((pre: any) => {
@@ -137,10 +146,10 @@ const ModalUser = ({ id, openModal, closeModal, edit }: Propos) => {
                   }}
                 />
               </Form.Item>
-            </Col>{' '}
+            </Col>
             <Col offset={1} span={16}>
               <Form.Item name={['email']} label="E-mail">
-                {' '}
+                {''}
                 <Input
                   value={editingUser?.email}
                   placeholder="Digite o seu email"
