@@ -19,8 +19,6 @@ import { FilterConfirmProps } from 'antd/lib/table/interface';
 import Highlighter from 'react-highlight-words';
 import ModalUser from '../../Components/ModalUser';
 
-require('./index.css');
-
 interface DataType {
   key: React.Key;
   id: string;
@@ -278,6 +276,7 @@ const FormUser = () => {
           <Button
             className="button-create"
             type="primary"
+            style={{ float: 'right', width: 'auto' }}
             onClick={() => {
               setOpenModal(true);
             }}
