@@ -1,9 +1,13 @@
 import { Modal } from 'antd';
 import { Button, Form, Input } from 'antd';
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Col } from 'antd';
 import { useNavigate } from 'react-router-dom';
-import { postUser, updateUser } from '../../Services/Axios/userServices';
+import {
+  getUser,
+  postUser,
+  updateUser,
+} from '../../Services/Axios/userServices';
 import { useProfileUser } from '../../Context';
 
 export interface IUser {
@@ -18,15 +22,13 @@ export interface IUser {
 type Propos = {
   id: string;
   openModal: boolean;
-  editUser: IUser;
-  form: any;
+
   closeModal: (open: boolean) => void;
 };
 
-const ModalUser = ({ id, openModal, form, closeModal, editUser }: Propos) => {
+const ModalUser = ({ id, openModal, closeModal }: Propos) => {
   const { user, startModal } = useProfileUser();
-  const [users, setUsers] = useState([]);
-
+  const [form] = Form.useForm();
   const [editingUser, setEditingUser] = useState<IUser | null>(null);
 
   const navigate = useNavigate();
@@ -34,65 +36,66 @@ const ModalUser = ({ id, openModal, form, closeModal, editUser }: Propos) => {
   function handleFinish(a: any) {
     console.log(a);
   }
+  useEffect(() => {
+    loadingUser();
+  }, [id]);
 
-  const handle = async () => {
-    setEditingUser(editUser);
-    editingUser && editingUser.id
-      ? setUsers((pre: any) => {
-          return pre.map((user: any) => {
-            if (user.id === editingUser?.id) {
-              console.log('oi ', editingUser);
-              return editingUser;
-            } else {
-              closeModal(false);
-              return user;
-            }
-          });
-        })
-      : submitCreate;
-
-    console.log('clique  no modal!', editingUser);
-
-    // editingUser && editingUser.id ? submitUpadate : submitCreate;
-  };
+  async function loadingUser() {
+    await getUser('usuarios/' + id, startModal).then(response => {
+      if (response !== false) {
+        form.setFieldsValue({
+          name: response.data.name,
+          email: response.data.email,
+          role: response.data.role,
+          sector: response.data.sector,
+          image: response.data.image,
+        });
+      } else {
+        startModal('error', 'Ocorreu um erro inesperado ao obter usuários.');
+      }
+    });
+  }
+  // const handle = async () => {
+  //   editingUser && editingUser.id ? submitUpadate : submitCreate;
+  // };
 
   //************************************** */
   //ATUALIZAÇÃO DE USUARIOS************
 
-  const submitUpadate = async () => {
-    if (editingUser?.email !== undefined && editingUser.name !== null) {
-      await updateUser(
-        editingUser?.name,
-        editingUser?.email,
-        editingUser?.role,
-        editingUser?.sector,
-        editingUser?.image,
-        editingUser?.id,
-        startModal,
-      );
+  // const submitUpadate = async () => {
+  //   if (editUser?.email !== undefined && editUser.name !== null) {
+  //     await updateUser(
+  //       editUser?.name,
+  //       editUser?.email,
+  //       editUser?.role,
+  //       editUser?.sector,
+  //       editUser?.image,
+  //       editUser?.id,
+  //       startModal,
+  //     );
 
-      startModal('success', 'Usuário atualizado com sucesso!');
-      closeModal(false);
-    }
-  };
+  // startModal('success', 'Usuário atualizado com sucesso!');
+  // closeModal(false);
+  //   }
+  // };
   //****************** */
   // CRIAÇÃO DE USUARIOS
 
-  const submitCreate = async () => {
-    if (editingUser?.email !== undefined && editingUser.name !== null) {
-      await postUser(
-        editingUser?.name,
-        editingUser?.email,
-        editingUser?.role,
-        editingUser?.sector,
-        editingUser?.image,
-        startModal,
-      );
-    }
+  // const submitCreate = async () => {
+  //   if (editUser?.email !== undefined && editUser.name !== null) {
+  //     await postUser(
+  //       editUser?.name,
+  //       editUser?.email,
+  //       editUser?.role,
+  //       editUser?.sector,
+  //       editUser?.image,
+  //       startModal,
+  //     );
+  //   }
 
-    closeModal(false);
-    return undefined;
-  };
+  //   closeModal(false);
+  //   return undefined;
+  // };
 
   if (!localStorage.getItem('@App:token')) {
     navigate('/login', { replace: true });
@@ -117,11 +120,10 @@ const ModalUser = ({ id, openModal, form, closeModal, editUser }: Propos) => {
           <Button
             key="submit"
             type="primary"
-            htmlType="submit"
             className="button-save-create"
-            onClick={() => {
-              handle();
-            }}
+            // onClick={() => {
+            //   handle();
+            // }}
           >
             Salvar
           </Button>,

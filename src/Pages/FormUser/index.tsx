@@ -7,6 +7,7 @@ import {
   Space,
   Dropdown,
   Popconfirm,
+  notification,
 } from 'antd';
 import { SearchOutlined } from '@ant-design/icons';
 import { DownOutlined } from '@ant-design/icons';
@@ -38,11 +39,8 @@ const FormUser = () => {
   const { user, startModal } = useProfileUser();
   const [openModal, setOpenModal] = useState(false);
   const [users, setUsers] = useState([]);
-  const [form] = Form.useForm();
 
-  const [recordUser, setRecordUser] = useState<{
-    record: any;
-  }>();
+  const [recordUser, setRecordUser] = useState<any>({});
 
   const [index, setRowIndexr] = useState<{
     rowIndex: number;
@@ -201,14 +199,7 @@ const FormUser = () => {
                       <>
                         <a
                           onClick={() => {
-                            console.log(record);
-                            form.setFieldsValue({
-                              name: record.name,
-                              email: record.email,
-                              role: record.role,
-                              sector: record.sector,
-                              image: record.image,
-                            });
+                            handle(record);
                             setOpenModal(true);
                           }}
                         >
@@ -280,10 +271,24 @@ const FormUser = () => {
     navigate('/login', { replace: true });
   }
 
+  // useEffect(() => {
+  //   notification.info({
+  //     message: recordUser.id,
+  //   });
+  //   setRecordUser(recordUser);
+  // }, [recordUser]);
+
+  const handle = async (record: any) => {
+    await setRecordUser(record);
+    // setRowIndexr({ rowIndex });
+    // console.log('record..', record);
+  };
+
   return (
     <>
       <Form className="layout" layout="vertical" onFinish={handleFinish}>
         <Form.Item className="form">
+          {/* {recordUser.id} */}
           <Button
             className="button-create"
             type="primary"
@@ -302,25 +307,20 @@ const FormUser = () => {
           expandable={{
             rowExpandable: record => record.name !== 'Not Expandable',
           }}
-          onRow={(record: any, rowIndex: any) => {
-            return {
-              onClick: event => {
-                setRecordUser({ record });
-                setRowIndexr({ rowIndex });
-                console.log('record - ', recordUser);
-                console.log('index - ', rowIndex);
-              }, // click row
-            };
-          }}
+          // onRow={(record: any, rowIndex: any) => {
+          //   return {
+          //     onClick: () => {
+          //       handle(record);
+          //     }, // click row
+          //   };
+          // }}
           dataSource={users}
         />
       </Form>
       <ModalUser
-        id={recordUser?.record.id}
+        id={recordUser?.id}
         openModal={openModal}
         closeModal={closeModal}
-        editUser={recordUser?.record}
-        form={form}
       />
     </>
   );
