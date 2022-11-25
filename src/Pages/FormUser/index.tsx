@@ -258,7 +258,7 @@ const FormUser = () => {
 
     const novosUsuarios = [...users];
     if (index !== undefined) {
-      //novosUsuarios.splice(index.rowIndex, 1);
+      novosUsuarios.splice(index.rowIndex, 1);
     }
     setUsers(novosUsuarios);
   };
