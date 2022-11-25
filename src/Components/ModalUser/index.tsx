@@ -19,10 +19,11 @@ type Propos = {
   id: string;
   openModal: boolean;
   editUser: IUser;
+  form: any;
   closeModal: (open: boolean) => void;
 };
 
-const ModalUser = ({ id, openModal, closeModal, editUser }: Propos) => {
+const ModalUser = ({ id, openModal, form, closeModal, editUser }: Propos) => {
   const { user, startModal } = useProfileUser();
   const [users, setUsers] = useState([]);
 
@@ -96,7 +97,6 @@ const ModalUser = ({ id, openModal, closeModal, editUser }: Propos) => {
   if (!localStorage.getItem('@App:token')) {
     navigate('/login', { replace: true });
   }
-
   return (
     <>
       <Modal
@@ -117,6 +117,7 @@ const ModalUser = ({ id, openModal, closeModal, editUser }: Propos) => {
           <Button
             key="submit"
             type="primary"
+            htmlType="submit"
             className="button-save-create"
             onClick={() => {
               handle();
@@ -127,80 +128,66 @@ const ModalUser = ({ id, openModal, closeModal, editUser }: Propos) => {
         ]}
       >
         <>
-          <Form layout="vertical" onFinish={handleFinish}>
+          <Form layout="vertical" onFinish={handleFinish} form={form}>
             <Col offset={1} span={16}>
               <Form.Item
                 name={['name']}
                 label="Nome"
-                initialValue={editingUser?.name}
+                rules={[
+                  {
+                    required: true,
+                    message: 'Por favor, insira seu nome',
+                  },
+                ]}
               >
-                <Input
-                  title="name"
-                  className="input-"
-                  // value={}
-                  placeholder="Digite o seu nome"
-                  onChange={e => {
-                    setEditingUser((pre: any) => {
-                      return { ...pre, name: e.target.value };
-                    });
-                  }}
-                />
+                <Input />
               </Form.Item>
             </Col>
             <Col offset={1} span={16}>
-              <Form.Item name={['email']} label="E-mail">
-                {''}
-                <Input
-                  value={editingUser?.email}
-                  placeholder="Digite o seu email"
-                  onChange={e => {
-                    setEditingUser((pre: any) => {
-                      return { ...pre, email: e.target.value };
-                    });
-                  }}
-                />
+              <Form.Item
+                name={['email']}
+                label="E-mail"
+                rules={[
+                  {
+                    required: true,
+                    message: 'Por favor, insira seu E-mail',
+                  },
+                ]}
+              >
+                <Input />
               </Form.Item>
             </Col>
             <Col offset={1} span={16}>
-              <Form.Item name={['role']} label="Função">
-                {' '}
-                <Input
-                  value={editingUser?.role}
-                  placeholder="Digite a sua função"
-                  onChange={e => {
-                    setEditingUser((pre: any) => {
-                      return { ...pre, role: e.target.value };
-                    });
-                  }}
-                />
+              <Form.Item
+                name={['role']}
+                label="Função"
+                rules={[
+                  {
+                    required: true,
+                    message: 'Por favor, insira a sua função',
+                  },
+                ]}
+              >
+                <Input />
               </Form.Item>
             </Col>
             <Col offset={1} span={16}>
-              <Form.Item name={['sector']} label="Setor">
-                {' '}
-                <Input
-                  value={editingUser?.sector}
-                  placeholder="Digite o seu setor"
-                  onChange={e => {
-                    setEditingUser((pre: any) => {
-                      return { ...pre, sector: e.target.value };
-                    });
-                  }}
-                />
+              <Form.Item
+                name={['sector']}
+                label="Setor"
+                rules={[
+                  {
+                    required: true,
+                    message: 'Por favor, insira o seu setor',
+                  },
+                ]}
+              >
+                <Input />
               </Form.Item>
             </Col>
             <Col offset={1} span={16}>
               <Form.Item name={['image']} label="Imagem">
-                {' '}
-                <Input
-                  value={editingUser?.image}
-                  placeholder="Coloque sua foto"
-                  onChange={e => {
-                    setEditingUser((pre: any) => {
-                      return { ...pre, image: e.target.value };
-                    });
-                  }}
-                />
+                <Input />
               </Form.Item>
             </Col>
           </Form>

@@ -38,11 +38,14 @@ const FormUser = () => {
   const { user, startModal } = useProfileUser();
   const [openModal, setOpenModal] = useState(false);
   const [users, setUsers] = useState([]);
-  const [teste, setTeste] = useState<IUser | null>(null);
+  const [form] = Form.useForm();
 
   const [recordUser, setRecordUser] = useState<{
     record: any;
-    rowIndex: any;
+  }>();
+
+  const [index, setRowIndexr] = useState<{
+    rowIndex: number;
   }>();
 
   const navigate = useNavigate();
@@ -188,7 +191,6 @@ const FormUser = () => {
 
       key: 'operation',
       render: (record: any) => {
-        // console.log(record);
         return (
           <Space size="middle">
             <Dropdown
@@ -199,11 +201,14 @@ const FormUser = () => {
                       <>
                         <a
                           onClick={() => {
-                            console.log(
-                              'clique  na tabela',
-                              recordUser?.record,
-                            );
-                            recordUser?.record;
+                            console.log(record);
+                            form.setFieldsValue({
+                              name: record.name,
+                              email: record.email,
+                              role: record.role,
+                              sector: record.sector,
+                              image: record.image,
+                            });
                             setOpenModal(true);
                           }}
                         >
@@ -256,10 +261,14 @@ const FormUser = () => {
   }
 
   // exclusão de usuario
+
   const ClickDeleteUser = async (record: any) => {
     await deleteUser(record, startModal);
+
     const novosUsuarios = [...users];
-    novosUsuarios.splice(recordUser?.rowIndex, 1);
+    if (index !== undefined) {
+      //novosUsuarios.splice(index.rowIndex, 1);
+    }
     setUsers(novosUsuarios);
   };
   //fechar modal
@@ -270,9 +279,6 @@ const FormUser = () => {
   if (!localStorage.getItem('@App:token')) {
     navigate('/login', { replace: true });
   }
-
-  // const edit = sessionStorage.getItem('@userEdit');
-  // sessionStorage.setItem('@userEdit', JSON.stringify(recordUser));
 
   return (
     <>
@@ -299,8 +305,10 @@ const FormUser = () => {
           onRow={(record: any, rowIndex: any) => {
             return {
               onClick: event => {
-                setRecordUser({ record, rowIndex });
-                // console.log(recordUser);
+                setRecordUser({ record });
+                setRowIndexr({ rowIndex });
+                console.log('record - ', recordUser);
+                console.log('index - ', rowIndex);
               }, // click row
             };
           }}
@@ -312,6 +320,7 @@ const FormUser = () => {
         openModal={openModal}
         closeModal={closeModal}
         editUser={recordUser?.record}
+        form={form}
       />
     </>
   );

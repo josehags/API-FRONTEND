@@ -1,222 +1,108 @@
-// import { Input, Form, Row, Col, Button } from 'antd';
-// import { useState } from 'react';
-
-// export default function FormServer() {
-//   const [name, setName] = useState('');
-//   const [mother, setMother] = useState('');
-//   const [yearsold, setYearsold] = useState('');
-
-//   function handleFinish(a: any) {
-//     console.log(a);
-//   }
-
-//   return (
-//     <>
-//       {/*    { name },{ mother }, { yearsold } */}
-//       <Form layout="vertical" onFinish={handleFinish}>
-//         <Row gutter={24}>
-//           <Col span={8}>
-//             <Form.Item name={['fullname']} label="Nome completo">
-//               <Input value={name} onChange={e => setName(e.target.value)} />
-//             </Form.Item>
-//           </Col>
-//           <Col span={8}>
-//             <Form.Item name={['mother']} label="Nome da Mãe">
-//               <Input value={mother} onChange={e => setMother(e.target.value)} />
-//             </Form.Item>
-//           </Col>
-//           <Col span={8}>
-//             <Form.Item name={['yearsold']} label="Idade">
-//               <Input
-//                 type="number"
-//                 value={yearsold}
-//                 onChange={e => setYearsold(e.target.value)}
-//               />
-//             </Form.Item>
-//           </Col>
-//         </Row>
-//         <Row justify="end">
-//           <Button type="primary" htmlType="submit">
-//             Salvar Servidor
-//           </Button>
-//         </Row>
-//       </Form>
-//     </>
-//   );
-// }
-import 'antd/dist/reset.css';
-import { Button, Table, Modal, Input } from 'antd';
-import { useState } from 'react';
-import { EditOutlined, DeleteOutlined } from '@ant-design/icons';
-
-type Property = {
-  id: number;
+// import { Button, Table, Form, Input } from "antd";
+import { Button, Form, Input, Table } from 'antd';
+import { useEffect, useState } from 'react';
+interface DataType {
+  key: string;
   name: string;
-  email: string;
   address: string;
-};
+}
+
 function App() {
-  const [isEditing, setIsEditing] = useState(false);
-  const [editingStudent, setEditingStudent] = useState<Property | null>(null);
-  const [dataSource, setDataSource] = useState([
-    {
-      id: 1,
-      name: 'John',
-      email: 'john@gmail.com',
-      address: 'John Address',
-    },
-    {
-      id: 2,
-      name: 'David',
-      email: 'david@gmail.com',
-      address: 'David Address',
-    },
-    {
-      id: 3,
-      name: 'James',
-      email: 'james@gmail.com',
-      address: 'James Address',
-    },
-    {
-      id: 4,
-      name: 'Sam',
-      email: 'sam@gmail.com',
-      address: 'Sam Address',
-    },
-  ]);
+  const [dataSource, setDataSource] = useState<DataType[]>();
+  const [editingRow, setEditingRow] = useState<number | any>(null);
+  const [form] = Form.useForm();
+
+  useEffect(() => {
+    const data = [];
+    for (let index = 0; index < 6; index++) {
+      data.push({
+        key: `${index}`,
+        name: `Name ${index}`,
+        address: `Address ${index}`,
+      });
+    }
+    setDataSource(data);
+  }, []);
   const columns = [
     {
-      key: '1',
-      title: 'ID',
-      dataIndex: 'id',
-    },
-    {
-      key: '2',
       title: 'Name',
       dataIndex: 'name',
+      render: (text: any, record: any) => {
+        if (editingRow === record.key) {
+          return (
+            <Form.Item
+              name="name"
+              rules={[
+                {
+                  required: true,
+                  message: 'Please enter your name',
+                },
+              ]}
+            >
+              <Input />
+            </Form.Item>
+          );
+        } else {
+          return <p>{text}</p>;
+        }
+      },
     },
     {
-      key: '3',
-      title: 'Email',
-      dataIndex: 'email',
-    },
-    {
-      key: '4',
       title: 'Address',
       dataIndex: 'address',
+      render: (text: any, record: any) => {
+        if (editingRow === record.key) {
+          return (
+            <Form.Item name="address">
+              <Input />
+            </Form.Item>
+          );
+        } else {
+          return <p>{text}</p>;
+        }
+      },
     },
     {
-      key: '5',
       title: 'Actions',
-      render: (record: any) => {
+      render: (_: any, record: any) => {
         return (
           <>
-            <EditOutlined
+            <Button
+              type="link"
               onClick={() => {
-                console.log(record);
-                onEditStudent(record);
+                console.log('oi', record);
+                setEditingRow(record.key);
+                form.setFieldsValue({
+                  name: record.name,
+                  address: record.address,
+                });
               }}
-            />
-            <DeleteOutlined
-              onClick={() => {
-                onDeleteStudent(record);
-              }}
-              style={{ color: 'red', marginLeft: 12 }}
-            />
+            >
+              Edit
+            </Button>
+            <Button type="link" htmlType="submit">
+              Save
+            </Button>
           </>
         );
       },
     },
   ];
-
-  const onAddStudent = () => {
-    const randomNumber = Math.random() * 1000;
-    const newStudent = {
-      id: randomNumber,
-      name: 'Name ' + randomNumber,
-      email: randomNumber + '@gmail.com',
-      address: 'Address ' + randomNumber,
-    };
-    setDataSource(pre => {
-      return [...pre, newStudent];
-    });
-  };
-  const onDeleteStudent = (record: any) => {
-    Modal.confirm({
-      title: 'Are you sure, you want to delete this student record?',
-      okText: 'Yes',
-      okType: 'danger',
-      onOk: () => {
-        setDataSource(pre => {
-          return pre.filter(student => student.id !== record.id);
-        });
-      },
-    });
-  };
-  const onEditStudent = (record: any) => {
-    setIsEditing(true);
-    setEditingStudent({ ...record });
-    console.log(record);
-  };
-  const resetEditing = () => {
-    setIsEditing(false);
-    setEditingStudent(null);
+  const onFinish = (values: any) => {
+    // const updatedDataSource = [...dataSource];
+    // updatedDataSource.splice(editingRow, 1);
+    // setDataSource(updatedDataSource);
+    // setEditingRow(null);
   };
   return (
     <div className="App">
       <header className="App-header">
-        <Button onClick={onAddStudent}>Add a new Student</Button>
-        <Table columns={columns} dataSource={dataSource}></Table>
-        <Modal
-          title="Edit Student"
-          visible={isEditing}
-          okText="Save"
-          onCancel={() => {
-            resetEditing();
-          }}
-          onOk={() => {
-            setDataSource(pre => {
-              return pre.map(student => {
-                if (
-                  editingStudent !== null &&
-                  student.id === editingStudent.id
-                ) {
-                  return editingStudent;
-                } else {
-                  return student;
-                }
-              });
-            });
-            resetEditing();
-          }}
-        >
-          <Input
-            value={editingStudent?.name}
-            onChange={e => {
-              setEditingStudent((pre: any) => {
-                return { ...pre, name: e.target.value };
-              });
-            }}
-          />
-          <Input
-            value={editingStudent?.email}
-            onChange={e => {
-              setEditingStudent((pre: any) => {
-                return { ...pre, email: e.target.value };
-              });
-            }}
-          />
-          <Input
-            value={editingStudent?.address}
-            onChange={e => {
-              setEditingStudent((pre: any) => {
-                return { ...pre, address: e.target.value };
-              });
-            }}
-          />
-        </Modal>
+        <Form form={form} onFinish={onFinish}>
+          <Table columns={columns} dataSource={dataSource}></Table>
+        </Form>
       </header>
     </div>
   );
 }
+
 export default App;
