@@ -307,13 +307,14 @@ const FormUser = () => {
           expandable={{
             rowExpandable: record => record.name !== 'Not Expandable',
           }}
-          // onRow={(record: any, rowIndex: any) => {
-          //   return {
-          //     onClick: () => {
-          //       handle(record);
-          //     }, // click row
-          //   };
-          // }}
+          onRow={(record: any, rowIndex: any) => {
+            return {
+              onClick: () => {
+                setRowIndexr(rowIndex);
+                // console.log(rowIndex);
+              }, // click row
+            };
+          }}
           dataSource={users}
         />
       </Form>

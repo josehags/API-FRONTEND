@@ -1,6 +1,6 @@
 import { Modal } from 'antd';
 import { Button, Form, Input } from 'antd';
-import React, { useEffect, useState } from 'react';
+import React, { ChangeEvent, useEffect, useState } from 'react';
 import { Col } from 'antd';
 import { useNavigate } from 'react-router-dom';
 import {
@@ -9,6 +9,8 @@ import {
   updateUser,
 } from '../../Services/Axios/userServices';
 import { useProfileUser } from '../../Context';
+import { Console } from 'console';
+import { Field } from 'rc-field-form';
 
 export interface IUser {
   id: string;
@@ -29,7 +31,7 @@ type Propos = {
 const ModalUser = ({ id, openModal, closeModal }: Propos) => {
   const { user, startModal } = useProfileUser();
   const [form] = Form.useForm();
-  const [editingUser, setEditingUser] = useState<IUser | null>(null);
+  // const [editingUser, setEditingUser] = useState<IUser | null>(null);
 
   const navigate = useNavigate();
 
@@ -41,7 +43,7 @@ const ModalUser = ({ id, openModal, closeModal }: Propos) => {
   }, [id]);
 
   async function loadingUser() {
-    await getUser('usuarios/' + id, startModal).then(response => {
+    await getUser(`usuarios/${id}`, startModal).then(response => {
       if (response !== false) {
         form.setFieldsValue({
           name: response.data.name,
@@ -49,52 +51,55 @@ const ModalUser = ({ id, openModal, closeModal }: Propos) => {
           role: response.data.role,
           sector: response.data.sector,
           image: response.data.image,
+          // id: response.data.id,
         });
       } else {
         startModal('error', 'Ocorreu um erro inesperado ao obter usuários.');
       }
     });
   }
-  // const handle = async () => {
-  //   editingUser && editingUser.id ? submitUpadate : submitCreate;
-  // };
 
   //************************************** */
   //ATUALIZAÇÃO DE USUARIOS************
 
-  // const submitUpadate = async () => {
-  //   if (editUser?.email !== undefined && editUser.name !== null) {
-  //     await updateUser(
-  //       editUser?.name,
-  //       editUser?.email,
-  //       editUser?.role,
-  //       editUser?.sector,
-  //       editUser?.image,
-  //       editUser?.id,
-  //       startModal,
-  //     );
-
-  // startModal('success', 'Usuário atualizado com sucesso!');
-  // closeModal(false);
-  //   }
-  // };
+  const submitUpadate = async () => {
+    const editingUser = form.getFieldsValue(true);
+    // console.log('obejto', editingUser);
+    await updateUser(
+      editingUser?.name,
+      editingUser?.email,
+      editingUser?.role,
+      editingUser?.sector,
+      editingUser?.image,
+      id,
+      startModal,
+    );
+    //loadingUser();
+    startModal('success', 'Usuário atualizado com sucesso!');
+    closeModal(false);
+  };
   //****************** */
   // CRIAÇÃO DE USUARIOS
 
   // const submitCreate = async () => {
-  //   if (editUser?.email !== undefined && editUser.name !== null) {
-  //     await postUser(
-  //       editUser?.name,
-  //       editUser?.email,
-  //       editUser?.role,
-  //       editUser?.sector,
-  //       editUser?.image,
-  //       startModal,
-  //     );
-  //   }
+  //   const editingUser = form.getFieldsValue(true);
+  //   await postUser(
+  //     editingUser?.name,
+  //     editingUser?.email,
+  //     editingUser?.role,
+  //     editingUser?.sector,
+  //     editingUser?.image,
+  //     startModal,
+  //   );
 
   //   closeModal(false);
+  //   loadingUser();
   //   return undefined;
+  // };
+
+  // const handle = async () => {
+  //   console.log(id);
+  //   id ? submitUpadate : submitCreate;
   // };
 
   if (!localStorage.getItem('@App:token')) {
@@ -110,6 +115,7 @@ const ModalUser = ({ id, openModal, closeModal }: Propos) => {
         }}
         footer={[
           <Button
+            htmlType="submit"
             key="submit"
             type="primary"
             className="button-delete-create"
@@ -121,9 +127,9 @@ const ModalUser = ({ id, openModal, closeModal }: Propos) => {
             key="submit"
             type="primary"
             className="button-save-create"
-            // onClick={() => {
-            //   handle();
-            // }}
+            onClick={() => {
+              submitUpadate();
+            }}
           >
             Salvar
           </Button>,
