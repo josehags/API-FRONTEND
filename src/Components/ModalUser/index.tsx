@@ -74,7 +74,7 @@ const ModalUser = ({ id, openModal, closeModal }: Propos) => {
       id,
       startModal,
     );
-    //loadingUser();
+
     startModal('success', 'Usuário atualizado com sucesso!');
     closeModal(false);
   };

@@ -200,6 +200,7 @@ const FormUser = () => {
                         <a
                           onClick={() => {
                             handle(record);
+
                             setOpenModal(true);
                           }}
                         >
@@ -237,6 +238,11 @@ const FormUser = () => {
   ];
 
   //listagem de usuarios na tabela
+
+  useEffect(() => {
+    loadingUser();
+  }, [users]);
+
   useEffect(() => {
     loadingUser();
     setOpenModal(false);
