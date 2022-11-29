@@ -1,7 +1,7 @@
 #components-layout-demo-side {
   height: 32px;
   margin: 16px;
-  background: rgba(255, 255, 255, 0.3);
+  background: rgba(0, 0, 0, 0.3);
 }
 
 .site-layout .site-layout-background {
@@ -13,3 +13,4 @@
   margin: 16px;
   align-items: center;
 }
+

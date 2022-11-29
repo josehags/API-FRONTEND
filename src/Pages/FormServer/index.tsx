@@ -1,108 +1,46 @@
-// import { Button, Table, Form, Input } from "antd";
-import { Button, Form, Input, Table } from 'antd';
-import { useEffect, useState } from 'react';
-interface DataType {
-  key: string;
-  name: string;
-  address: string;
-}
+import { Input, Form, Row, Col, Button } from 'antd';
+import { useState } from 'react';
 
-function App() {
-  const [dataSource, setDataSource] = useState<DataType[]>();
-  const [editingRow, setEditingRow] = useState<number | any>(null);
-  const [form] = Form.useForm();
+export default function FormServer() {
+  const [name, setName] = useState('');
+  const [mother, setMother] = useState('');
+  const [yearsold, setYearsold] = useState('');
 
-  useEffect(() => {
-    const data = [];
-    for (let index = 0; index < 6; index++) {
-      data.push({
-        key: `${index}`,
-        name: `Name ${index}`,
-        address: `Address ${index}`,
-      });
-    }
-    setDataSource(data);
-  }, []);
-  const columns = [
-    {
-      title: 'Name',
-      dataIndex: 'name',
-      render: (text: any, record: any) => {
-        if (editingRow === record.key) {
-          return (
-            <Form.Item
-              name="name"
-              rules={[
-                {
-                  required: true,
-                  message: 'Please enter your name',
-                },
-              ]}
-            >
-              <Input />
-            </Form.Item>
-          );
-        } else {
-          return <p>{text}</p>;
-        }
-      },
-    },
-    {
-      title: 'Address',
-      dataIndex: 'address',
-      render: (text: any, record: any) => {
-        if (editingRow === record.key) {
-          return (
-            <Form.Item name="address">
-              <Input />
-            </Form.Item>
-          );
-        } else {
-          return <p>{text}</p>;
-        }
-      },
-    },
-    {
-      title: 'Actions',
-      render: (_: any, record: any) => {
-        return (
-          <>
-            <Button
-              type="link"
-              onClick={() => {
-                console.log('oi', record);
-                setEditingRow(record.key);
-                form.setFieldsValue({
-                  name: record.name,
-                  address: record.address,
-                });
-              }}
-            >
-              Edit
-            </Button>
-            <Button type="link" htmlType="submit">
-              Save
-            </Button>
-          </>
-        );
-      },
-    },
-  ];
-  const onFinish = (values: any) => {
-    // const updatedDataSource = [...dataSource];
-    // updatedDataSource.splice(editingRow, 1);
-    // setDataSource(updatedDataSource);
-    // setEditingRow(null);
-  };
+  function handleFinish(a: any) {
+    console.log(a);
+  }
+
   return (
-    <div className="App">
-      <header className="App-header">
-        <Form form={form} onFinish={onFinish}>
-          <Table columns={columns} dataSource={dataSource}></Table>
-        </Form>
-      </header>
-    </div>
+    <>
+      {/*    { name },{ mother }, { yearsold } */}
+      <Form layout="vertical" onFinish={handleFinish}>
+        <Row gutter={24}>
+          <Col span={8}>
+            <Form.Item name={['fullname']} label="Nome completo">
+              <Input value={name} onChange={e => setName(e.target.value)} />
+            </Form.Item>
+          </Col>
+          <Col span={8}>
+            <Form.Item name={['mother']} label="Nome da Mãe">
+              <Input value={mother} onChange={e => setMother(e.target.value)} />
+            </Form.Item>
+          </Col>
+          <Col span={8}>
+            <Form.Item name={['yearsold']} label="Idade">
+              <Input
+                type="number"
+                value={yearsold}
+                onChange={e => setYearsold(e.target.value)}
+              />
+            </Form.Item>
+          </Col>
+        </Row>
+        <Row justify="end">
+          <Button type="primary" htmlType="submit">
+            Salvar Servidor
+          </Button>
+        </Row>
+      </Form>
+    </>
   );
 }
-
-export default App;

@@ -118,8 +118,8 @@ const ProfessionalHomePage: React.FC = () => {
           </Typography.Title>
         </Header>{' '}
         <Content style={{ margin: '0 16px' }}>
-          <Breadcrumb style={{ margin: '16px 0' }}>
-            <Breadcrumb.Item>
+          <Breadcrumb style={{ margin: '16px 0', color: ' black' }}>
+            <Breadcrumb.Item className="menu">
               {
                 {
                   '1': <span>Dashboard</span>,

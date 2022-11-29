@@ -10,15 +10,6 @@ import {
 } from '../../Services/Axios/userServices';
 import { useProfileUser } from '../../Context';
 
-// export interface IUser {
-//   id: string;
-//   name: string;
-//   email: string;
-//   role: string;
-//   sector: string;
-//   image: string;
-// }
-
 type Propos = {
   id: string;
   openModal: boolean;
@@ -27,7 +18,7 @@ type Propos = {
 };
 
 const ModalUser = ({ id, openModal, closeModal }: Propos) => {
-  const { user, startModal } = useProfileUser();
+  const { startModal } = useProfileUser();
   const [form] = Form.useForm();
 
   const navigate = useNavigate();
@@ -35,6 +26,8 @@ const ModalUser = ({ id, openModal, closeModal }: Propos) => {
   function handleFinish(a: any) {
     console.log(a);
   }
+
+  //Listagem se tiver id set no formulário
   useEffect(() => {
     loadingUser();
   }, [id]);
@@ -58,9 +51,7 @@ const ModalUser = ({ id, openModal, closeModal }: Propos) => {
     }
   }
 
-  //************************************** */
   //ATUALIZAÇÃO DE USUARIOS************
-
   const submitUpadate = async () => {
     const editingUser = form.getFieldsValue(true);
     // console.log('obejto', editingUser);
@@ -73,16 +64,14 @@ const ModalUser = ({ id, openModal, closeModal }: Propos) => {
       id,
       startModal,
     );
-
     startModal('success', 'Usuário atualizado com sucesso!');
     closeModal(false);
   };
-  //****************** */
-  // CRIAÇÃO DE USUARIOS
 
+  // CRIAÇÃO DE USUARIOS
   const submitCreate = async () => {
     const editingUser = form.getFieldsValue(true);
-    console.log('novo usuario', editingUser);
+    // console.log('novo usuario', editingUser);
     await postUser(
       editingUser?.name,
       editingUser?.email,
@@ -92,7 +81,6 @@ const ModalUser = ({ id, openModal, closeModal }: Propos) => {
       startModal,
     );
     closeModal(false);
-    loadingUser();
     return undefined;
   };
 
@@ -119,7 +107,6 @@ const ModalUser = ({ id, openModal, closeModal }: Propos) => {
         footer={[
           <Button
             htmlType="submit"
-            // key="submit"
             type="primary"
             className="button-delete-create"
             onClick={() => closeModal(false)}

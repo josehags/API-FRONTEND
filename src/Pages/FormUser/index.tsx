@@ -51,7 +51,7 @@ const FormUser = () => {
     console.log(a);
   }
 
-  // LISTAGEM DE USUARIOS**************
+  // LISTAGEM DE USUARIOS
   const handleSearch = (
     selectedKeys: string[],
     confirm: (param?: FilterConfirmProps) => void,
@@ -235,11 +235,7 @@ const FormUser = () => {
     },
   ];
 
-  //listagem de usuarios na tabela
-
-  // useEffect(() => {
-  //   loadingUser();
-  // }, [users]);
+  // Listagem de usuarios na tabela
 
   useEffect(() => {
     loadingUser();
@@ -255,8 +251,7 @@ const FormUser = () => {
     }
   }
 
-  // exclusão de usuario
-
+  // Exclusão de usuario
   const ClickDeleteUser = async (record: any) => {
     await deleteUser(record, startModal);
 
@@ -267,7 +262,7 @@ const FormUser = () => {
     setUsers(novosUsuarios);
   };
 
-  //fechar modal
+  // Fechar modal
   const closeModal = (open: boolean) => {
     setOpenModal(false);
     loadingUser();
@@ -276,10 +271,11 @@ const FormUser = () => {
   if (!localStorage.getItem('@App:token')) {
     navigate('/login', { replace: true });
   }
-
+  //setando obejto
   const handle = async (record: any) => {
     await setRecordUser(record);
   };
+  const [valor, setValor] = React.useState('');
 
   return (
     <>
@@ -290,8 +286,8 @@ const FormUser = () => {
             type="primary"
             style={{ float: 'right', width: 'auto' }}
             onClick={() => {
+              setRecordUser({});
               setOpenModal(true);
-              handle({});
             }}
           >
             <a>Criar novo usuário</a>
