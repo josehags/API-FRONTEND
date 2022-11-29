@@ -147,6 +147,7 @@ const ModalUser = ({ id, openModal, closeModal }: Propos) => {
                     message: 'Por favor, insira seu nome',
                   },
                 ]}
+                hasFeedback
               >
                 <Input />
               </Form.Item>
@@ -158,9 +159,14 @@ const ModalUser = ({ id, openModal, closeModal }: Propos) => {
                 rules={[
                   {
                     required: true,
-                    message: 'Por favor, insira seu E-mail',
+                    message: 'Por favor, insira seu e-mail',
+                  },
+                  {
+                    type: 'email',
+                    message: 'Por favor, informe um email válido!',
                   },
                 ]}
+                hasFeedback
               >
                 <Input />
               </Form.Item>
@@ -175,6 +181,7 @@ const ModalUser = ({ id, openModal, closeModal }: Propos) => {
                     message: 'Por favor, insira a sua função',
                   },
                 ]}
+                hasFeedback
               >
                 <Input />
               </Form.Item>
@@ -189,6 +196,7 @@ const ModalUser = ({ id, openModal, closeModal }: Propos) => {
                     message: 'Por favor, insira o seu setor',
                   },
                 ]}
+                hasFeedback
               >
                 <Input />
               </Form.Item>
