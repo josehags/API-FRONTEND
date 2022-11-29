@@ -9,17 +9,15 @@ import {
   updateUser,
 } from '../../Services/Axios/userServices';
 import { useProfileUser } from '../../Context';
-import { Console } from 'console';
-import { Field } from 'rc-field-form';
 
-export interface IUser {
-  id: string;
-  name: string;
-  email: string;
-  role: string;
-  sector: string;
-  image: string;
-}
+// export interface IUser {
+//   id: string;
+//   name: string;
+//   email: string;
+//   role: string;
+//   sector: string;
+//   image: string;
+// }
 
 type Propos = {
   id: string;
@@ -31,7 +29,6 @@ type Propos = {
 const ModalUser = ({ id, openModal, closeModal }: Propos) => {
   const { user, startModal } = useProfileUser();
   const [form] = Form.useForm();
-  // const [editingUser, setEditingUser] = useState<IUser | null>(null);
 
   const navigate = useNavigate();
 
@@ -43,20 +40,22 @@ const ModalUser = ({ id, openModal, closeModal }: Propos) => {
   }, [id]);
 
   async function loadingUser() {
-    await getUser(`usuarios/${id}`, startModal).then(response => {
-      if (response !== false) {
-        form.setFieldsValue({
-          name: response.data.name,
-          email: response.data.email,
-          role: response.data.role,
-          sector: response.data.sector,
-          image: response.data.image,
-          // id: response.data.id,
-        });
-      } else {
-        startModal('error', 'Ocorreu um erro inesperado ao obter usuários.');
-      }
-    });
+    if (id) {
+      await getUser(`usuarios/${id}`, startModal).then(response => {
+        if (response !== false) {
+          form.setFieldsValue({
+            id: response.data.id,
+            name: response.data.name,
+            email: response.data.email,
+            role: response.data.role,
+            sector: response.data.sector,
+            image: response.data.image,
+          });
+        } else {
+          startModal('error', 'Ocorreu um erro inesperado ao obter usuários.');
+        }
+      });
+    }
   }
 
   //************************************** */
@@ -81,26 +80,30 @@ const ModalUser = ({ id, openModal, closeModal }: Propos) => {
   //****************** */
   // CRIAÇÃO DE USUARIOS
 
-  // const submitCreate = async () => {
-  //   const editingUser = form.getFieldsValue(true);
-  //   await postUser(
-  //     editingUser?.name,
-  //     editingUser?.email,
-  //     editingUser?.role,
-  //     editingUser?.sector,
-  //     editingUser?.image,
-  //     startModal,
-  //   );
+  const submitCreate = async () => {
+    const editingUser = form.getFieldsValue(true);
+    console.log('novo usuario', editingUser);
+    await postUser(
+      editingUser?.name,
+      editingUser?.email,
+      editingUser?.role,
+      editingUser?.sector,
+      editingUser?.image,
+      startModal,
+    );
+    closeModal(false);
+    loadingUser();
+    return undefined;
+  };
 
-  //   closeModal(false);
-  //   loadingUser();
-  //   return undefined;
-  // };
-
-  // const handle = async () => {
-  //   console.log(id);
-  //   id ? submitUpadate : submitCreate;
-  // };
+  const onSubmit = async () => {
+    if (id) {
+      submitUpadate();
+    } else {
+      submitCreate();
+    }
+    closeModal(false);
+  };
 
   if (!localStorage.getItem('@App:token')) {
     navigate('/login', { replace: true });
@@ -116,7 +119,7 @@ const ModalUser = ({ id, openModal, closeModal }: Propos) => {
         footer={[
           <Button
             htmlType="submit"
-            key="submit"
+            // key="submit"
             type="primary"
             className="button-delete-create"
             onClick={() => closeModal(false)}
@@ -128,7 +131,7 @@ const ModalUser = ({ id, openModal, closeModal }: Propos) => {
             type="primary"
             className="button-save-create"
             onClick={() => {
-              submitUpadate();
+              onSubmit();
             }}
           >
             Salvar
@@ -214,19 +217,3 @@ const ModalUser = ({ id, openModal, closeModal }: Propos) => {
 };
 
 export default ModalUser;
-
-// onClick={() => {
-//   editingUser && editingUser.id
-//     ? setUsers((pre: any) => {
-//         return pre.map((user: any) => {
-//           if (user.id === editingUser?.id) {
-//             console.log(editingUser);
-//             return submitUpadate;
-//           } else {
-//             closeModal(false);
-//             return user;
-//           }
-//         });
-//       })
-//     : submitCreate;
-// }}

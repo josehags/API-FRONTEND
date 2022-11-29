@@ -7,7 +7,6 @@ import {
   Space,
   Dropdown,
   Popconfirm,
-  notification,
 } from 'antd';
 import { SearchOutlined } from '@ant-design/icons';
 import { DownOutlined } from '@ant-design/icons';
@@ -18,7 +17,7 @@ import { useProfileUser } from '../../Context';
 import { useNavigate } from 'react-router-dom';
 import { FilterConfirmProps } from 'antd/lib/table/interface';
 import Highlighter from 'react-highlight-words';
-import ModalUser, { IUser } from '../../Components/ModalUser';
+import ModalUser from '../../Components/ModalUser';
 
 interface DataType {
   key: React.Key;
@@ -36,7 +35,7 @@ const FormUser = () => {
   const [searchText, setSearchText] = useState('');
   const [searchedColumn, setSearchedColumn] = useState('');
   const searchInput = useRef<InputRef>(null);
-  const { user, startModal } = useProfileUser();
+  const { startModal } = useProfileUser();
   const [openModal, setOpenModal] = useState(false);
   const [users, setUsers] = useState([]);
 
@@ -200,7 +199,6 @@ const FormUser = () => {
                         <a
                           onClick={() => {
                             handle(record);
-
                             setOpenModal(true);
                           }}
                         >
@@ -239,9 +237,9 @@ const FormUser = () => {
 
   //listagem de usuarios na tabela
 
-  useEffect(() => {
-    loadingUser();
-  }, [users]);
+  // useEffect(() => {
+  //   loadingUser();
+  // }, [users]);
 
   useEffect(() => {
     loadingUser();
@@ -268,39 +266,32 @@ const FormUser = () => {
     }
     setUsers(novosUsuarios);
   };
+
   //fechar modal
   const closeModal = (open: boolean) => {
     setOpenModal(false);
+    loadingUser();
   };
 
   if (!localStorage.getItem('@App:token')) {
     navigate('/login', { replace: true });
   }
 
-  // useEffect(() => {
-  //   notification.info({
-  //     message: recordUser.id,
-  //   });
-  //   setRecordUser(recordUser);
-  // }, [recordUser]);
-
   const handle = async (record: any) => {
     await setRecordUser(record);
-    // setRowIndexr({ rowIndex });
-    // console.log('record..', record);
   };
 
   return (
     <>
       <Form className="layout" layout="vertical" onFinish={handleFinish}>
         <Form.Item className="form">
-          {/* {recordUser.id} */}
           <Button
             className="button-create"
             type="primary"
             style={{ float: 'right', width: 'auto' }}
             onClick={() => {
               setOpenModal(true);
+              handle({});
             }}
           >
             <a>Criar novo usuário</a>
@@ -317,8 +308,7 @@ const FormUser = () => {
             return {
               onClick: () => {
                 setRowIndexr(rowIndex);
-                // console.log(rowIndex);
-              }, // click row
+              },
             };
           }}
           dataSource={users}
