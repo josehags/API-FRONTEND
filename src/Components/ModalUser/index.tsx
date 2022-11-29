@@ -183,7 +183,7 @@ const ModalUser = ({ id, openModal, closeModal }: Propos) => {
             </Col>
             <Col>
               <Form.Item>
-                <Space>
+                <Space style={{ float: 'right' }}>
                   <Button
                     htmlType="submit"
                     type="primary"
