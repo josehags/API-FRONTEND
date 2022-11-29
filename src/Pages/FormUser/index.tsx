@@ -254,12 +254,10 @@ const FormUser = () => {
   // Exclusão de usuario
   const ClickDeleteUser = async (record: any) => {
     await deleteUser(record, startModal);
-
     const novosUsuarios = [...users];
-    if (index !== undefined) {
-      novosUsuarios.splice(index.rowIndex, 1);
-    }
+    novosUsuarios.splice(record, -1);
     setUsers(novosUsuarios);
+    loadingUser();
   };
 
   // Fechar modal
@@ -273,20 +271,19 @@ const FormUser = () => {
   }
   //setando obejto
   const handle = async (record: any) => {
+    // console.log(record);
     await setRecordUser(record);
   };
-  const [valor, setValor] = React.useState('');
 
   return (
     <>
       <Form className="layout" layout="vertical" onFinish={handleFinish}>
-        <Form.Item className="form">
+        <Form.Item>
           <Button
-            className="button-create"
             type="primary"
             style={{ float: 'right', width: 'auto' }}
             onClick={() => {
-              setRecordUser({});
+              setRecordUser(null);
               setOpenModal(true);
             }}
           >
@@ -295,18 +292,17 @@ const FormUser = () => {
         </Form.Item>
 
         <Table
-          className="form-table"
           columns={columns}
           expandable={{
             rowExpandable: record => record.name !== 'Not Expandable',
           }}
-          onRow={(record: any, rowIndex: any) => {
-            return {
-              onClick: () => {
-                setRowIndexr(rowIndex);
-              },
-            };
-          }}
+          // onRow={(record: any, rowIndex: any) => {
+          //   return {
+          //     onClick: () => {
+          //       setRowIndexr(rowIndex);
+          //     },
+          //   };
+          // }}
           dataSource={users}
         />
       </Form>

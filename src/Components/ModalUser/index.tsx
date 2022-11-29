@@ -1,4 +1,4 @@
-import { Modal } from 'antd';
+import { Modal, Space } from 'antd';
 import { Button, Form, Input } from 'antd';
 import React, { ChangeEvent, useEffect, useState } from 'react';
 import { Col } from 'antd';
@@ -9,6 +9,7 @@ import {
   updateUser,
 } from '../../Services/Axios/userServices';
 import { useProfileUser } from '../../Context';
+import { validateSignUp } from '../../Utils/validations';
 
 type Propos = {
   id: string;
@@ -24,7 +25,12 @@ const ModalUser = ({ id, openModal, closeModal }: Propos) => {
   const navigate = useNavigate();
 
   function handleFinish(a: any) {
-    console.log(a);
+    if (id) {
+      submitUpadate();
+    } else {
+      submitCreate();
+    }
+    closeModal(false);
   }
 
   //Listagem se tiver id set no formulário
@@ -48,13 +54,14 @@ const ModalUser = ({ id, openModal, closeModal }: Propos) => {
           startModal('error', 'Ocorreu um erro inesperado ao obter usuários.');
         }
       });
+    } else {
+      form.resetFields();
     }
   }
 
   //ATUALIZAÇÃO DE USUARIOS************
   const submitUpadate = async () => {
     const editingUser = form.getFieldsValue(true);
-    // console.log('obejto', editingUser);
     await updateUser(
       editingUser?.name,
       editingUser?.email,
@@ -65,6 +72,7 @@ const ModalUser = ({ id, openModal, closeModal }: Propos) => {
       startModal,
     );
     startModal('success', 'Usuário atualizado com sucesso!');
+
     closeModal(false);
   };
 
@@ -84,18 +92,10 @@ const ModalUser = ({ id, openModal, closeModal }: Propos) => {
     return undefined;
   };
 
-  const onSubmit = async () => {
-    if (id) {
-      submitUpadate();
-    } else {
-      submitCreate();
-    }
-    closeModal(false);
-  };
-
   if (!localStorage.getItem('@App:token')) {
     navigate('/login', { replace: true });
   }
+
   return (
     <>
       <Modal
@@ -104,29 +104,15 @@ const ModalUser = ({ id, openModal, closeModal }: Propos) => {
         onCancel={() => {
           closeModal(false);
         }}
-        footer={[
-          <Button
-            htmlType="submit"
-            type="primary"
-            className="button-delete-create"
-            onClick={() => closeModal(false)}
-          >
-            Cancelar
-          </Button>,
-          <Button
-            key="submit"
-            type="primary"
-            className="button-save-create"
-            onClick={() => {
-              onSubmit();
-            }}
-          >
-            Salvar
-          </Button>,
-        ]}
+        footer={[]}
       >
         <>
-          <Form layout="vertical" onFinish={handleFinish} form={form}>
+          <Form
+            layout="vertical"
+            onFinish={handleFinish}
+            form={form}
+            // onFinishFailed={onFinishFailed}
+          >
             <Col offset={1} span={16}>
               <Form.Item
                 name={['name']}
@@ -149,7 +135,6 @@ const ModalUser = ({ id, openModal, closeModal }: Propos) => {
                 rules={[
                   {
                     required: true,
-                    message: 'Por favor, insira seu e-mail',
                   },
                   {
                     type: 'email',
@@ -194,6 +179,23 @@ const ModalUser = ({ id, openModal, closeModal }: Propos) => {
             <Col offset={1} span={16}>
               <Form.Item name={['image']} label="Imagem">
                 <Input />
+              </Form.Item>
+            </Col>
+            <Col>
+              <Form.Item>
+                <Space>
+                  <Button
+                    htmlType="submit"
+                    type="primary"
+                    onClick={() => closeModal(false)}
+                  >
+                    Cancelar
+                  </Button>
+
+                  <Button htmlType="submit" type="primary">
+                    Salvar
+                  </Button>
+                </Space>
               </Form.Item>
             </Col>
           </Form>
