@@ -17,6 +17,7 @@ root.render(
         colorLink: '#white',
         colorLinkHover: ' rgb(134, 142, 151)',
         borderRadius: 3,
+        colorTextHeading: 'rgb(0, 21, 42)',
       },
     }}
   >

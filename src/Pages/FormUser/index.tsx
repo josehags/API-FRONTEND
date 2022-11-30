@@ -41,17 +41,12 @@ const FormUser = () => {
 
   const [recordUser, setRecordUser] = useState<any>({});
 
-  const [index, setRowIndexr] = useState<{
-    rowIndex: number;
-  }>();
-
   const navigate = useNavigate();
 
   function handleFinish(a: any) {
     console.log(a);
   }
 
-  // LISTAGEM DE USUARIOS
   const handleSearch = (
     selectedKeys: string[],
     confirm: (param?: FilterConfirmProps) => void,
@@ -235,8 +230,7 @@ const FormUser = () => {
     },
   ];
 
-  // Listagem de usuarios na tabela
-
+  // LISTAGEM DE USUARIOS
   useEffect(() => {
     loadingUser();
     setOpenModal(false);
@@ -266,14 +260,13 @@ const FormUser = () => {
     loadingUser();
   };
 
+  const handle = async (record: any) => {
+    await setRecordUser(record);
+  };
+
   if (!localStorage.getItem('@App:token')) {
     navigate('/login', { replace: true });
   }
-  //setando obejto
-  const handle = async (record: any) => {
-    // console.log(record);
-    await setRecordUser(record);
-  };
 
   return (
     <>
@@ -296,13 +289,6 @@ const FormUser = () => {
           expandable={{
             rowExpandable: record => record.name !== 'Not Expandable',
           }}
-          // onRow={(record: any, rowIndex: any) => {
-          //   return {
-          //     onClick: () => {
-          //       setRowIndexr(rowIndex);
-          //     },
-          //   };
-          // }}
           dataSource={users}
         />
       </Form>

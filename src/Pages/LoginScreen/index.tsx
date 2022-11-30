@@ -6,7 +6,6 @@ import { useProfileUser } from '../../Context';
 require('./style.css');
 
 const LoginScreen: React.FC = () => {
-  //  const [loading, setLoading] = useState(false)
   const navigate = useNavigate();
   const [emailReceived, setEmailReceived] = useState('');
   const [passwordReceived, setPasswordReceived] = useState('');
@@ -17,12 +16,6 @@ const LoginScreen: React.FC = () => {
   }
 
   const onFinish = (values: any) => {
-    /*    setLoading(true);
-    setTimeout(() => {
-      setLoading(false)
-    }, 2000);
-      navigate('/home', { replace: true });
-      */
     handleLogin(emailReceived, passwordReceived);
     navigate('/', { replace: true });
   };

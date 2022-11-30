@@ -1,6 +1,6 @@
 import { Modal, Space } from 'antd';
 import { Button, Form, Input } from 'antd';
-import React, { ChangeEvent, useEffect, useState } from 'react';
+import React, { useEffect } from 'react';
 import { Col } from 'antd';
 import { useNavigate } from 'react-router-dom';
 import {
@@ -9,7 +9,6 @@ import {
   updateUser,
 } from '../../Services/Axios/userServices';
 import { useProfileUser } from '../../Context';
-import { validateSignUp } from '../../Utils/validations';
 
 type Propos = {
   id: string;
@@ -100,6 +99,7 @@ const ModalUser = ({ id, openModal, closeModal }: Propos) => {
     <>
       <Modal
         open={openModal}
+        className="ant-modal"
         title="Usuários"
         onCancel={() => {
           closeModal(false);
@@ -182,8 +182,8 @@ const ModalUser = ({ id, openModal, closeModal }: Propos) => {
               </Form.Item>
             </Col>
             <Col>
-              <Form.Item>
-                <Space style={{ float: 'right' }}>
+              <Form.Item className="space">
+                <Space style={{ float: 'right', padding: '' }}>
                   <Button
                     htmlType="submit"
                     type="primary"
