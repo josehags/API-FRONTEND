@@ -1,0 +1,29 @@
+.ant-modal-content {
+  padding: 1px !important;
+  padding-bottom: 0px !important;
+}
+
+.ant-modal-header {
+  background-color: rgb(0, 21, 42)  !important ;
+  padding: 15px !important;
+}
+
+.ant-modal-close {
+  top: 2 !important;
+  right: -2 !important;
+  color: aliceblue !important;
+}
+.ant-modal-title{
+  color: aliceblue !important;
+}
+
+.ant-modal-body {
+  padding: 2.5px !important;
+}
+
+
+.space{
+   float: right !important;
+   padding-right: 15px !important;
+   padding-top: 10px !important;
+}

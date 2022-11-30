@@ -10,6 +10,8 @@ import {
 } from '../../Services/Axios/userServices';
 import { useProfileUser } from '../../Context';
 
+require('./index.css');
+
 type Propos = {
   id: string;
   openModal: boolean;
@@ -104,15 +106,10 @@ const ModalUser = ({ id, openModal, closeModal }: Propos) => {
         onCancel={() => {
           closeModal(false);
         }}
-        footer={[]}
+        footer
       >
         <>
-          <Form
-            layout="vertical"
-            onFinish={handleFinish}
-            form={form}
-            // onFinishFailed={onFinishFailed}
-          >
+          <Form layout="vertical" onFinish={handleFinish} form={form}>
             <Col offset={1} span={16}>
               <Form.Item
                 name={['name']}
@@ -182,8 +179,8 @@ const ModalUser = ({ id, openModal, closeModal }: Propos) => {
               </Form.Item>
             </Col>
             <Col>
-              <Form.Item className="space">
-                <Space style={{ float: 'right', padding: '' }}>
+              <Form.Item>
+                <Space className="space">
                   <Button
                     htmlType="submit"
                     type="primary"
