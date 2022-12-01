@@ -16,7 +16,13 @@ const ModalServer = ({ openModal }: Propos) => {
   };
 
   return (
-    <Modal className="ant-modal" title="Servidores" open={openModal} footer>
+    <Modal
+      className="ant-modal"
+      title="Servidores"
+      width={'auto'}
+      open={openModal}
+      footer
+    >
       <Form
         form={form}
         name="dynamic_form_complex"
