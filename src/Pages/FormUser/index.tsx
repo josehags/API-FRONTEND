@@ -36,16 +36,12 @@ const FormUser = () => {
   const [searchedColumn, setSearchedColumn] = useState('');
   const searchInput = useRef<InputRef>(null);
   const { startModal } = useProfileUser();
-  const [openModal, setOpenModal] = useState(false);
   const [users, setUsers] = useState([]);
-
   const [recordUser, setRecordUser] = useState<any>({});
 
-  const navigate = useNavigate();
+  const [openModal, setOpenModal] = useState(false);
 
-  function handleFinish(a: any) {
-    console.log(a);
-  }
+  const navigate = useNavigate();
 
   const handleSearch = (
     selectedKeys: string[],
@@ -190,16 +186,14 @@ const FormUser = () => {
                 items: [
                   {
                     label: (
-                      <>
-                        <a
-                          onClick={() => {
-                            handle(record);
-                            setOpenModal(true);
-                          }}
-                        >
-                          Alterar
-                        </a>
-                      </>
+                      <a
+                        onClick={() => {
+                          handle(record);
+                          setOpenModal(true);
+                        }}
+                      >
+                        Alterar
+                      </a>
                     ),
                     key: '1',
                   },
@@ -255,7 +249,7 @@ const FormUser = () => {
   };
 
   // Fechar modal
-  const closeModal = (open: boolean) => {
+  const closeModal = () => {
     setOpenModal(false);
     loadingUser();
   };
@@ -270,7 +264,7 @@ const FormUser = () => {
 
   return (
     <>
-      <Form className="layout" layout="vertical" onFinish={handleFinish}>
+      <Form className="layout" layout="vertical">
         <Form.Item>
           <Button
             type="primary"

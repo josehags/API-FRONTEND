@@ -15,8 +15,7 @@ require('./index.css');
 type Propos = {
   id: string;
   openModal: boolean;
-
-  closeModal: (open: boolean) => void;
+  closeModal: () => void;
 };
 
 const ModalUser = ({ id, openModal, closeModal }: Propos) => {
@@ -31,10 +30,10 @@ const ModalUser = ({ id, openModal, closeModal }: Propos) => {
     } else {
       submitCreate();
     }
-    closeModal(false);
+    closeModal();
   }
 
-  //Listagem se tiver id set no formulário
+  //Listagem, se tiver id set no formulário
   useEffect(() => {
     loadingUser();
   }, [id]);
@@ -73,14 +72,11 @@ const ModalUser = ({ id, openModal, closeModal }: Propos) => {
       startModal,
     );
     startModal('success', 'Usuário atualizado com sucesso!');
-
-    closeModal(false);
   };
 
   // CRIAÇÃO DE USUARIOS
   const submitCreate = async () => {
     const editingUser = form.getFieldsValue(true);
-    // console.log('novo usuario', editingUser);
     await postUser(
       editingUser?.name,
       editingUser?.email,
@@ -89,23 +85,18 @@ const ModalUser = ({ id, openModal, closeModal }: Propos) => {
       editingUser?.image,
       startModal,
     );
-    closeModal(false);
     return undefined;
   };
-
   if (!localStorage.getItem('@App:token')) {
     navigate('/login', { replace: true });
   }
-
   return (
     <>
       <Modal
         open={openModal}
         className="ant-modal"
         title="Usuários"
-        onCancel={() => {
-          closeModal(false);
-        }}
+        onCancel={closeModal}
         footer
       >
         <>
@@ -181,11 +172,7 @@ const ModalUser = ({ id, openModal, closeModal }: Propos) => {
             <Col>
               <Form.Item>
                 <Space className="space">
-                  <Button
-                    htmlType="submit"
-                    type="primary"
-                    onClick={() => closeModal(false)}
-                  >
+                  <Button htmlType="submit" type="primary" onClick={closeModal}>
                     Cancelar
                   </Button>
 
