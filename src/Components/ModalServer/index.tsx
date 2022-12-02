@@ -1,6 +1,7 @@
 import { Modal, Space } from 'antd';
 import { Button, Form, Input } from 'antd';
-import { DeleteOutlined, PlusOutlined } from '@ant-design/icons';
+
+import { PlusOutlined, MinusCircleOutlined } from '@ant-design/icons';
 
 require('./index.css');
 
@@ -10,70 +11,69 @@ type Propos = {
 
 const ModalServer = ({ openModal }: Propos) => {
   const [form] = Form.useForm();
-
-  const onFinish = (values: any) => {
-    console.log('Received values of form:', values);
-  };
+  const { Search } = Input;
 
   return (
     <Modal
       className="ant-modal"
       title="Servidores"
-      width={'auto'}
+      width={1500}
       open={openModal}
       footer
     >
-      <Form
-        form={form}
-        name="dynamic_form_complex"
-        onFinish={onFinish}
-        autoComplete="off"
-      >
-        <Form.List name="sights">
-          {(fields, { add, remove }) => (
-            <>
-              {fields.map(field => (
-                <Space key={field.key} align="baseline">
-                  <Form.Item
-                    noStyle
-                    shouldUpdate={(prevValues, curValues) =>
-                      prevValues.area !== curValues.area ||
-                      prevValues.sights !== curValues.sights
-                    }
+      <Form form={form}>
+        <Form
+          name="dynamic_form_nest_item"
+          // onFinish={onFinish}
+          autoComplete="off"
+        >
+          <Form.List name="users">
+            {(fields, { add, remove }) => (
+              <>
+                {fields.map(({ key, name, ...restField }) => (
+                  <Space
+                    key={key}
+                    style={{ display: 'flex', marginBottom: 8 }}
+                    align="baseline"
                   >
-                    {() => (
-                      <Form.Item label="CEP" name={['CEP']}>
-                        <Input />
-                      </Form.Item>
-                    )}
-                  </Form.Item>
-                  <Form.Item label="Estado" name={['Estado']}>
-                    <Input />
-                  </Form.Item>
-                  <Form.Item label="Logradouro" name={['Logradouro']}>
-                    <Input />
-                  </Form.Item>
-                  <Form.Item label="Logradouro" name={['Logradouro']}>
-                    <Input />
-                  </Form.Item>
-
-                  <DeleteOutlined onClick={() => remove(field.name)} />
-                </Space>
-              ))}
-
-              <Form.Item>
-                <Button
-                  type="dashed"
-                  onClick={() => add()}
-                  block
-                  icon={<PlusOutlined />}
-                >
-                  Adicionar endereço
-                </Button>
-              </Form.Item>
-            </>
-          )}
-        </Form.List>
+                    <Form.Item
+                      {...restField}
+                      name={[name, 'first']}
+                      rules={[
+                        { required: true, message: 'Missing first name' },
+                      ]}
+                    >
+                      <Input placeholder="First Name" />
+                    </Form.Item>
+                    <Form.Item
+                      {...restField}
+                      name={[name, 'last']}
+                      rules={[{ required: true, message: 'Missing last name' }]}
+                    >
+                      <Input placeholder="Last Name" />
+                    </Form.Item>
+                    <MinusCircleOutlined onClick={() => remove(name)} />
+                  </Space>
+                ))}
+                <Form.Item>
+                  <Button
+                    type="dashed"
+                    onClick={() => add()}
+                    block
+                    icon={<PlusOutlined />}
+                  >
+                    Add field
+                  </Button>
+                </Form.Item>
+              </>
+            )}
+          </Form.List>
+          <Form.Item>
+            <Button type="primary" htmlType="submit">
+              Submit
+            </Button>
+          </Form.Item>
+        </Form>
       </Form>
     </Modal>
   );
