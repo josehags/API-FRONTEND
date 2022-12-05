@@ -1,7 +1,7 @@
 import { Modal, Space } from 'antd';
 import { Button, Form, Input } from 'antd';
 
-import { PlusOutlined, MinusCircleOutlined } from '@ant-design/icons';
+import { PlusOutlined, DeleteOutlined } from '@ant-design/icons';
 
 require('./index.css');
 
@@ -11,7 +11,20 @@ type Propos = {
 
 const ModalServer = ({ openModal }: Propos) => {
   const [form] = Form.useForm();
-  const { Search } = Input;
+
+  const checkCEP = (e: any) => {
+    const cep = e.target.value.replace(/\D/g, '');
+    fetch(`https://viacep.com.br/ws/${cep}/json/`)
+      .then((res: { json: () => any }) => res.json())
+      .then(data => {
+        console.log(data);
+        form.setFieldValue('rua', data.logradouro);
+        form.setFieldValue('bairro', data.bairro);
+        form.setFieldValue('cidade', data.localidade);
+        form.setFieldValue('estado', data.uf);
+        form.setFieldValue('addressNumber', '');
+      });
+  };
 
   return (
     <Modal
@@ -22,58 +35,49 @@ const ModalServer = ({ openModal }: Propos) => {
       footer
     >
       <Form form={form}>
-        <Form
-          name="dynamic_form_nest_item"
-          // onFinish={onFinish}
-          autoComplete="off"
-        >
-          <Form.List name="users">
-            {(fields, { add, remove }) => (
-              <>
-                {fields.map(({ key, name, ...restField }) => (
-                  <Space
-                    key={key}
-                    style={{ display: 'flex', marginBottom: 8 }}
-                    align="baseline"
-                  >
-                    <Form.Item
-                      {...restField}
-                      name={[name, 'first']}
-                      rules={[
-                        { required: true, message: 'Missing first name' },
-                      ]}
-                    >
-                      <Input placeholder="First Name" />
-                    </Form.Item>
-                    <Form.Item
-                      {...restField}
-                      name={[name, 'last']}
-                      rules={[{ required: true, message: 'Missing last name' }]}
-                    >
-                      <Input placeholder="Last Name" />
-                    </Form.Item>
-                    <MinusCircleOutlined onClick={() => remove(name)} />
-                  </Space>
-                ))}
-                <Form.Item>
-                  <Button
-                    type="dashed"
-                    onClick={() => add()}
-                    block
-                    icon={<PlusOutlined />}
-                  >
-                    Add field
-                  </Button>
-                </Form.Item>
-              </>
-            )}
-          </Form.List>
-          <Form.Item>
-            <Button type="primary" htmlType="submit">
-              Submit
-            </Button>
-          </Form.Item>
-        </Form>
+        <Form.List name={'endereço'}>
+          {(fields, { add, remove }) => (
+            <>
+              {fields.map(field => (
+                <Space
+                  style={{ display: 'flex', marginBottom: 8 }}
+                  align="baseline"
+                >
+                  <Form.Item label="CEP" name={[field.name, 'cep']}>
+                    <Input onBlur={checkCEP} />
+                  </Form.Item>
+                  <Form.Item label="Rua" name={[field.name, 'rua']}>
+                    <Input />
+                  </Form.Item>
+                  <Form.Item label="Bairro" name={[field.name, 'bairro']}>
+                    <Input />
+                  </Form.Item>
+                  <Form.Item label="Cidade" name={[field.name, 'cidade']}>
+                    <Input />
+                  </Form.Item>
+                  <Form.Item label="Estado" name={[field.name, 'estado']}>
+                    <Input />
+                  </Form.Item>
+
+                  <DeleteOutlined
+                    style={{ color: 'red' }}
+                    onClick={() => remove(field.name)}
+                  />
+                </Space>
+              ))}
+              <Form.Item>
+                <Button
+                  type="dashed"
+                  onClick={() => add()}
+                  block
+                  icon={<PlusOutlined />}
+                >
+                  Add
+                </Button>
+              </Form.Item>
+            </>
+          )}
+        </Form.List>
       </Form>
     </Modal>
   );
