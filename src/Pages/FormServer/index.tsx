@@ -1,13 +1,16 @@
 import { Form, Button, Input } from 'antd';
 import { useState } from 'react';
 import ModalServer from '../../Components/ModalServer';
-import { BAseUrlCep } from '../../Constants/baseUrl';
+import { Select } from 'antd';
+import { useListCidEst } from '../../hooks/useListCidEst';
+import { useListCidade } from '../../hooks/useListCidade';
 
 export default function FormServer() {
   const [showModal, setShowModal] = useState(false);
   const { Search } = Input;
-
   const [form] = Form.useForm();
+  const { estados } = useListCidEst();
+  const { cidades } = useListCidade({ uf: 'RJ' });
 
   const onSearch = (value: string) => {
     fetch(`https://viacep.com.br/ws/${value}/json/`)
@@ -18,10 +21,9 @@ export default function FormServer() {
         form.setFieldValue('bairro', data.bairro);
         form.setFieldValue('cidade', data.localidade);
         form.setFieldValue('estado', data.uf);
-        form.setFieldValue('addressNumber', '');
       });
   };
-  const hideModal = (refresh: boolean) => {
+  const hideModal = () => {
     setShowModal(false);
   };
 
@@ -50,14 +52,35 @@ export default function FormServer() {
         <Form.Item label="Bairro" name={['bairro']}>
           <Input />
         </Form.Item>
-        <Form.Item label="Cidade" name={['cidade']}>
-          <Input />
-        </Form.Item>
         <Form.Item label="Estado" name={['estado']}>
-          <Input />
+          <Select
+            style={{ width: 200 }}
+            options={estados.map(estados => ({
+              label: estados.nome,
+              value: estados.nome,
+            }))}
+          />
+        </Form.Item>
+        <Form.Item label="Cidade" name={['cidade']}>
+          <Select
+            style={{ width: 200 }}
+            options={cidades.map(cidades => ({
+              label: cidades.nome,
+              value: cidades.nome,
+            }))}
+          />
         </Form.Item>
       </Form>
       <ModalServer openModal={showModal} closeModal={hideModal} />
     </>
   );
+}
+{
+  /* 
+<select>
+      {estados.map(estados => (
+        <option>{estados.nome}</option>
+      ))}
+</select> 
+*/
 }
