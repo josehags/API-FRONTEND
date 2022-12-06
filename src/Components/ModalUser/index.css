@@ -1,33 +1,54 @@
 .ant-modal-content {
-  padding: 1px !important;
-  padding-bottom: 0px !important;
-}
-
-.ant-modal-title{
-  color: aliceblue !important;
+  padding: 2px !important;
 }
 
 .ant-modal-body {
   padding: 2.5px !important;
+}
+
+.ant-modal-title{
+  color: aliceblue !important;
 }
 .ant-modal-header {
   background-color: rgb(0, 21, 42)  !important ;
   padding: 15px !important;
 }
 
-.ant-modal-close {
-  top: 2 !important;
-  right: -2 !important;
-  color: aliceblue !important;
+/* fechar no x */
+.ant-modal-close-x {
+  color: aliceblue ;
 }
 
-.ant-modal-close:hover {
+.ant-modal-close-x:hover {
+  background: rgb(50, 67, 83) ;
+  
+}
+
+/* botão cancelar do modal */
+button.ant-btn-default{
+  background-color: rgb(0, 21, 42)  !important ;
+  color: aliceblue !important; 
+  background-color: null;
+  border-color: null;
+  
+}
+button.ant-btn-default:hover{
   background: rgb(50, 67, 83) !important;
 }
 
-
-.space{
-   float: right !important;
-   padding-right: 15px !important;
-   padding-top: 10px !important;
+/* botão salvar do modal */
+button.ant-btn-primary{
+  box-shadow: 0 1px 0 rgb(3 14 21 / 64%)  !important;
 }
+button.ant-btn-primary:hover{
+  background: rgb(50, 67, 83) !important;
+}
+
+/* rodapé do modal */
+.ant-modal-footer {
+  background: transparent !important ;
+  height: 67px !important;
+  padding-right: 30px !important;
+  
+}
+

@@ -1,12 +1,13 @@
 import React, { useState, useEffect, useRef } from 'react';
 import {
   Input,
-  Form,
   InputRef,
   Button,
   Space,
   Dropdown,
   Popconfirm,
+  MenuProps,
+  Row,
 } from 'antd';
 import { SearchOutlined } from '@ant-design/icons';
 import { DownOutlined } from '@ant-design/icons';
@@ -36,10 +37,10 @@ const FormUser = () => {
   const [searchedColumn, setSearchedColumn] = useState('');
   const searchInput = useRef<InputRef>(null);
   const { startModal } = useProfileUser();
+  const [showModal, setShowModal] = useState(false);
   const [users, setUsers] = useState([]);
-  const [recordUser, setRecordUser] = useState<any>({});
 
-  const [openModal, setOpenModal] = useState(false);
+  const [recordUser, setRecordUser] = useState<any>({});
 
   const navigate = useNavigate();
 
@@ -139,6 +140,12 @@ const FormUser = () => {
       ),
   });
 
+  const handleMenuClick: MenuProps['onClick'] = e => {
+    if (e.key === '1') {
+      setShowModal(true);
+    }
+  };
+
   const columns: ColumnsType<DataType> = [
     {
       title: 'Nome',
@@ -176,7 +183,6 @@ const FormUser = () => {
     },
     {
       title: 'Ação',
-
       key: 'operation',
       render: (record: any) => {
         return (
@@ -185,17 +191,11 @@ const FormUser = () => {
               menu={{
                 items: [
                   {
-                    label: (
-                      <a
-                        onClick={() => {
-                          handle(record);
-                          setOpenModal(true);
-                        }}
-                      >
-                        Alterar
-                      </a>
-                    ),
+                    label: 'Alterar',
                     key: '1',
+                    onClick: () => {
+                      setRecordUser(record);
+                    },
                   },
                   {
                     label: (
@@ -203,12 +203,14 @@ const FormUser = () => {
                         title="Tem certeza de que deseja desabilitar este registro de usuário ?"
                         onConfirm={() => ClickDeleteUser(record.id)}
                       >
-                        <a>Excluir</a>
+                        Excluir
                       </Popconfirm>
                     ),
                     key: '2',
+                    danger: true,
                   },
                 ],
+                onClick: handleMenuClick,
               }}
             >
               <a onClick={e => e.preventDefault()} className="option">
@@ -226,11 +228,15 @@ const FormUser = () => {
 
   // LISTAGEM DE USUARIOS
   useEffect(() => {
-    loadingUser();
-    setOpenModal(false);
+    setShowModal(false);
+    loadingUserForm();
   }, []);
 
-  async function loadingUser() {
+  useEffect(() => {
+    loadingUserForm();
+  }, [users]);
+
+  async function loadingUserForm() {
     const response = await getUser('usuarios', startModal);
     if (response !== false) {
       setUsers(response.data);
@@ -245,51 +251,49 @@ const FormUser = () => {
     const novosUsuarios = [...users];
     novosUsuarios.splice(record, -1);
     setUsers(novosUsuarios);
-    loadingUser();
-  };
-
-  // Fechar modal
-  const closeModal = () => {
-    setOpenModal(false);
-    loadingUser();
-  };
-
-  const handle = async (record: any) => {
-    await setRecordUser(record);
+    loadingUserForm();
   };
 
   if (!localStorage.getItem('@App:token')) {
     navigate('/login', { replace: true });
   }
 
+  // Fechar modal
+  const hideModal = (refresh: boolean) => {
+    setShowModal(false);
+    setRecordUser(null);
+    if (refresh) setUsers([]);
+  };
+
   return (
     <>
-      <Form className="layout" layout="vertical">
-        <Form.Item>
-          <Button
-            type="primary"
-            style={{ float: 'right', width: 'auto' }}
-            onClick={() => {
-              setRecordUser(null);
-              setOpenModal(true);
-            }}
-          >
-            <a>Criar novo usuário</a>
-          </Button>
-        </Form.Item>
-
-        <Table
-          columns={columns}
-          expandable={{
-            rowExpandable: record => record.name !== 'Not Expandable',
+      <Row style={{ paddingBottom: 'inherit', display: 'flow-root' }}>
+        <Button
+          type="primary"
+          style={{
+            float: 'right',
+            width: 'auto',
+            padding: '30px !important',
           }}
-          dataSource={users}
-        />
-      </Form>
+          onClick={() => {
+            setShowModal(true);
+          }}
+        >
+          Criar novo usuário
+        </Button>
+      </Row>
+      <Table
+        columns={columns}
+        expandable={{
+          rowExpandable: record => record.name !== 'Not Expandable',
+        }}
+        rowKey="name"
+        dataSource={users}
+      />
       <ModalUser
         id={recordUser?.id}
-        openModal={openModal}
-        closeModal={closeModal}
+        openModal={showModal}
+        closeModal={hideModal}
       />
     </>
   );

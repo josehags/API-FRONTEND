@@ -1,15 +1,16 @@
 import { Form, Button, Input } from 'antd';
 import { useState } from 'react';
 import ModalServer from '../../Components/ModalServer';
+import { BAseUrlCep } from '../../Constants/baseUrl';
 
 export default function FormServer() {
-  const [openModal, setOpenModal] = useState(false);
+  const [showModal, setShowModal] = useState(false);
+  const { Search } = Input;
 
   const [form] = Form.useForm();
 
-  const checkCEP = (e: any) => {
-    const cep = e.target.value.replace(/\D/g, '');
-    fetch(`https://viacep.com.br/ws/${cep}/json/`)
+  const onSearch = (value: string) => {
+    fetch(`https://viacep.com.br/ws/${value}/json/`)
       .then(res => res.json())
       .then(data => {
         console.log(data);
@@ -19,6 +20,9 @@ export default function FormServer() {
         form.setFieldValue('estado', data.uf);
         form.setFieldValue('addressNumber', '');
       });
+  };
+  const hideModal = (refresh: boolean) => {
+    setShowModal(false);
   };
 
   return (
@@ -30,7 +34,7 @@ export default function FormServer() {
             htmlType="submit"
             style={{ float: 'right', width: 'auto' }}
             onClick={() => {
-              setOpenModal(true);
+              setShowModal(true);
             }}
           >
             Criar servidor
@@ -38,7 +42,7 @@ export default function FormServer() {
         </Form.Item>
 
         <Form.Item label="CEP" name={['cep']}>
-          <Input type="text" onBlur={checkCEP} />
+          <Search onSearch={onSearch} />
         </Form.Item>
         <Form.Item label="Rua" name={['rua']}>
           <Input />
@@ -53,8 +57,7 @@ export default function FormServer() {
           <Input />
         </Form.Item>
       </Form>
-      <Form></Form>
-      <ModalServer openModal={openModal} />
+      <ModalServer openModal={showModal} closeModal={hideModal} />
     </>
   );
 }

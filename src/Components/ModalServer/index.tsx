@@ -7,17 +7,18 @@ require('./index.css');
 
 type Propos = {
   openModal: boolean;
+  closeModal: (refresh: boolean) => void;
 };
 
-const ModalServer = ({ openModal }: Propos) => {
+const ModalServer = ({ openModal, closeModal }: Propos) => {
   const [form] = Form.useForm();
+  const { Search } = Input;
 
-  const checkCEP = (e: any) => {
-    const cep = e.target.value.replace(/\D/g, '');
-    fetch(`https://viacep.com.br/ws/${cep}/json/`)
-      .then((res: { json: () => any }) => res.json())
+  const onSearch = (value: string) => {
+    fetch(`https://viacep.com.br/ws/${value}/json/`)
+      .then(res => res.json())
       .then(data => {
-        console.log(data);
+        console.log('consulta API', data);
         form.setFieldValue('rua', data.logradouro);
         form.setFieldValue('bairro', data.bairro);
         form.setFieldValue('cidade', data.localidade);
@@ -28,23 +29,24 @@ const ModalServer = ({ openModal }: Propos) => {
 
   return (
     <Modal
-      className="ant-modal"
+      className="ant-modal-server"
       title="Servidores"
-      width={1500}
       open={openModal}
-      footer
+      width={1500}
+      forceRender
+      okText="Salvar"
+      onCancel={() => {
+        closeModal(false);
+      }}
     >
       <Form form={form}>
         <Form.List name={'endereço'}>
           {(fields, { add, remove }) => (
             <>
               {fields.map(field => (
-                <Space
-                  style={{ display: 'flex', marginBottom: 8 }}
-                  align="baseline"
-                >
+                <Space align="baseline">
                   <Form.Item label="CEP" name={[field.name, 'cep']}>
-                    <Input onBlur={checkCEP} />
+                    <Search onSearch={onSearch} />
                   </Form.Item>
                   <Form.Item label="Rua" name={[field.name, 'rua']}>
                     <Input />

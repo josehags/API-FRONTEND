@@ -1,7 +1,5 @@
-import { Modal, Space } from 'antd';
-import { Button, Form, Input } from 'antd';
-import React, { useEffect } from 'react';
-import { Col } from 'antd';
+import { Modal, Form, Input, Col } from 'antd';
+import { useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import {
   getUser,
@@ -12,28 +10,37 @@ import { useProfileUser } from '../../Context';
 
 require('./index.css');
 
-type Propos = {
+type Props = {
   id: string;
   openModal: boolean;
-  closeModal: () => void;
+  closeModal: (refresh: boolean) => void;
 };
 
-const ModalUser = ({ id, openModal, closeModal }: Propos) => {
+const ModalUser = ({ id, openModal, closeModal }: Props) => {
   const { startModal } = useProfileUser();
   const [form] = Form.useForm();
 
   const navigate = useNavigate();
 
-  function handleFinish(a: any) {
-    if (id) {
-      submitUpadate();
-    } else {
-      submitCreate();
-    }
-    closeModal();
-  }
+  const handleOk = (e: any) => {
+    e.preventDefault();
+    form
+      .validateFields()
+      .then(() => {
+        if (id) {
+          submitUpdate();
+        } else {
+          submitCreate();
+        }
+        form.resetFields();
+        closeModal(true);
+      })
+      .catch(errorInfo =>
+        startModal('error', 'Erro no preenchimento dos campos.'),
+      );
+  };
 
-  //Listagem, se tiver id set no formulário
+  //Listagem se tiver id set no formulário
   useEffect(() => {
     loadingUser();
   }, [id]);
@@ -54,13 +61,11 @@ const ModalUser = ({ id, openModal, closeModal }: Propos) => {
           startModal('error', 'Ocorreu um erro inesperado ao obter usuários.');
         }
       });
-    } else {
-      form.resetFields();
     }
   }
 
   //ATUALIZAÇÃO DE USUARIOS************
-  const submitUpadate = async () => {
+  const submitUpdate = async () => {
     const editingUser = form.getFieldsValue(true);
     await updateUser(
       editingUser?.name,
@@ -71,7 +76,7 @@ const ModalUser = ({ id, openModal, closeModal }: Propos) => {
       id,
       startModal,
     );
-    startModal('success', 'Usuário atualizado com sucesso!');
+    // startModal('success', 'Usuário atualizado com sucesso!');
   };
 
   // CRIAÇÃO DE USUARIOS
@@ -85,108 +90,94 @@ const ModalUser = ({ id, openModal, closeModal }: Propos) => {
       editingUser?.image,
       startModal,
     );
-    return undefined;
   };
+
   if (!localStorage.getItem('@App:token')) {
     navigate('/login', { replace: true });
   }
+
   return (
     <>
       <Modal
         open={openModal}
-        className="ant-modal"
         title="Usuários"
-        onCancel={closeModal}
-        footer
+        okText="Salvar"
+        onCancel={() => {
+          form.resetFields();
+          closeModal(false);
+        }}
+        onOk={handleOk}
       >
-        <>
-          <Form layout="vertical" onFinish={handleFinish} form={form}>
-            <Col offset={1} span={16}>
-              <Form.Item
-                name={['name']}
-                label="Nome"
-                rules={[
-                  {
-                    required: true,
-                    message: 'Por favor, insira seu nome',
-                  },
-                ]}
-                hasFeedback
-              >
-                <Input />
-              </Form.Item>
-            </Col>
-            <Col offset={1} span={16}>
-              <Form.Item
-                name={['email']}
-                label="E-mail"
-                rules={[
-                  {
-                    required: true,
-                  },
-                  {
-                    type: 'email',
-                    message: 'Por favor, informe um email válido!',
-                  },
-                ]}
-                hasFeedback
-              >
-                <Input />
-              </Form.Item>
-            </Col>
-            <Col offset={1} span={16}>
-              <Form.Item
-                name={['role']}
-                label="Função"
-                rules={[
-                  {
-                    required: true,
-                    message: 'Por favor, insira a sua função',
-                  },
-                ]}
-                hasFeedback
-              >
-                <Input />
-              </Form.Item>
-            </Col>
-            <Col offset={1} span={16}>
-              <Form.Item
-                name={['sector']}
-                label="Setor"
-                rules={[
-                  {
-                    required: true,
-                    message: 'Por favor, insira o seu setor',
-                  },
-                ]}
-                hasFeedback
-              >
-                <Input />
-              </Form.Item>
-            </Col>
-            <Col offset={1} span={16}>
-              <Form.Item name={['image']} label="Imagem">
-                <Input />
-              </Form.Item>
-            </Col>
-            <Col>
-              <Form.Item>
-                <Space className="space">
-                  <Button htmlType="submit" type="primary" onClick={closeModal}>
-                    Cancelar
-                  </Button>
-
-                  <Button htmlType="submit" type="primary">
-                    Salvar
-                  </Button>
-                </Space>
-              </Form.Item>
-            </Col>
-          </Form>
-        </>
+        <Form layout="vertical" form={form}>
+          <Col offset={1} span={16}>
+            <Form.Item
+              name={['name']}
+              label="Nome"
+              rules={[
+                {
+                  required: true,
+                  message: 'Por favor, insira seu nome',
+                },
+              ]}
+              hasFeedback
+            >
+              <Input />
+            </Form.Item>
+          </Col>
+          <Col offset={1} span={16}>
+            <Form.Item
+              name={['email']}
+              label="E-mail"
+              rules={[
+                {
+                  required: true,
+                  type: 'email',
+                  message: 'Por favor, informe um email válido!',
+                },
+              ]}
+              hasFeedback
+            >
+              <Input />
+            </Form.Item>
+          </Col>
+          <Col offset={1} span={16}>
+            <Form.Item
+              name={['role']}
+              label="Função"
+              rules={[
+                {
+                  required: true,
+                  message: 'Por favor, insira a sua função',
+                },
+              ]}
+              hasFeedback
+            >
+              <Input />
+            </Form.Item>
+          </Col>
+          <Col offset={1} span={16}>
+            <Form.Item
+              name={['sector']}
+              label="Setor"
+              rules={[
+                {
+                  required: true,
+                  message: 'Por favor, insira o seu setor',
+                },
+              ]}
+              hasFeedback
+            >
+              <Input />
+            </Form.Item>
+          </Col>
+          <Col offset={1} span={16}>
+            <Form.Item name={['image']} label="Imagem">
+              <Input />
+            </Form.Item>
+          </Col>
+        </Form>
       </Modal>
     </>
   );
 };
-
 export default ModalUser;
