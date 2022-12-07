@@ -1,5 +1,7 @@
 import { APIUsers, APIServidores } from './baseService/index';
 import { Types } from '../../Context/index';
+import { APICidades, APIEstado } from './baseService/baseService';
+import { BAseUrlCep } from '../../Constants/baseUrl';
 
 export async function getUser(
   url: string,
@@ -232,3 +234,17 @@ export async function changePassword(
     return null;
   }
 }
+
+export async function fetchStates() {
+  const response = await APIEstado.get(
+    'https://servicodados.ibge.gov.br/api/v1/localidades/estados/',
+  );
+  return response;
+}
+
+// export async function buscarCidades(value: any) {
+//   const response = await APICidades.get(
+//     ` https://servicodados.ibge.gov.br/api/v1/localidades/estados/${value}/municipios?view=nivelado`,
+//   );
+//   return response;
+// }

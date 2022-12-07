@@ -33,3 +33,7 @@
    padding-right: 15px !important;
    padding-top: 10px !important;
 } */
+.ant-btn-block {
+  background:  rgb(0, 21, 42)  !important;
+  color: aliceblue !important;
+}

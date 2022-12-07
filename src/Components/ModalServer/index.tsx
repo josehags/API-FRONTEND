@@ -1,9 +1,10 @@
 import { Modal, Space } from 'antd';
 import { Button, Form, Input } from 'antd';
 import { Select } from 'antd';
-import { useListCidEst } from '../../hooks/useListCidEst';
-
 import { PlusOutlined, DeleteOutlined } from '@ant-design/icons';
+import { useEffect, useState } from 'react';
+import axios from 'axios';
+import { fetchStates } from '../../Services/Axios/userServices';
 
 require('./index.css');
 
@@ -12,24 +13,60 @@ type Propos = {
   closeModal: (refresh: boolean) => void;
 };
 
+type IBGEUFResponse = {
+  sigla: string;
+  nome: string;
+};
+type IBGECITYResponse = {
+  id: number;
+  nome: string;
+};
 const ModalServer = ({ openModal, closeModal }: Propos) => {
+  const [ufs, setUfs] = useState<IBGEUFResponse[]>([]);
+  const [cities, setCities] = useState<IBGECITYResponse[]>([]);
+  const [selectedUf, setSelectedUf] = useState('0');
+  const [selectedCity, setSelectedCity] = useState('0');
   const [form] = Form.useForm();
-  const { estados } = useListCidEst();
-
   const { Search } = Input;
 
-  const onSearch = (value: string) => {
+  const searchCep = (value: string) => {
     fetch(`https://viacep.com.br/ws/${value}/json/`)
       .then(res => res.json())
       .then(data => {
         console.log('consulta API', data);
-        form.setFieldValue('rua', data.logradouro);
+        form.setFieldValue('logradouro', data.logradouro);
         form.setFieldValue('bairro', data.bairro);
-        form.setFieldValue('cidade', data.localidade);
-        form.setFieldValue('estado', data.uf);
-        form.setFieldValue('addressNumber', '');
+        // form.setFieldValue('cidade', data.localidade);
+        // form.setFieldValue('estado', data.uf);
       });
   };
+  useEffect(() => {
+    fetchStates().then(response => {
+      setUfs(response.data);
+    });
+  }, [selectedUf]);
+
+  useEffect(() => {
+    if (selectedUf === '0') {
+      return;
+    }
+    axios
+      .get(
+        `https://servicodados.ibge.gov.br/api/v1/localidades/estados/${selectedUf}/municipios?view=nivelado`,
+      )
+      .then(response => {
+        setCities(response.data);
+      });
+  });
+
+  const handleSelectUf = (value: string) => {
+    console.log(value);
+    setSelectedUf(value);
+  };
+
+  function handleSelectCity(value: string) {
+    setSelectedCity(value);
+  }
 
   return (
     <Modal
@@ -47,35 +84,6 @@ const ModalServer = ({ openModal, closeModal }: Propos) => {
         <Form.List name={'endereço'}>
           {(fields, { add, remove }) => (
             <>
-              {fields.map(field => (
-                <Space align="baseline">
-                  <Form.Item label="CEP" name={[field.name, 'cep']}>
-                    <Search onSearch={onSearch} />
-                  </Form.Item>
-                  <Form.Item label="Rua" name={[field.name, 'rua']}>
-                    <Input />
-                  </Form.Item>
-                  <Form.Item label="Bairro" name={[field.name, 'bairro']}>
-                    <Input />
-                  </Form.Item>
-                  <Form.Item label="Estado" name={[field.name, 'estado']}>
-                    <Select
-                      options={estados.map(estados => ({
-                        label: estados.nome,
-                        value: estados.nome,
-                      }))}
-                    />
-                  </Form.Item>
-                  <Form.Item label="Cidade" name={[field.name, 'cidade']}>
-                    <Input />
-                  </Form.Item>
-
-                  <DeleteOutlined
-                    style={{ color: 'red' }}
-                    onClick={() => remove(field.name)}
-                  />
-                </Space>
-              ))}
               <Form.Item>
                 <Button
                   type="dashed"
@@ -86,6 +94,46 @@ const ModalServer = ({ openModal, closeModal }: Propos) => {
                   Add
                 </Button>
               </Form.Item>
+              {fields.map(field => (
+                <Space align="baseline">
+                  <Form.Item label="CEP" name={[field.name, 'cep']}>
+                    <Search onSearch={searchCep} />
+                  </Form.Item>
+                  <Form.Item label="Rua" name={[field.name, 'logradouro']}>
+                    <Input />
+                  </Form.Item>
+                  <Form.Item label="Bairro" name={[field.name, 'bairro']}>
+                    <Input />
+                  </Form.Item>
+                  <Form.Item label="Estado" name={['estado']}>
+                    <Select
+                      style={{ width: 130 }}
+                      onChange={handleSelectUf}
+                      options={ufs.map(uf => ({
+                        label: uf.nome,
+                        value: uf.sigla,
+                      }))}
+                    />
+                  </Form.Item>
+                  <Form.Item label="Cidade" name={['cidade']}>
+                    <Select
+                      style={{ width: 200 }}
+                      onChange={handleSelectCity}
+                      value={selectedCity}
+                      options={cities.map(city => ({
+                        key: city.id,
+                        label: city.nome,
+                        value: city.nome,
+                      }))}
+                    />
+                  </Form.Item>
+
+                  <DeleteOutlined
+                    style={{ color: 'red' }}
+                    onClick={() => remove(field.name)}
+                  />
+                </Space>
+              ))}
             </>
           )}
         </Form.List>
