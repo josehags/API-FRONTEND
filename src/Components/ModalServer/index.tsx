@@ -52,7 +52,7 @@ const ModalServer = ({ openModal, closeModal }: Propos) => {
     }
     axios
       .get(
-        `https://servicodados.ibge.gov.br/api/v1/localidades/estados/${selectedUf}/municipios?view=nivelado`,
+        `https://servicodados.ibge.gov.br/api/v1/localidades/estados/${selectedUf}/municipios`,
       )
       .then(response => {
         setCities(response.data);
