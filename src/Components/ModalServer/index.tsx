@@ -41,12 +41,6 @@ const ModalServer = ({ openModal, closeModal }: Propos) => {
       });
   };
   useEffect(() => {
-    fetchStates().then(response => {
-      setUfs(response.data);
-    });
-  }, [selectedUf]);
-
-  useEffect(() => {
     if (selectedUf === '0') {
       return;
     }
@@ -59,12 +53,21 @@ const ModalServer = ({ openModal, closeModal }: Propos) => {
       });
   });
 
-  const handleSelectUf = (value: string) => {
+  useEffect(() => {
+    axios
+      .get('https://servicodados.ibge.gov.br/api/v1/localidades/estados/')
+      .then(response => {
+        setUfs(response.data);
+      });
+  }, [selectedUf]);
+
+  function handleSelectUf(value: string) {
     console.log(value);
     setSelectedUf(value);
-  };
+  }
 
   function handleSelectCity(value: string) {
+    console.log(value);
     setSelectedCity(value);
   }
 
@@ -77,6 +80,7 @@ const ModalServer = ({ openModal, closeModal }: Propos) => {
       forceRender
       okText="Salvar"
       onCancel={() => {
+        form.resetFields();
         closeModal(false);
       }}
     >
@@ -99,16 +103,26 @@ const ModalServer = ({ openModal, closeModal }: Propos) => {
                   <Form.Item label="CEP" name={[field.name, 'cep']}>
                     <Search onSearch={searchCep} />
                   </Form.Item>
-                  <Form.Item label="Rua" name={[field.name, 'logradouro']}>
+                  <Form.Item label="Rua" name={['logradouro']}>
                     <Input />
                   </Form.Item>
-                  <Form.Item label="Bairro" name={[field.name, 'bairro']}>
+                  <Form.Item label="Bairro" name={['bairro']}>
                     <Input />
                   </Form.Item>
                   <Form.Item label="Estado" name={['estado']}>
                     <Select
-                      style={{ width: 130 }}
+                      showSearch
+                      id="uf"
+                      // style={{ width: 150 }}
+                      placeholder="Selecione o estado"
+                      optionFilterProp="children"
                       onChange={handleSelectUf}
+                      value={selectedUf}
+                      filterOption={(input, option) =>
+                        (option?.label ?? '')
+                          .toLowerCase()
+                          .includes(input.toLowerCase())
+                      }
                       options={ufs.map(uf => ({
                         label: uf.nome,
                         value: uf.sigla,
@@ -117,9 +131,18 @@ const ModalServer = ({ openModal, closeModal }: Propos) => {
                   </Form.Item>
                   <Form.Item label="Cidade" name={['cidade']}>
                     <Select
-                      style={{ width: 200 }}
+                      showSearch
+                      id="City"
+                      // style={{ width: 150 }}
+                      placeholder="Selecione a cidade"
+                      optionFilterProp="children"
                       onChange={handleSelectCity}
                       value={selectedCity}
+                      filterOption={(input, option) =>
+                        (option?.label ?? '')
+                          .toLowerCase()
+                          .includes(input.toLowerCase())
+                      }
                       options={cities.map(city => ({
                         key: city.id,
                         label: city.nome,
