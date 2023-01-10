@@ -4,7 +4,7 @@ import {
   BaseUrlServidores,
   BaseUrlEstado,
   BaseUrlCidade,
-  BAseUrlCep,
+  BaseUrlCep,
 } from '../../../Constants/baseUrl';
 
 export const APIUsers = axios.create({
@@ -21,9 +21,8 @@ export const APICidades = axios.create({
 export const APIEstado = axios.create({
   baseURL: BaseUrlEstado,
 });
-
 export const APICep = axios.create({
-  baseURL: BAseUrlCep,
+  baseURL: BaseUrlCep,
 });
 
 APICidades.interceptors.response.use(

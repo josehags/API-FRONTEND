@@ -4,7 +4,6 @@ import ModalServer from '../../Components/ModalServer';
 
 export default function FormServer() {
   const [showModal, setShowModal] = useState(false);
-  const [form] = Form.useForm();
 
   const hideModal = () => {
     setShowModal(false);
@@ -12,20 +11,18 @@ export default function FormServer() {
 
   return (
     <>
-      <Form form={form}>
-        <Form.Item>
-          <Button
-            type="primary"
-            htmlType="submit"
-            style={{ float: 'right', width: 'auto' }}
-            onClick={() => {
-              setShowModal(true);
-            }}
-          >
-            Criar servidor
-          </Button>
-        </Form.Item>
-      </Form>
+      <Form.Item>
+        <Button
+          type="primary"
+          htmlType="submit"
+          style={{ float: 'right', width: 'auto' }}
+          onClick={() => {
+            setShowModal(true);
+          }}
+        >
+          Criar servidor
+        </Button>
+      </Form.Item>
 
       <ModalServer openModal={showModal} closeModal={hideModal} />
     </>

@@ -3,8 +3,11 @@ import { Button, Form, Input } from 'antd';
 import { Select } from 'antd';
 import { PlusOutlined, DeleteOutlined } from '@ant-design/icons';
 import { useEffect, useState } from 'react';
-import axios from 'axios';
-import { fetchStates } from '../../Services/Axios/userServices';
+import {
+  fetchCities,
+  fetchStates,
+  getCep,
+} from '../../Services/Axios/userServices';
 
 require('./index.css');
 
@@ -24,68 +27,66 @@ type IBGECITYResponse = {
 const ModalServer = ({ openModal, closeModal }: Propos) => {
   const [ufs, setUfs] = useState<IBGEUFResponse[]>([]);
   const [cities, setCities] = useState<IBGECITYResponse[]>([]);
-  const [selectedUf, setSelectedUf] = useState('0');
-  const [selectedCity, setSelectedCity] = useState('0');
+  const [selectUf, setselectUf] = useState('0');
+  const [selectCity, setselectCity] = useState('0');
   const [form] = Form.useForm();
   const { Search } = Input;
 
   const searchCep = (value: string) => {
-    fetch(`https://viacep.com.br/ws/${value}/json/`)
-      .then(res => res.json())
-      .then(data => {
-        console.log('consulta API', data);
-        form.setFieldValue('logradouro', data.logradouro);
-        form.setFieldValue('bairro', data.bairro);
-        // form.setFieldValue('cidade', data.localidade);
-        // form.setFieldValue('estado', data.uf);
-      });
+    getCep(value).then(data => {
+      console.log('consulta API', data.data);
+      form.setFieldValue('logradouro', data.data.logradouro);
+      form.setFieldValue('bairro', data.data.bairro);
+      // form.setFieldValue('cidade', data.data.localidade);
+      // form.setFieldValue('estado', data.data.uf);
+    });
   };
-  useEffect(() => {
-    if (selectedUf === '0') {
-      return;
-    }
-    axios
-      .get(
-        `https://servicodados.ibge.gov.br/api/v1/localidades/estados/${selectedUf}/municipios`,
-      )
-      .then(response => {
-        setCities(response.data);
-      });
-  });
 
   useEffect(() => {
-    axios
-      .get('https://servicodados.ibge.gov.br/api/v1/localidades/estados/')
-      .then(response => {
-        setUfs(response.data);
-      });
-  }, [selectedUf]);
+    fetchStates().then(response => {
+      setUfs(response.data);
+    });
+  }, [selectUf]);
+
+  useEffect(() => {
+    if (selectUf === '0') {
+      return;
+    }
+    fetchCities(selectUf).then(response => {
+      setCities(response.data);
+    });
+  });
 
   function handleSelectUf(value: string) {
     console.log(value);
-    setSelectedUf(value);
+    setselectUf(value);
   }
 
   function handleSelectCity(value: string) {
     console.log(value);
-    setSelectedCity(value);
+    setselectCity(value);
   }
+
+  const onFinish = (values: any) => {
+    console.log('Valores do formulário:', values);
+  };
 
   return (
     <Modal
       className="ant-modal-server"
       title="Servidores"
       open={openModal}
-      width={1500}
+      width={1290}
       forceRender
       okText="Salvar"
+      onOk={onFinish}
       onCancel={() => {
         form.resetFields();
         closeModal(false);
       }}
     >
-      <Form form={form}>
-        <Form.List name={'endereço'}>
+      <Form form={form} onFinish={onFinish} autoComplete="off">
+        <Form.List name={'adress'}>
           {(fields, { add, remove }) => (
             <>
               <Form.Item>
@@ -98,26 +99,35 @@ const ModalServer = ({ openModal, closeModal }: Propos) => {
                   Add
                 </Button>
               </Form.Item>
-              {fields.map(field => (
-                <Space align="baseline">
-                  <Form.Item label="CEP" name={[field.name, 'cep']}>
+              {fields.map(({ key, name, ...restField }) => (
+                <Space key={key} align="baseline">
+                  <Form.Item label="CEP" name={[name, 'cep']} {...restField}>
                     <Search onSearch={searchCep} />
                   </Form.Item>
-                  <Form.Item label="Rua" name={['logradouro']}>
+                  <Form.Item
+                    label="Rua"
+                    name={[name, 'logradouro']}
+                    {...restField}
+                  >
                     <Input />
                   </Form.Item>
-                  <Form.Item label="Bairro" name={['bairro']}>
+                  <Form.Item
+                    label="Bairro"
+                    name={[name, 'bairro']}
+                    {...restField}
+                  >
                     <Input />
                   </Form.Item>
-                  <Form.Item label="Estado" name={['estado']}>
+                  <Form.Item
+                    label="Estado"
+                    name={[name, 'estado']}
+                    {...restField}
+                  >
                     <Select
                       showSearch
-                      id="uf"
-                      // style={{ width: 150 }}
                       placeholder="Selecione o estado"
-                      optionFilterProp="children"
                       onChange={handleSelectUf}
-                      value={selectedUf}
+                      value={selectUf}
                       filterOption={(input, option) =>
                         (option?.label ?? '')
                           .toLowerCase()
@@ -129,15 +139,17 @@ const ModalServer = ({ openModal, closeModal }: Propos) => {
                       }))}
                     />
                   </Form.Item>
-                  <Form.Item label="Cidade" name={['cidade']}>
+                  <Form.Item
+                    label="Cidade"
+                    name={[name, 'cidade']}
+                    {...restField}
+                  >
                     <Select
                       showSearch
-                      id="City"
-                      // style={{ width: 150 }}
+                      style={{ width: 'auto' }}
                       placeholder="Selecione a cidade"
-                      optionFilterProp="children"
                       onChange={handleSelectCity}
-                      value={selectedCity}
+                      value={selectCity}
                       filterOption={(input, option) =>
                         (option?.label ?? '')
                           .toLowerCase()
@@ -153,7 +165,7 @@ const ModalServer = ({ openModal, closeModal }: Propos) => {
 
                   <DeleteOutlined
                     style={{ color: 'red' }}
-                    onClick={() => remove(field.name)}
+                    onClick={() => remove(name)}
                   />
                 </Space>
               ))}
