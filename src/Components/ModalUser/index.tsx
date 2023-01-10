@@ -40,7 +40,7 @@ const ModalUser = ({ id, openModal, closeModal }: Props) => {
       );
   };
 
-  //Listagem se tiver id set no formulário
+  //Listagem, se tiver id set no formulário
   useEffect(() => {
     loadingUser();
   }, [id]);

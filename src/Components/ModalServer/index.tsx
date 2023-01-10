@@ -33,13 +33,15 @@ const ModalServer = ({ openModal, closeModal }: Propos) => {
   const { Search } = Input;
 
   const searchCep = (value: string) => {
-    getCep(value).then(data => {
-      console.log('consulta API', data.data);
-      form.setFieldValue('logradouro', data.data.logradouro);
-      form.setFieldValue('bairro', data.data.bairro);
-      // form.setFieldValue('cidade', data.data.localidade);
-      // form.setFieldValue('estado', data.data.uf);
-    });
+    if (value.length === 8) {
+      getCep(value).then(data => {
+        console.log('consulta API', data.data);
+        form.setFieldValue('logradouro', data.data.logradouro);
+        form.setFieldValue('bairro', data.data.bairro);
+        // form.setFieldValue('cidade', data.data.localidade);
+        // form.setFieldValue('estado', data.data.uf);
+      });
+    }
   };
 
   useEffect(() => {
@@ -107,7 +109,7 @@ const ModalServer = ({ openModal, closeModal }: Propos) => {
                   <Form.Item
                     label="Rua"
                     name={[name, 'logradouro']}
-                    {...restField}
+                    {...form.getFieldsValue}
                   >
                     <Input />
                   </Form.Item>
@@ -178,3 +180,54 @@ const ModalServer = ({ openModal, closeModal }: Propos) => {
 };
 
 export default ModalServer;
+
+{
+  /* teste */
+}
+
+// <Form form={form} layout={'vertical'}>
+// <Form.Item label="CEP" name={['cep']} style={{ width: 355 }}>
+//   <Search onSearch={searchCep} />
+// </Form.Item>
+// <Form.Item label="Rua" name={['logradouro']} style={{ width: 355 }}>
+//   <Input />
+// </Form.Item>
+// <Form.Item label="Bairro" name={['bairro']} style={{ width: 355 }}>
+//   <Input />
+// </Form.Item>
+// <Form.Item label="Estado" name={['estado']}>
+//   <Select
+//     showSearch
+//     id="uf"
+//     placeholder="Selecione o estado"
+//     optionFilterProp="children"
+//     onChange={handleSelectUf}
+//     value={selectUf}
+//     filterOption={(input, option) =>
+//       (option?.label ?? '').toLowerCase().includes(input.toLowerCase())
+//     }
+//     options={ufs.map(uf => ({
+//       label: uf.nome,
+//       value: uf.sigla,
+//     }))}
+//   />
+// </Form.Item>
+// <Form.Item label="Cidade" name={['cidade']}>
+//   <Select
+//     showSearch
+//     id="City"
+//     placeholder="Selecione a cidade"
+//     optionFilterProp="children"
+//     onChange={handleSelectCity}
+//     value={selectCity}
+//     filterOption={(input, option) =>
+//       (option?.label ?? '').toLowerCase().includes(input.toLowerCase())
+//     }
+//     options={cities.map(city => ({
+//       key: city.id,
+//       label: city.nome,
+//       value: city.nome,
+//     }))}
+//   />
+// </Form.Item>
+// </Form>
